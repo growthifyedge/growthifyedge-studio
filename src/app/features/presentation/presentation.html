@@ -1,0 +1,102 @@
+<div class="relative flex min-h-screen flex-col bg-ink-950 text-white">
+  <!-- Top bar -->
+  <header class="flex items-center justify-between px-6 py-5 sm:px-10">
+    <div class="flex items-center gap-3">
+      <div class="grid h-9 w-9 place-items-center rounded-lg bg-brand-gradient">
+        <ge-icon name="bolt" [size]="18" />
+      </div>
+      <span class="text-sm font-bold tracking-tight">GrowthifyEdge · Client Showcase</span>
+    </div>
+    <button
+      type="button"
+      (click)="exit()"
+      class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-sm font-semibold hover:bg-white/10"
+    >
+      <ge-icon name="close" [size]="16" /> Exit (Esc)
+    </button>
+  </header>
+
+  @if (current(); as sw) {
+    <!-- Slide -->
+    <main class="flex flex-1 items-center px-6 sm:px-10">
+      <div class="mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2">
+        <!-- Copy -->
+        <div class="animate-fade-in">
+          <div class="mb-4 flex items-center gap-2">
+            <ge-status-badge [status]="sw.status" />
+            <span class="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold">{{ sw.category }}</span>
+          </div>
+          <h1 class="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">{{ sw.name }}</h1>
+          <p class="mt-4 max-w-xl text-lg text-white/70">{{ sw.tagline }}</p>
+
+          <div class="mt-8 grid grid-cols-3 gap-4">
+            @for (m of sw.impact.slice(0, 3); track m.label) {
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p class="text-2xl font-extrabold">{{ m.value }}</p>
+                <p class="text-xs text-white/50">{{ m.label }}</p>
+              </div>
+            }
+          </div>
+
+          <div class="mt-8 flex flex-wrap gap-2">
+            @for (t of sw.techStack.slice(0, 5); track t.name) {
+              <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium">
+                {{ t.icon }} {{ t.name }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Visual -->
+        <div class="animate-fade-in">
+          <div
+            class="overflow-hidden rounded-3xl border border-white/10 shadow-2xl"
+            [style.background]="'linear-gradient(135deg,' + sw.accentColor + ',' + sw.accentColor + '88)'"
+          >
+            <img [src]="sw.coverImage" [alt]="sw.name" class="aspect-[4/3] w-full object-cover" />
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Controls -->
+    <footer class="px-6 pb-8 sm:px-10">
+      <div class="mx-auto flex max-w-6xl items-center justify-between">
+        <button
+          type="button"
+          (click)="prev()"
+          [disabled]="index() === 0"
+          class="grid h-12 w-12 place-items-center rounded-full border border-white/15 bg-white/5 transition hover:bg-white/10 disabled:opacity-30"
+          aria-label="Previous slide"
+        >
+          <ge-icon name="arrow-left" />
+        </button>
+
+        <div class="flex items-center gap-2">
+          @for (s of slides(); track s.id; let i = $index) {
+            <button
+              type="button"
+              (click)="goto(i)"
+              class="h-2 rounded-full transition-all"
+              [class]="i === index() ? 'w-8 bg-brand-400' : 'w-2 bg-white/20 hover:bg-white/40'"
+              [attr.aria-label]="'Go to slide ' + (i + 1)"
+            ></button>
+          }
+        </div>
+
+        <button
+          type="button"
+          (click)="next()"
+          [disabled]="index() === total() - 1"
+          class="grid h-12 w-12 place-items-center rounded-full border border-white/15 bg-white/5 transition hover:bg-white/10 disabled:opacity-30"
+          aria-label="Next slide"
+        >
+          <ge-icon name="arrow-right" />
+        </button>
+      </div>
+      <p class="mt-4 text-center text-xs text-white/40">
+        Slide {{ index() + 1 }} of {{ total() }} · Use ← → keys to navigate
+      </p>
+    </footer>
+  }
+</div>

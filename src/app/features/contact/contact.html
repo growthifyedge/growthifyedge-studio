@@ -1,0 +1,90 @@
+<ge-page-header
+  eyebrow="Let’s talk"
+  title="Request a Demo"
+  subtitle="Tell us what you’re looking for and we’ll set up a tailored walkthrough for your team."
+/>
+
+<div class="grid gap-6 lg:grid-cols-3">
+  <!-- Form -->
+  <div class="lg:col-span-2">
+    @if (submitted()) {
+      <div class="ge-card-glass flex flex-col items-center gap-4 px-6 py-16 text-center">
+        <div class="grid h-16 w-16 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
+          <ge-icon name="check" [size]="30" />
+        </div>
+        <h2 class="text-xl font-bold text-slate-900">Thanks — request received!</h2>
+        <p class="max-w-md text-sm text-slate-500">
+          Our team will reach out within one business day to schedule your personalized demo.
+        </p>
+        <button type="button" (click)="reset()" class="ge-btn-ghost mt-2">Submit another request</button>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" class="ge-card-glass space-y-5 p-6 sm:p-8">
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="ge-label" for="name">Full name *</label>
+            <input id="name" formControlName="name" class="ge-input" placeholder="Jane Doe" />
+            @if (invalid('name')) { <p class="mt-1 text-xs text-rose-600">Your name is required.</p> }
+          </div>
+          <div>
+            <label class="ge-label" for="email">Work email *</label>
+            <input id="email" type="email" formControlName="email" class="ge-input" placeholder="jane@company.com" />
+            @if (invalid('email')) { <p class="mt-1 text-xs text-rose-600">Enter a valid email.</p> }
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="ge-label" for="company">Company</label>
+            <input id="company" formControlName="company" class="ge-input" placeholder="Acme Inc." />
+          </div>
+          <div>
+            <label class="ge-label" for="budget">Budget</label>
+            <select id="budget" formControlName="budget" class="ge-input">
+              @for (b of budgets; track b) { <option [value]="b">{{ b }}</option> }
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="ge-label" for="interest">Which product are you interested in?</label>
+          <select id="interest" formControlName="interest" class="ge-input">
+            <option value="">No preference / not sure</option>
+            @for (p of products(); track p.id) { <option [value]="p.name">{{ p.name }}</option> }
+          </select>
+        </div>
+
+        <div>
+          <label class="ge-label" for="message">How can we help? *</label>
+          <textarea id="message" formControlName="message" rows="5" class="ge-input" placeholder="Tell us about your goals, team size and timeline…"></textarea>
+          @if (invalid('message')) { <p class="mt-1 text-xs text-rose-600">Please add at least 10 characters.</p> }
+        </div>
+
+        <button type="submit" class="ge-btn-primary w-full" [disabled]="form.invalid">
+          <ge-icon name="mail" [size]="18" /> Send Demo Request
+        </button>
+      </form>
+    }
+  </div>
+
+  <!-- Side info -->
+  <aside class="space-y-4">
+    <div class="relative overflow-hidden rounded-3xl bg-ink-950 p-6 text-white">
+      <div class="pointer-events-none absolute inset-0 bg-cinematic opacity-80"></div>
+      <h3 class="relative font-display text-lg font-bold">Why book a demo?</h3>
+      <ul class="mt-4 space-y-3 text-sm text-white/90">
+        <li class="flex items-start gap-2"><ge-icon name="check" [size]="16" class="mt-0.5" /> A tour tailored to your use case</li>
+        <li class="flex items-start gap-2"><ge-icon name="check" [size]="16" class="mt-0.5" /> Live Q&A with the build team</li>
+        <li class="flex items-start gap-2"><ge-icon name="check" [size]="16" class="mt-0.5" /> Pricing & rollout guidance</li>
+      </ul>
+    </div>
+
+    <div class="ge-card-glass p-6">
+      <h3 class="text-sm font-bold uppercase tracking-wide text-slate-500">Reach us directly</h3>
+      <div class="mt-3 space-y-2 text-sm">
+        <p class="flex items-center gap-2 text-slate-600"><ge-icon name="mail" [size]="16" class="text-brand-500" /> hello&#64;growthifyedge.com</p>
+        <p class="flex items-center gap-2 text-slate-600"><ge-icon name="bolt" [size]="16" class="text-brand-500" /> Avg. response: under 24h</p>
+      </div>
+    </div>
+  </aside>
+</div>

@@ -1,0 +1,81 @@
+<ge-page-header
+  eyebrow="Quick wins"
+  title="Mini Software Lab"
+  subtitle="Small, sharp tools that solve one problem extremely well — perfect for rapid client pilots."
+/>
+
+<!-- Intro banner -->
+<div class="mb-8 relative overflow-hidden rounded-3xl border border-white/10 bg-ink-950 p-6 text-white">
+  <div class="pointer-events-none absolute inset-0 bg-cinematic opacity-70"></div>
+  <div class="relative flex items-center gap-4">
+    <div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-aurora shadow-glow"><ge-icon name="beaker" [size]="24" /></div>
+    <div>
+      <p class="font-display text-lg font-bold">Built fast, shipped sharp.</p>
+      <p class="text-sm text-slate-300">Every lab tool is a one-week build that removes hours of manual work.</p>
+    </div>
+  </div>
+</div>
+
+@if (items().length) {
+  <div class="reveal grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+    @for (s of items(); track s.id) {
+      <article class="ge-card-glass ge-hover group relative flex h-full flex-col overflow-hidden p-5">
+        <div class="pointer-events-none absolute inset-x-0 top-0 h-1" [style.background]="'linear-gradient(90deg,' + s.accentColor + ',' + s.accentColor2 + ')'"></div>
+        <!-- header -->
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-lg font-black text-white shadow-glow transition duration-500 group-hover:scale-105" [style.background]="'linear-gradient(135deg,' + s.accentColor + ',' + s.accentColor2 + ')'">
+              {{ s.name.charAt(0) }}
+            </div>
+            <div>
+              <h3 class="font-display text-base font-bold tracking-tight text-slate-900">{{ s.name }}</h3>
+              <p class="text-xs font-medium text-brand-600">{{ s.category }}</p>
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-600">
+            <ge-icon name="clock" [size]="12" /> {{ s.timeSaved }}
+          </span>
+        </div>
+
+        <!-- use case -->
+        <p class="mt-3 text-sm text-slate-500">{{ s.tagline }}</p>
+
+        <!-- io example -->
+        @if (s.ioExample; as io) {
+          <div class="mt-4 rounded-2xl border border-slate-200/70 bg-white/60 p-3">
+            <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+              <ge-icon name="flow" [size]="13" /> Example
+            </div>
+            <div class="mt-2 space-y-2 text-xs">
+              <div class="rounded-xl bg-slate-50 px-3 py-2">
+                <span class="font-semibold text-slate-400">IN&nbsp;&nbsp;</span><span class="text-slate-700">{{ io.input }}</span>
+              </div>
+              <div class="rounded-xl bg-brand-50 px-3 py-2">
+                <span class="font-semibold text-brand-500">OUT</span><span class="ml-1 text-slate-700">{{ io.output }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- actions -->
+        <div class="mt-auto flex items-center gap-2 pt-4">
+          @if (s.videos.length) {
+            <button type="button" (click)="play(s.videos[0])" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-brand-300 hover:text-brand-700">
+              <ge-icon name="play" [size]="15" /> Demo
+            </button>
+          }
+          <a [routerLink]="['/software', s.slug]" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-brand-300 hover:text-brand-700">
+            Details
+          </a>
+          <a routerLink="/contact" [queryParams]="{ interest: s.name }" class="ml-auto inline-flex items-center gap-1.5 rounded-xl bg-aurora px-3 py-2 text-xs font-semibold text-white shadow-glow transition hover:-translate-y-0.5">
+            <ge-icon name="wand" [size]="15" /> Custom
+          </a>
+        </div>
+      </article>
+    }
+  </div>
+} @else {
+  <ge-empty-state icon="beaker" title="No lab tools yet" message="Mini products will appear here as they ship." />
+}
+
+@if (activeVideo(); as v) { <ge-video-modal [video]="v" (close)="closeVideo()" /> }

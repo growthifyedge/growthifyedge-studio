@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "showcase-hub",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start", "--", "--port", "4273"],
+      "port": 4273
+    }
+  ]
+}

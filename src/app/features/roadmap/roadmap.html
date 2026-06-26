@@ -1,0 +1,51 @@
+<ge-page-header
+  eyebrow="What’s next"
+  title="Product Roadmap"
+  subtitle="Where GrowthifyEdge is headed — shipped wins, work in progress and what we’re exploring next."
+/>
+
+<!-- Status summary -->
+<div class="mb-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+  @for (s of [
+    { label: 'Shipped', value: counts().shipped, tint: '#10b981' },
+    { label: 'In Progress', value: counts().progress, tint: '#6d49ff' },
+    { label: 'Planned', value: counts().planned, tint: '#f59e0b' },
+    { label: 'Exploring', value: counts().exploring, tint: '#8b5cf6' }
+  ]; track s.label) {
+    <div class="ge-card-glass p-5">
+      <div class="flex items-center gap-2">
+        <span class="h-2.5 w-2.5 rounded-full" [style.background]="s.tint"></span>
+        <span class="text-sm font-medium text-slate-500">{{ s.label }}</span>
+      </div>
+      <p class="mt-2 font-display text-3xl font-bold tracking-tightest text-slate-900">{{ s.value }}</p>
+    </div>
+  }
+</div>
+
+<!-- Timeline -->
+<div class="relative space-y-10">
+  <div class="pointer-events-none absolute bottom-0 left-[18px] top-2 hidden w-px bg-gradient-to-b from-brand-300 via-flush-400/50 to-aqua-400/40 sm:block"></div>
+
+  @for (group of groups(); track group.quarter) {
+    <section class="relative">
+      <div class="mb-5 flex items-center gap-4">
+        <span class="z-10 grid h-9 w-9 place-items-center rounded-full bg-aurora text-white shadow-glow"><ge-icon name="map" [size]="18" /></span>
+        <h2 class="font-display text-xl font-bold tracking-tight text-slate-900">{{ group.quarter }}</h2>
+      </div>
+
+      <div class="grid gap-4 sm:ml-[52px] sm:grid-cols-2 xl:grid-cols-3">
+        @for (item of group.items; track item.id) {
+          <article class="ge-card-glass ge-hover p-5">
+            <div class="flex items-start justify-between gap-3">
+              <span class="grid h-11 w-11 place-items-center rounded-2xl bg-slate-100 text-xl">{{ item.icon }}</span>
+              <span class="rounded-full px-2.5 py-1 text-[11px] font-bold ring-1" [class]="statusClass(item.status)">{{ item.status }}</span>
+            </div>
+            <h3 class="mt-3 font-display text-base font-bold tracking-tight text-slate-900">{{ item.title }}</h3>
+            <p class="mt-1 text-sm text-slate-500">{{ item.description }}</p>
+            <span class="ge-chip mt-3">{{ item.category }}</span>
+          </article>
+        }
+      </div>
+    </section>
+  }
+</div>

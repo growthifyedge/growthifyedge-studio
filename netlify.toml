@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist/growthifyedge-showcase-hub/browser"
+
+# SPA fallback so deep links (e.g. /present/:slug) work after a refresh.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

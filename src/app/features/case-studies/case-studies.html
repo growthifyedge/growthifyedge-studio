@@ -1,0 +1,71 @@
+<ge-page-header
+  eyebrow="Proof, not promises"
+  title="Case Studies"
+  subtitle="Real outcomes from real clients — the challenge, our solution and the measurable impact."
+/>
+
+@if (studies().length) {
+  <div class="space-y-6">
+    @for (cs of studies(); track cs.id) {
+      <article class="ge-card-glass overflow-hidden lg:flex">
+        <!-- Left: client -->
+        <div class="relative flex flex-col justify-between gap-6 overflow-hidden bg-ink-950 p-6 text-white lg:w-72 lg:shrink-0">
+          <div class="pointer-events-none absolute inset-0 bg-cinematic opacity-70"></div>
+          <div class="relative">
+            <img [src]="cs.logo" [alt]="cs.clientName" class="h-12 w-12 rounded-2xl object-cover ring-2 ring-white/20" />
+            <p class="mt-4 font-display text-lg font-bold">{{ cs.clientName }}</p>
+            <p class="text-sm text-brand-300">{{ cs.industry }}</p>
+          </div>
+          <div class="relative grid grid-cols-2 gap-3">
+            @for (m of cs.metrics; track m.label) {
+              <div class="glass-dark rounded-2xl p-3">
+                <p class="font-display text-lg font-bold">{{ m.value }}</p>
+                <p class="text-[11px] text-slate-400">{{ m.label }}</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Right: narrative -->
+        <div class="flex-1 p-6 sm:p-8">
+          <h2 class="font-display text-xl font-bold tracking-tight text-slate-900">{{ cs.title }}</h2>
+
+          <div class="mt-5 grid gap-5 sm:grid-cols-3">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wide text-rose-500">Challenge</p>
+              <p class="mt-1 text-sm text-slate-600">{{ cs.challenge }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wide text-brand-600">Solution</p>
+              <p class="mt-1 text-sm text-slate-600">{{ cs.solution }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wide text-emerald-600">Outcome</p>
+              <p class="mt-1 text-sm text-slate-600">{{ cs.outcome }}</p>
+            </div>
+          </div>
+
+          @if (cs.quote) {
+            <blockquote class="mt-6 flex gap-3 rounded-2xl bg-slate-50 p-5">
+              <span class="text-brand-300"><ge-icon name="quote" [size]="28" /></span>
+              <div>
+                <p class="text-base italic text-slate-700">{{ cs.quote.text }}</p>
+                <footer class="mt-2 text-sm font-semibold text-slate-900">
+                  {{ cs.quote.author }} <span class="font-normal text-slate-500">— {{ cs.quote.role }}</span>
+                </footer>
+              </div>
+            </blockquote>
+          }
+
+          <div class="mt-5">
+            <a [routerLink]="['/software', slugFor(cs.softwareId)]" class="ge-btn-ghost !py-2.5">
+              View the product <ge-icon name="arrow-right" [size]="16" />
+            </a>
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+} @else {
+  <ge-empty-state icon="document" title="No case studies yet" message="Client success stories will appear here." />
+}

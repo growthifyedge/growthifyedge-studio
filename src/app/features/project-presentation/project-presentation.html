@@ -1,0 +1,125 @@
+@if (software(); as sw) {
+  <div class="vignette noise relative min-h-screen overflow-hidden bg-ink-950 text-white">
+    <div class="pointer-events-none absolute inset-0" [style.background]="'radial-gradient(1100px 560px at 12% -15%,' + sw.accentColor + '99, transparent 60%), radial-gradient(900px 520px at 100% 0%,' + sw.accentColor2 + '77, transparent 55%)'"></div>
+    <div class="pointer-events-none absolute inset-0 bg-grid-faint bg-grid opacity-[0.15]"></div>
+
+    <!-- Presenter bar -->
+    <header class="relative z-10 flex items-center justify-between gap-4 px-5 py-4 sm:px-8">
+      <div class="flex items-center gap-2.5">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-aurora shadow-glow"><ge-icon name="bolt" [size]="18" /></div>
+        <div class="leading-tight">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-300">GrowthifyEdge · Client Presentation</p>
+          <p class="text-sm font-semibold">{{ sw.name }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" (click)="copyLink()" class="ge-btn-dark !px-4 !py-2.5">
+          <ge-icon [name]="copied() ? 'check' : 'external'" [size]="16" />
+          <span>{{ copied() ? 'Link copied!' : 'Copy presentation link' }}</span>
+        </button>
+        <button type="button" (click)="exit()" class="ge-btn-dark !px-4 !py-2.5" aria-label="Exit presentation">
+          <ge-icon name="close" [size]="16" /> <span class="hidden sm:inline">Exit</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="relative z-10 mx-auto w-full max-w-5xl px-5 pb-24 sm:px-8">
+      <!-- Hero -->
+      <section class="pt-8 sm:pt-14">
+        <div class="mb-4 flex flex-wrap items-center gap-2">
+          <ge-status-badge [status]="sw.status" />
+          <span class="ge-chip-dark">{{ sw.category }}</span>
+          @if (sw.featured) { <span class="ge-chip-dark"><ge-icon name="sparkles" [size]="12" /> Featured</span> }
+        </div>
+        <h1 class="font-display text-4xl font-bold leading-[1.05] tracking-tightest sm:text-6xl">{{ sw.name }}</h1>
+        <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ sw.tagline }}</p>
+
+        @if (videoLinks().length || sw.liveUrl) {
+          <div class="mt-8 flex flex-wrap gap-3">
+            @for (link of videoLinks(); track link.label; let first = $first) {
+              <button type="button" (click)="launch(link)" [class]="first ? 'ge-btn-aurora' : 'ge-btn-dark'">
+                <ge-icon [name]="link.icon" [size]="18" /> {{ link.label }}
+              </button>
+            }
+            @if (sw.liveUrl) {
+              <a [href]="sw.liveUrl" target="_blank" rel="noopener" class="ge-btn-dark"><ge-icon name="external" [size]="17" /> Live Project</a>
+            }
+          </div>
+        }
+      </section>
+
+      <!-- Problem & Solution -->
+      <section class="mt-12 grid gap-5 sm:grid-cols-2">
+        <div class="glass-dark rounded-3xl p-6">
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-rose-500/15 px-3 py-1 text-xs font-bold text-rose-300"><ge-icon name="bolt" [size]="14" /> The Problem</div>
+          <p class="text-sm leading-relaxed text-slate-300">{{ sw.problem }}</p>
+        </div>
+        <div class="glass-dark rounded-3xl p-6">
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-300"><ge-icon name="check" [size]="14" /> Our Solution</div>
+          <p class="text-sm leading-relaxed text-slate-300">{{ sw.solution }}</p>
+        </div>
+      </section>
+
+      <!-- Impact -->
+      @if (sw.impact.length) {
+        <section class="mt-12">
+          <p class="ge-eyebrow !text-brand-300">By the numbers</p>
+          <h2 class="mt-1.5 font-display text-2xl font-bold tracking-tightest sm:text-3xl">Business impact</h2>
+          <div class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            @for (m of sw.impact; track m.label) {
+              <div class="glass-dark rounded-3xl p-5">
+                <span class="text-2xl" aria-hidden="true">{{ m.icon || '📈' }}</span>
+                <p class="mt-2 text-gradient-brand font-display text-3xl font-bold tracking-tightest">{{ m.value }}</p>
+                <p class="mt-1 text-xs text-slate-400">{{ m.label }}</p>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Screenshots -->
+      @if (sw.screenshots.length) {
+        <section class="mt-12">
+          <p class="ge-eyebrow !text-brand-300">A closer look</p>
+          <h2 class="mt-1.5 font-display text-2xl font-bold tracking-tightest sm:text-3xl">Screenshots</h2>
+          <div class="mt-6 rounded-3xl bg-white/[0.04] p-4 backdrop-blur">
+            <ge-screenshot-gallery [screenshots]="sw.screenshots" />
+          </div>
+        </section>
+      }
+
+      <!-- Tech stack -->
+      @if (sw.techStack.length) {
+        <section class="mt-12">
+          <p class="ge-eyebrow !text-brand-300">Under the hood</p>
+          <h2 class="mt-1.5 font-display text-2xl font-bold tracking-tightest sm:text-3xl">Tech stack</h2>
+          <div class="mt-5 flex flex-wrap gap-2.5">
+            @for (t of sw.techStack; track t.name) {
+              <span class="ge-chip-dark !px-3.5 !py-2 text-sm">{{ t.icon }} {{ t.name }}</span>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- CTA -->
+      <section class="ring-aurora mt-14 overflow-hidden rounded-[28px] bg-white/[0.04] p-8 text-center backdrop-blur sm:p-12">
+        <h2 class="font-display text-3xl font-bold tracking-tightest sm:text-4xl">Ready to put <span class="text-gradient-brand">{{ sw.name }}</span> to work?</h2>
+        <p class="mx-auto mt-3 max-w-xl text-slate-300">Let’s tailor a rollout for your team and show you the impact on your own data.</p>
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
+          <a routerLink="/contact" [queryParams]="{ interest: sw.name }" class="ge-btn-aurora"><ge-icon name="mail" [size]="18" /> Request a Demo</a>
+          <button type="button" (click)="copyLink()" class="ge-btn-dark"><ge-icon name="external" [size]="17" /> Share this presentation</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  @if (activeVideo(); as v) { <ge-video-modal [video]="v" (close)="closeVideo()" /> }
+} @else {
+  <div class="grid min-h-screen place-items-center bg-ink-950 px-6 text-center text-white">
+    <div>
+      <p class="font-display text-2xl font-bold">Project not found</p>
+      <p class="mt-2 text-slate-400">This presentation link may be invalid or the project was removed.</p>
+      <a routerLink="/gallery" class="ge-btn-aurora mt-6">Back to Gallery</a>
+    </div>
+  </div>
+}

@@ -1,0 +1,223 @@
+@if (software(); as sw) {
+  <a routerLink="/gallery" class="mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand-600">
+    <ge-icon name="arrow-left" [size]="16" /> Back to Gallery
+  </a>
+
+  <!-- ===== CINEMATIC HERO ===== -->
+  <section class="vignette noise relative mb-10 overflow-hidden rounded-[36px] border border-white/10 bg-ink-950 text-white shadow-premium">
+    <div class="pointer-events-none absolute inset-0 animate-glow-breathe" [style.background]="'radial-gradient(1000px 500px at 10% -20%,' + sw.accentColor + '99, transparent 60%), radial-gradient(800px 500px at 100% 0%,' + sw.accentColor2 + '77, transparent 55%)'"></div>
+    <div class="pointer-events-none absolute inset-0 bg-grid-faint bg-grid opacity-[0.18]"></div>
+    <div class="relative grid gap-8 p-7 sm:p-10 lg:grid-cols-2 lg:items-center lg:p-12">
+      <div>
+        <div class="mb-4 flex flex-wrap items-center gap-2">
+          <ge-status-badge [status]="sw.status" />
+          <span class="ge-chip-dark">{{ sw.category }}</span>
+          <span class="ge-chip-dark">{{ sw.pricing }}</span>
+        </div>
+        <h1 class="font-display text-4xl font-bold tracking-tightest sm:text-5xl">{{ sw.name }}</h1>
+        <p class="mt-4 max-w-lg text-base text-slate-300">{{ sw.tagline }}</p>
+
+        <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-300">
+          <span class="inline-flex items-center gap-1.5 font-semibold text-amber-300"><ge-icon name="star" [size]="16" /> {{ sw.rating }}</span>
+          <span class="inline-flex items-center gap-1.5"><ge-icon name="users" [size]="16" /> {{ sw.clients }} clients</span>
+          <span class="inline-flex items-center gap-1.5"><ge-icon name="clock" [size]="16" /> Saves {{ sw.timeSaved }}</span>
+        </div>
+
+        <div class="mt-7 flex flex-wrap gap-3">
+          @for (link of videoLinks(); track link.label; let first = $first) {
+            <button type="button" (click)="launch(link)" [class]="first ? 'ge-btn-aurora' : 'ge-btn-dark'">
+              <ge-icon [name]="link.icon" [size]="18" /> {{ link.label }}
+            </button>
+          }
+          @if (sw.liveUrl) {
+            <a [href]="sw.liveUrl" target="_blank" rel="noopener" class="ge-btn-dark"><ge-icon name="external" [size]="17" /> Live Project</a>
+          }
+          @if (sw.caseStudyUrl) {
+            <a [href]="sw.caseStudyUrl" target="_blank" rel="noopener" class="ge-btn-dark"><ge-icon name="document" [size]="17" /> Case Study</a>
+          }
+          <button type="button" (click)="present()" class="ge-btn-dark"><ge-icon name="presentation" [size]="17" /> Present to Client</button>
+        </div>
+      </div>
+
+      <!-- Hero media -->
+      <button type="button" (click)="sw.videos[0] && openVideo(sw.videos[0])" class="ring-aurora group relative block overflow-hidden rounded-[28px] shadow-2xl transition duration-500 hover:-translate-y-1">
+        <div class="ge-thumb relative aspect-[16/10] overflow-hidden rounded-[28px]" [style.--c1]="sw.accentColor" [style.--c2]="sw.accentColor2">
+          <div class="absolute inset-0 grid place-items-center">
+            <span class="grid h-16 w-16 place-items-center rounded-2xl border border-white/30 bg-white/15 text-3xl font-black text-white backdrop-blur-sm">{{ sw.name.charAt(0) }}</span>
+          </div>
+          <img [src]="sw.coverImage" [alt]="sw.name" class="absolute inset-0 h-full w-full object-cover opacity-95 transition duration-[1200ms] group-hover:scale-110" />
+          <div class="absolute inset-0 bg-gradient-to-t from-ink-950/45 to-transparent"></div>
+          @if (sw.videos.length) {
+            <span class="play-ring absolute left-1/2 top-1/2 grid h-[68px] w-[68px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-brand-600 shadow-glow-strong transition group-hover:scale-110"><ge-icon name="play" [size]="30" /></span>
+          }
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <div class="grid gap-8 lg:grid-cols-3">
+    <!-- MAIN -->
+    <div class="space-y-10 lg:col-span-2">
+      <section>
+        <h2 class="ge-h2 mb-3">Overview</h2>
+        <p class="leading-relaxed text-slate-600">{{ sw.longDescription }}</p>
+      </section>
+
+      <!-- Problem → Pain → Solution -->
+      <section class="grid gap-5 sm:grid-cols-2">
+        <div class="ge-card-glass p-6">
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-600"><ge-icon name="bolt" [size]="14" /> The Problem</div>
+          <p class="text-sm leading-relaxed text-slate-600">{{ sw.problem }}</p>
+        </div>
+        <div class="ge-card-glass p-6">
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-600"><ge-icon name="check" [size]="14" /> Our Solution</div>
+          <p class="text-sm leading-relaxed text-slate-600">{{ sw.solution }}</p>
+        </div>
+        <div class="ge-card-glass p-6 sm:col-span-2">
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-600"><ge-icon name="clock" [size]="14" /> Manual Pain Points We Removed</div>
+          <ul class="grid gap-2.5 sm:grid-cols-2">
+            @for (p of sw.manualPainPoints; track p) {
+              <li class="flex items-start gap-2 text-sm text-slate-600">
+                <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-rose-50 text-rose-500"><ge-icon name="close" [size]="12" /></span>
+                {{ p }}
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+
+      <!-- Screenshots -->
+      @if (sw.screenshots.length) {
+        <section>
+          <h2 class="ge-h2 mb-4">Screenshots</h2>
+          <ge-screenshot-gallery [screenshots]="sw.screenshots" />
+        </section>
+      }
+
+      <!-- Demo videos -->
+      @if (sw.videos.length) {
+        <section>
+          <h2 class="ge-h2 mb-4">Demo Videos</h2>
+          <div class="grid gap-4 sm:grid-cols-2">
+            @for (v of sw.videos; track v.id) {
+              <button type="button" (click)="openVideo(v)" class="ge-card ge-hover group relative overflow-hidden text-left">
+                <div class="relative aspect-video overflow-hidden">
+                  <img [src]="v.thumbnail" [alt]="v.title" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" />
+                  <div class="absolute inset-0 grid place-items-center bg-ink-950/30 transition group-hover:bg-ink-950/20">
+                    <span class="grid h-14 w-14 place-items-center rounded-full bg-white/90 text-brand-600 shadow-glow"><ge-icon name="play" [size]="26" /></span>
+                  </div>
+                </div>
+                <p class="p-3 text-sm font-semibold text-slate-800">{{ v.title }}</p>
+              </button>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- Business impact -->
+      @if (sw.impact.length) {
+        <section>
+          <h2 class="ge-h2 mb-1">Business Impact</h2>
+          <p class="mb-4 text-sm text-slate-500">Measurable outcomes delivered for clients.</p>
+          <div class="grid gap-4 sm:grid-cols-3">
+            @for (m of sw.impact; track m.label) { <ge-impact-stat [metric]="m" /> }
+          </div>
+        </section>
+      }
+
+      <!-- Case studies -->
+      @if (caseStudies().length) {
+        <section>
+          <h2 class="ge-h2 mb-4">Related Case Studies</h2>
+          <div class="space-y-4">
+            @for (cs of caseStudies(); track cs.id) {
+              <article class="ge-card-glass p-6">
+                <div class="flex items-center gap-3">
+                  <img [src]="cs.logo" [alt]="cs.clientName" class="h-11 w-11 rounded-xl object-cover" />
+                  <div><p class="text-sm font-bold text-slate-900">{{ cs.clientName }}</p><p class="text-xs text-slate-500">{{ cs.industry }}</p></div>
+                </div>
+                <h3 class="mt-3 font-semibold text-slate-800">{{ cs.title }}</h3>
+                <p class="mt-1.5 text-sm text-slate-600">{{ cs.outcome }}</p>
+                @if (cs.quote) {
+                  <blockquote class="mt-3 border-l-2 border-brand-300 pl-3 text-sm italic text-slate-600">“{{ cs.quote.text }}” — <span class="font-semibold not-italic">{{ cs.quote.author }}</span></blockquote>
+                }
+              </article>
+            }
+          </div>
+        </section>
+      }
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="space-y-6 lg:sticky lg:top-24 lg:self-start">
+      <div class="ge-card-glass p-6">
+        <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">Key Features</h3>
+        <ul class="space-y-2.5">
+          @for (f of sw.keyFeatures; track f) {
+            <li class="flex items-start gap-2 text-sm text-slate-600">
+              <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-600"><ge-icon name="check" [size]="13" /></span>
+              {{ f }}
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="ge-card-glass p-6">
+        <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">Tech Stack</h3>
+        <div class="flex flex-wrap gap-2">
+          @for (t of sw.techStack; track t.name) { <ge-tech-chip [tech]="t" /> }
+        </div>
+      </div>
+
+      @if (sw.ioExample) {
+        <div class="ge-card-glass p-6">
+          <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">In → Out</h3>
+          <div class="rounded-2xl bg-slate-50 p-3 text-xs">
+            <p class="font-semibold text-slate-400">INPUT</p>
+            <p class="mt-1 text-slate-700">{{ sw.ioExample.input }}</p>
+          </div>
+          <div class="my-2 grid place-items-center text-brand-400"><ge-icon name="chevron-down" [size]="18" /></div>
+          <div class="rounded-2xl bg-brand-50 p-3 text-xs">
+            <p class="font-semibold text-brand-500">OUTPUT</p>
+            <p class="mt-1 text-slate-700">{{ sw.ioExample.output }}</p>
+          </div>
+        </div>
+      }
+
+      <div class="ge-card-glass p-6">
+        <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">Tags</h3>
+        <div class="flex flex-wrap gap-2">
+          @for (tag of sw.tags; track tag) { <span class="ge-chip">#{{ tag }}</span> }
+        </div>
+      </div>
+
+      <div class="relative overflow-hidden rounded-3xl bg-ink-950 p-6 text-white">
+        <div class="pointer-events-none absolute inset-0 bg-cinematic opacity-80"></div>
+        <div class="relative">
+          <p class="font-display text-lg font-bold">Like what you see?</p>
+          <p class="mt-1 text-sm text-slate-300">Get a tailored walkthrough for your team.</p>
+          <a routerLink="/contact" class="ge-btn-aurora mt-4 w-full"><ge-icon name="mail" [size]="17" /> Request a Demo</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ===== SIMILAR SOFTWARE CTA ===== -->
+  @if (similar().length) {
+    <section class="mt-12">
+      <div class="mb-5 flex items-end justify-between">
+        <div><p class="ge-eyebrow mb-1">Keep exploring</p><h2 class="ge-h2">Similar Software</h2></div>
+        <a routerLink="/gallery" class="ge-btn-ghost !py-2.5">All projects <ge-icon name="arrow-right" [size]="16" /></a>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        @for (s of similar(); track s.id) { <ge-software-card [software]="s" /> }
+      </div>
+    </section>
+  }
+
+  @if (activeVideo(); as v) { <ge-video-modal [video]="v" (close)="closeVideo()" /> }
+} @else {
+  <ge-empty-state icon="search" title="Software not found" message="The project you’re looking for doesn’t exist or may have been moved.">
+    <a routerLink="/gallery" class="ge-btn-primary mt-2">Back to Gallery</a>
+  </ge-empty-state>
+}

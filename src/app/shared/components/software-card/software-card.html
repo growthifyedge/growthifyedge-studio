@@ -1,0 +1,136 @@
+<div
+  class="group ge-card ge-hover relative flex h-full flex-col overflow-hidden"
+  [class.ring-aurora]="software().featured"
+>
+  <a [routerLink]="['/software', software().slug]" class="flex h-full flex-col">
+    <!-- Media -->
+    <div
+      class="ge-thumb relative overflow-hidden"
+      [class]="feature() ? 'min-h-[260px] flex-1' : 'aspect-[16/9]'"
+      [style.--c1]="software().accentColor"
+      [style.--c2]="software().accentColor2"
+    >
+      <!-- designed fallback (always present, sits under the image) -->
+      <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white">
+        <span class="grid h-14 w-14 place-items-center rounded-2xl border border-white/30 bg-white/15 text-2xl font-black backdrop-blur-sm">
+          {{ software().name.charAt(0) }}
+        </span>
+        <span class="rounded-full bg-black/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm">
+          {{ software().category }}
+        </span>
+      </div>
+
+      @if (!imgError()) {
+        <img
+          [src]="software().coverImage"
+          [alt]="software().name + ' thumbnail'"
+          loading="lazy"
+          (error)="imgError.set(true)"
+          class="absolute inset-0 h-full w-full object-cover transition duration-[900ms] ease-out group-hover:scale-[1.09]"
+        />
+      }
+
+      <!-- gradient veil -->
+      <div class="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-ink-950/15 to-transparent transition group-hover:from-ink-950/90"></div>
+
+      <!-- top row -->
+      <div class="absolute inset-x-3 top-3 flex items-start justify-between">
+        <ge-status-badge [status]="software().status" />
+        @if (software().featured) {
+          <span
+            class="inline-flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-brand-700 shadow-soft backdrop-blur"
+          >
+            <ge-icon name="sparkles" [size]="12" /> Featured
+          </span>
+        }
+      </div>
+
+      <!-- bottom row -->
+      <div class="absolute inset-x-3 bottom-3 flex items-end justify-between gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-ink-950/60 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur">
+          {{ software().category }}
+        </span>
+        <span class="inline-flex items-center gap-1 rounded-lg bg-white/15 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur">
+          <ge-icon name="users" [size]="12" /> {{ software().clients }}
+        </span>
+      </div>
+
+      <!-- Watch demo overlay -->
+      @if (firstVideo()) {
+        <button
+          type="button"
+          (click)="watch($event)"
+          class="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 scale-90 place-items-center rounded-full bg-white text-brand-600 opacity-0 shadow-glow-strong backdrop-blur transition duration-300 group-hover:scale-100 group-hover:opacity-100"
+          aria-label="Watch demo"
+        >
+          <ge-icon name="play" [size]="26" />
+        </button>
+      }
+    </div>
+
+    <!-- Body -->
+    <div class="flex flex-col p-5" [class.flex-1]="!feature()">
+      <div class="flex items-start justify-between gap-2">
+        <h3 class="font-display text-base font-bold tracking-tight text-slate-900 group-hover:text-brand-700">
+          {{ software().name }}
+        </h3>
+        <span class="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-amber-500">
+          <ge-icon name="star" [size]="14" /> {{ software().rating }}
+        </span>
+      </div>
+
+      <p class="mt-1.5 line-clamp-2 text-sm text-slate-500">{{ software().description }}</p>
+
+      <div class="mt-3 flex flex-wrap gap-1.5">
+        @for (t of software().techStack.slice(0, 3); track t.name) {
+          <span class="ge-chip">{{ t.icon }} {{ t.name }}</span>
+        }
+        @if (software().techStack.length > 3) {
+          <span class="ge-chip">+{{ software().techStack.length - 3 }}</span>
+        }
+      </div>
+
+      <!-- business impact strip -->
+      <div class="mt-4 grid grid-cols-2 gap-2 rounded-2xl border border-slate-100 bg-slate-50/70 p-2.5">
+        <div class="flex items-center gap-2">
+          <span class="grid h-8 w-8 place-items-center rounded-lg bg-white text-base shadow-soft">{{ software().headlineMetric.icon }}</span>
+          <div class="leading-tight">
+            <p class="text-sm font-bold text-slate-900">{{ software().headlineMetric.value }}</p>
+            <p class="text-[10px] font-medium text-slate-400">{{ software().headlineMetric.label }}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 border-l border-slate-200 pl-2.5">
+          <span class="grid h-8 w-8 place-items-center rounded-lg bg-white text-brand-500 shadow-soft"><ge-icon name="clock" [size]="16" /></span>
+          <div class="leading-tight">
+            <p class="text-sm font-bold text-slate-900">{{ software().timeSaved }}</p>
+            <p class="text-[10px] font-medium text-slate-400">time saved</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-auto flex items-center justify-between gap-2 pt-4">
+        @if (firstVideo()) {
+          <button
+            type="button"
+            (click)="watch($event)"
+            class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-brand-300 hover:text-brand-700"
+          >
+            <ge-icon name="play" [size]="15" /> Watch Demo
+          </button>
+        } @else {
+          <span class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600">
+            <ge-icon name="bolt" [size]="14" class="text-brand-500" /> {{ software().pricing }}
+          </span>
+        }
+        <span class="inline-flex items-center gap-1 text-xs font-semibold text-brand-600">
+          Details
+          <span class="transition-transform duration-300 group-hover:translate-x-1"><ge-icon name="arrow-right" [size]="15" /></span>
+        </span>
+      </div>
+    </div>
+  </a>
+</div>
+
+@if (activeVideo(); as v) {
+  <ge-video-modal [video]="v" (close)="closeVideo()" />
+}

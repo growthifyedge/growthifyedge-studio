@@ -1,0 +1,101 @@
+<aside
+  class="noise relative flex h-full flex-col overflow-hidden rounded-[28px] border border-white/10 bg-ink-950 text-slate-300 shadow-2xl"
+>
+  <!-- Aurora top edge -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-400/60 to-transparent"></div>
+  <!-- Ambient glow -->
+  <div class="pointer-events-none absolute -left-12 top-6 h-52 w-52 rounded-full bg-brand-600/30 blur-3xl animate-glow-breathe"></div>
+  <div class="pointer-events-none absolute -right-12 bottom-28 h-52 w-52 rounded-full bg-flush-500/20 blur-3xl"></div>
+  <div class="pointer-events-none absolute inset-0 bg-grid-faint bg-grid opacity-30"></div>
+
+  <!-- Brand -->
+  <div class="relative flex items-center gap-3 px-6 py-7">
+    <div class="relative">
+      <div class="absolute inset-0 rounded-2xl bg-aurora blur-md opacity-60"></div>
+      <div class="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-aurora shadow-glow ring-1 ring-white/20">
+        <ge-icon name="bolt" [size]="22" class="text-white" />
+      </div>
+    </div>
+    <div class="leading-tight">
+      <p class="font-display text-[15px] font-bold tracking-tight text-white">GrowthifyEdge</p>
+      <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-brand-300">Studio</p>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="relative flex-1 space-y-1 overflow-y-auto px-4 pb-4">
+    <p class="px-3 pb-1 pt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
+      Showcase
+    </p>
+    @for (item of showcaseNav; track item.path) {
+      <a
+        [routerLink]="item.path"
+        [routerLinkActiveOptions]="{ exact: !!item.exact }"
+        routerLinkActive="!text-white"
+        #rla="routerLinkActive"
+        (click)="onNavigate()"
+        class="group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-400 transition-all duration-300 hover:translate-x-0.5 hover:text-white"
+        [class.!bg-white/10]="rla.isActive"
+        [class.shadow-inner-top]="rla.isActive"
+      >
+        @if (rla.isActive) {
+          <span class="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-aurora"></span>
+        }
+        <span
+          class="grid h-8 w-8 place-items-center rounded-xl transition"
+          [class]="rla.isActive ? 'bg-aurora text-white shadow-glow' : 'bg-white/5 text-slate-400 group-hover:bg-white/10 group-hover:text-brand-300'"
+        >
+          <ge-icon [name]="item.icon" [size]="17" />
+        </span>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+
+    <p class="px-3 pb-1 pt-5 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
+      Workspace
+    </p>
+    @for (item of workspaceNav; track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="!text-white !bg-white/10"
+        #rlb="routerLinkActive"
+        (click)="onNavigate()"
+        class="group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-400 transition-all duration-300 hover:translate-x-0.5 hover:text-white"
+      >
+        <span
+          class="grid h-8 w-8 place-items-center rounded-xl transition"
+          [class]="rlb.isActive ? 'bg-aurora text-white shadow-glow' : 'bg-white/5 text-slate-400 group-hover:bg-white/10 group-hover:text-brand-300'"
+        >
+          <ge-icon [name]="item.icon" [size]="17" />
+        </span>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <!-- Presentation CTA -->
+  <div class="relative px-4 pb-4 pt-2">
+    <button
+      type="button"
+      (click)="startPresentation()"
+      class="ring-aurora group flex w-full items-center gap-3 overflow-hidden rounded-3xl bg-white/[0.05] p-4 text-left transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
+    >
+      <div class="grid h-10 w-10 place-items-center rounded-2xl bg-aurora shadow-glow transition group-hover:scale-105">
+        <ge-icon name="presentation" [size]="19" class="text-white" />
+      </div>
+      <div class="leading-tight">
+        <p class="text-sm font-semibold text-white">Presentation Mode</p>
+        <p class="text-[11px] text-slate-400">Pitch to clients live →</p>
+      </div>
+    </button>
+  </div>
+
+  <!-- Studio status -->
+  <div class="relative mx-4 mb-6 flex items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+    <span class="relative flex h-2 w-2">
+      <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+      <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+    </span>
+    <p class="text-[11px] font-medium text-slate-400">Studio online · accepting projects</p>
+  </div>
+</aside>

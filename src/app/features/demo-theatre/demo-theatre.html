@@ -1,0 +1,51 @@
+<ge-page-header
+  eyebrow="Watch it work"
+  title="Demo Theatre"
+  subtitle="Every product tour, mini demo and automation in one cinematic video library."
+/>
+
+<!-- ===== FEATURED DEMO ===== -->
+@if (featured(); as f) {
+  <section class="mb-12">
+    <p class="ge-eyebrow mb-3">Featured demo</p>
+    <button
+      type="button"
+      (click)="play(f.video)"
+      class="ring-aurora group relative block w-full overflow-hidden rounded-[28px] text-left"
+    >
+      <div class="relative aspect-[21/9] overflow-hidden rounded-[28px]">
+        <img [src]="f.video.thumbnail" [alt]="f.video.title" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+        <div class="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/30 to-transparent"></div>
+        <span class="absolute left-1/2 top-1/2 grid h-20 w-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-brand-600 shadow-glow transition group-hover:scale-110">
+          <ge-icon name="play" [size]="38" />
+        </span>
+        <div class="absolute inset-x-6 bottom-6">
+          <span class="rounded-full bg-aurora px-3 py-1 text-[11px] font-bold text-white">Featured</span>
+          <p class="mt-3 font-display text-2xl font-bold text-white sm:text-3xl">{{ f.video.title }}</p>
+          <p class="text-sm text-slate-300">{{ f.name }}</p>
+        </div>
+      </div>
+    </button>
+  </section>
+}
+
+<!-- ===== SECTIONS ===== -->
+@for (section of sections(); track section.title) {
+  <section class="mb-12">
+    <div class="mb-5 flex items-center gap-3">
+      <span class="grid h-10 w-10 place-items-center rounded-2xl bg-aurora text-white shadow-glow"><ge-icon [name]="section.icon" [size]="20" /></span>
+      <div>
+        <h2 class="ge-h2">{{ section.title }}</h2>
+        <p class="text-sm text-slate-500">{{ section.items.length }} demo{{ section.items.length === 1 ? '' : 's' }}</p>
+      </div>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      @for (item of section.items; track item.video.id) {
+        <ge-video-card [video]="item.video" [subtitle]="item.name" (play)="play($event)" />
+      }
+    </div>
+  </section>
+}
+
+@if (activeVideo(); as v) { <ge-video-modal [video]="v" (close)="closeVideo()" /> }
