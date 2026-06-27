@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   computed,
   effect,
   inject,
@@ -31,6 +32,7 @@ import { MediaUploadService } from '../../core/services/media-upload.service';
 import { PageHeader } from '../../shared/components/page-header/page-header';
 import { Icon } from '../../shared/components/icon/icon';
 import { SoftwareCard } from '../../shared/components/software-card/software-card';
+import { OverlayPortal } from '../../shared/directives/overlay-portal.directive';
 
 interface SoftwareFormModel {
   name: FormControl<string>;
@@ -73,7 +75,7 @@ interface SoftwareFormModel {
   selector: 'ge-software-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, PageHeader, Icon, SoftwareCard],
+  imports: [ReactiveFormsModule, RouterLink, PageHeader, Icon, SoftwareCard, OverlayPortal],
   templateUrl: './software-form.html'
 })
 export class SoftwareForm {
@@ -241,6 +243,11 @@ export class SoftwareForm {
   protected publishFromPreview(): void {
     this.closePreview();
     this.submit();
+  }
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    if (this.preview()) this.closePreview();
   }
 
   // --- helpers -----------------------------------------------------------

@@ -260,9 +260,9 @@
   </div>
 </form>
 
-<!-- ===== PREVIEW MODAL ===== -->
+<!-- ===== PREVIEW MODAL (portalled to <body> so the overlay covers the viewport) ===== -->
 @if (preview(); as p) {
-  <div class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink-950/80 p-4 backdrop-blur-md animate-fade-in-fast" (click)="closePreview()">
+  <div geOverlayPortal class="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-ink-950/80 p-4 backdrop-blur-md animate-fade-in-fast" (click)="closePreview()" role="dialog" aria-modal="true">
     <div class="my-8 w-full max-w-5xl animate-rise" (click)="$event.stopPropagation()">
       <div class="mb-4 flex items-center justify-between gap-4 text-white">
         <div>

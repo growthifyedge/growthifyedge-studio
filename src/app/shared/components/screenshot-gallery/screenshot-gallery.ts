@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   computed,
   input,
   signal
@@ -8,13 +9,14 @@ import {
 
 import { Screenshot } from '../../../core/models/software.model';
 import { Icon } from '../icon/icon';
+import { OverlayPortal } from '../../directives/overlay-portal.directive';
 
 /** Screenshot gallery with a large active frame + thumbnail strip + lightbox. */
 @Component({
   selector: 'ge-screenshot-gallery',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon],
+  imports: [Icon, OverlayPortal],
   templateUrl: './screenshot-gallery.html'
 })
 export class ScreenshotGallery {
@@ -58,5 +60,10 @@ export class ScreenshotGallery {
 
   protected closeLightbox(): void {
     this.lightbox.set(false);
+  }
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    if (this.lightbox()) this.closeLightbox();
   }
 }
