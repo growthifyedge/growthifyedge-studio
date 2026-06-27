@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { environment } from '../../../environments/environment';
+import { SessionStore } from './session-store.service';
 
 interface SupabaseConfig {
   url: string;
@@ -23,6 +24,7 @@ interface SupabaseConfig {
 @Injectable({ providedIn: 'root' })
 export class SupabaseClientService {
   private readonly cfg = this.resolveConfig();
+  private readonly sessionStore = inject(SessionStore);
 
   /** True only when a usable URL + anon key are configured and enabled. */
   get enabled(): boolean {
@@ -31,6 +33,52 @@ export class SupabaseClientService {
 
   get bucket(): string {
     return this.cfg.bucket;
+  }
+
+  get baseUrl(): string {
+    return this.cfg.url;
+  }
+  get anonKey(): string {
+    return this.cfg.anonKey;
+  }
+
+  // --- Auth (GoTrue) ------------------------------------------------------
+
+  async signInWithPassword(email: string, password: string): Promise<{
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+    user?: { email?: string };
+  }> {
+    const res = await fetch(`${this.cfg.url}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { apikey: this.cfg.anonKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    if (!res.ok) throw new Error('Invalid email or password.');
+    return res.json();
+  }
+
+  async refreshSession(refreshToken: string): Promise<{
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+    user?: { email?: string };
+  }> {
+    const res = await fetch(`${this.cfg.url}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { apikey: this.cfg.anonKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: refreshToken })
+    });
+    if (!res.ok) throw new Error('Session refresh failed.');
+    return res.json();
+  }
+
+  async signOut(accessToken: string): Promise<void> {
+    await fetch(`${this.cfg.url}/auth/v1/logout`, {
+      method: 'POST',
+      headers: { apikey: this.cfg.anonKey, Authorization: `Bearer ${accessToken}` }
+    });
   }
 
   // --- PostgREST (data) ---------------------------------------------------
@@ -95,7 +143,7 @@ export class SupabaseClientService {
         method: 'POST',
         headers: {
           apikey: this.cfg.anonKey,
-          Authorization: `Bearer ${this.cfg.anonKey}`,
+          Authorization: `Bearer ${this.bearer()}`,
           'x-upsert': 'true',
           'Content-Type': file.type || 'application/octet-stream'
         },
@@ -112,10 +160,15 @@ export class SupabaseClientService {
 
   // --- internals ----------------------------------------------------------
 
+  /** Use the signed-in admin's JWT when available, else the publishable key. */
+  private bearer(): string {
+    return this.sessionStore.accessToken() || this.cfg.anonKey;
+  }
+
   private headers(extra?: Record<string, string>): Record<string, string> {
     return {
       apikey: this.cfg.anonKey,
-      Authorization: `Bearer ${this.cfg.anonKey}`,
+      Authorization: `Bearer ${this.bearer()}`,
       'Content-Type': 'application/json',
       ...extra
     };

@@ -14,5 +14,6 @@ export const environment: AppEnvironment = {
   useSupabase: false,
   supabaseUrl: '',
   supabaseAnonKey: '',
-  supabaseBucket: 'project-media'
+  supabaseBucket: 'project-media',
+  adminLocalPassword: 'growthify-demo'
 };

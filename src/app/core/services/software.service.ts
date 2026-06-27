@@ -6,6 +6,7 @@ import { DEFAULT_FILTERS, SoftwareFilters } from '../models/filters.model';
 import { MOCK_CASE_STUDIES, MOCK_ROADMAP } from '../data/mock-software';
 import { SoftwareStorageService } from './software-storage.service';
 import { SoftwareCloudService } from './software-cloud.service';
+import { AuthService } from './auth.service';
 
 /**
  * Single source of truth for showcase data, built on Angular signals.
@@ -24,6 +25,7 @@ import { SoftwareCloudService } from './software-cloud.service';
 export class SoftwareService {
   private readonly storage = inject(SoftwareStorageService);
   private readonly cloud = inject(SoftwareCloudService);
+  private readonly auth = inject(AuthService);
 
   private readonly _software = signal<readonly Software[]>(this.storage.load());
   private readonly _caseStudies = signal<readonly CaseStudy[]>(MOCK_CASE_STUDIES);
@@ -68,17 +70,32 @@ export class SoftwareService {
   /** Global filter/search state shared by the gallery and topbar search. */
   readonly filters = signal<SoftwareFilters>({ ...DEFAULT_FILTERS });
 
+  /** Raw list — admin-only surfaces (Admin Studio) read this. */
   readonly software = this._software.asReadonly();
   readonly caseStudies = this._caseStudies.asReadonly();
   readonly roadmap = this._roadmap.asReadonly();
 
-  readonly total = computed(() => this._software().length);
-  readonly featured = computed(() => this._software().filter((s) => s.featured));
+  /** True when an admin is signed in (sees private/client-only everywhere). */
+  readonly isAdmin = this.auth.isAuthenticated;
+
+  /**
+   * Visibility-filtered list for ALL public-facing surfaces. Admins see
+   * everything; the public sees only `public` projects (private + client-only
+   * are hidden from listings — client-only stays reachable by direct link).
+   */
+  readonly visibleSoftware = computed<readonly Software[]>(() =>
+    this.isAdmin()
+      ? this._software()
+      : this._software().filter((s) => s.visibility === 'public')
+  );
+
+  readonly total = computed(() => this.visibleSoftware().length);
+  readonly featured = computed(() => this.visibleSoftware().filter((s) => s.featured));
 
   /** All distinct technologies — powers the technology filter. */
   readonly technologies = computed<readonly string[]>(() => {
     const set = new Set<string>();
-    for (const s of this._software()) {
+    for (const s of this.visibleSoftware()) {
       for (const t of s.techStack) set.add(t.name);
     }
     return [...set].sort((a, b) => a.localeCompare(b));
@@ -89,7 +106,7 @@ export class SoftwareService {
     const f = this.filters();
     const term = f.search.trim().toLowerCase();
 
-    let result = this._software().filter((s) => {
+    let result = this.visibleSoftware().filter((s) => {
       const matchesTerm =
         !term ||
         s.name.toLowerCase().includes(term) ||
@@ -130,7 +147,7 @@ export class SoftwareService {
 
   /** Aggregate stats for the executive dashboard hero tiles. */
   readonly stats = computed(() => {
-    const list = this._software();
+    const list = this.visibleSoftware();
     const live = list.filter((s) => s.status === 'Live').length;
     const clients = list.reduce((sum, s) => sum + s.clients, 0);
     const avgRating =
@@ -168,21 +185,30 @@ export class SoftwareService {
     return this._software().find((s) => s.slug === slug);
   }
 
+  /**
+   * Slug lookup honoring visibility for non-admins: `private` projects are
+   * hidden (returns undefined → "not found"); `public` and `client-only` are
+   * reachable by direct link. Admins see everything.
+   */
+  bySlugForViewer(slug: string): Software | undefined {
+    const s = this.bySlug(slug);
+    if (!s) return undefined;
+    if (this.isAdmin()) return s;
+    return s.visibility === 'private' ? undefined : s;
+  }
+
   getCaseStudiesFor(softwareId: string): readonly CaseStudy[] {
     return this._caseStudies().filter((c) => c.softwareId === softwareId);
   }
 
-  /** Up to `limit` projects in the same category, excluding `slug`. */
+  /** Up to `limit` visible projects in the same category, excluding `slug`. */
   similarTo(slug: string, limit = 3): readonly Software[] {
     const current = this.bySlug(slug);
     if (!current) return [];
-    return this._software()
+    const pool = this.visibleSoftware();
+    return pool
       .filter((s) => s.slug !== slug && s.category === current.category)
-      .concat(
-        this._software().filter(
-          (s) => s.slug !== slug && s.category !== current.category
-        )
-      )
+      .concat(pool.filter((s) => s.slug !== slug && s.category !== current.category))
       .slice(0, limit);
   }
 

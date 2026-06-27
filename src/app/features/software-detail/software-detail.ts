@@ -39,7 +39,7 @@ export class SoftwareDetail {
   private readonly router = inject(Router);
   private readonly presentation = inject(PresentationService);
 
-  protected readonly software = computed(() => this.svc.bySlug(this.slug()));
+  protected readonly software = computed(() => this.svc.bySlugForViewer(this.slug()));
 
   protected readonly caseStudies = computed(() => {
     const sw = this.software();

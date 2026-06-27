@@ -33,7 +33,7 @@ export class Presentation {
 
   /** Featured first, then everything else, so the strongest work leads. */
   protected readonly slides = computed(() => {
-    const list = this.svc.software();
+    const list = this.svc.visibleSoftware();
     return [...list.filter((s) => s.featured), ...list.filter((s) => !s.featured)];
   });
 

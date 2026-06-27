@@ -14,5 +14,7 @@ export const environment: AppEnvironment = {
   // Supabase *publishable* (public) key — safe for the browser; data is
   // protected by RLS policies, never the secret/service_role key.
   supabaseAnonKey: 'sb_publishable_rrIoYhFiKKo3Kbpip6j9bQ_w7wB_hMS',
-  supabaseBucket: 'project-media'
+  supabaseBucket: 'project-media',
+  // Unused in production (Supabase Auth handles admin login); kept for type parity.
+  adminLocalPassword: ''
 };

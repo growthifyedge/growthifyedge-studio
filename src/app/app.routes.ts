@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { Shell } from './layout/shell/shell';
+import { adminGuard } from './core/guards/admin.guard';
 
 /**
  * Every feature page is a standalone component, lazy-loaded via `loadComponent`.
@@ -71,18 +72,26 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'login',
+        title: 'Admin Sign In · GrowthifyEdge',
+        loadComponent: () => import('./features/login/login').then((m) => m.Login)
+      },
+      {
         path: 'studio',
         title: 'Admin Studio · GrowthifyEdge',
+        canActivate: [adminGuard],
         loadComponent: () => import('./features/admin/admin').then((m) => m.Admin)
       },
       {
         path: 'studio/new',
         title: 'Add Software · GrowthifyEdge',
+        canActivate: [adminGuard],
         loadComponent: () => import('./features/software-form/software-form').then((m) => m.SoftwareForm)
       },
       {
         path: 'studio/edit/:id',
         title: 'Edit Software · GrowthifyEdge',
+        canActivate: [adminGuard],
         loadComponent: () => import('./features/software-form/software-form').then((m) => m.SoftwareForm)
       },
       {

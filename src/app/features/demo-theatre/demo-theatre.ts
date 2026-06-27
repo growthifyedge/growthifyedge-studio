@@ -31,7 +31,7 @@ export class DemoTheatre {
   private readonly svc = inject(SoftwareService);
 
   private readonly all = computed<readonly TheatreVideo[]>(() =>
-    this.svc.software().flatMap((s) =>
+    this.svc.visibleSoftware().flatMap((s) =>
       s.videos.map((video) => ({
         video,
         name: s.name,

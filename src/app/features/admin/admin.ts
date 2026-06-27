@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { SoftwareService } from '../../core/services/software.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Software, Visibility } from '../../core/models/software.model';
 import {
   CATEGORY_OPTIONS,
@@ -20,6 +21,10 @@ import { Icon, IconName } from '../../shared/components/icon/icon';
 })
 export class Admin {
   protected readonly svc = inject(SoftwareService);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  protected readonly adminEmail = this.auth.email;
 
   protected readonly stats = this.svc.stats;
 
@@ -154,5 +159,10 @@ export class Admin {
 
   protected cancelImport(): void {
     this.importPreview.set(null);
+  }
+
+  protected async logout(): Promise<void> {
+    await this.auth.logout();
+    this.router.navigate(['/']);
   }
 }

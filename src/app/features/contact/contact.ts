@@ -41,7 +41,7 @@ export class Contact {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly svc = inject(SoftwareService);
 
-  protected readonly products = computed(() => this.svc.software());
+  protected readonly products = computed(() => this.svc.visibleSoftware());
   protected readonly budgets = ['< $5k', '$5k – $20k', '$20k – $50k', '$50k+', 'Not sure yet'];
 
   protected readonly submitted = signal(false);

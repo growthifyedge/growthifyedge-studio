@@ -1,0 +1,57 @@
+<div class="mx-auto flex min-h-[70vh] max-w-md items-center">
+  <div class="ge-card-glass w-full overflow-hidden p-7 sm:p-8">
+    <!-- brand -->
+    <div class="flex items-center gap-3">
+      <div class="grid h-11 w-11 place-items-center rounded-2xl bg-aurora shadow-glow">
+        <ge-icon name="lock" [size]="20" class="text-white" />
+      </div>
+      <div class="leading-tight">
+        <p class="font-display text-base font-bold tracking-tight text-slate-900">Admin Sign In</p>
+        <p class="text-xs text-slate-500">GrowthifyEdge Studio</p>
+      </div>
+    </div>
+
+    <p class="mt-5 text-sm text-slate-500">
+      {{ usesSupabase
+        ? 'Sign in with your admin account to manage projects.'
+        : 'Demo mode — enter the admin password to continue.' }}
+    </p>
+
+    @if (error(); as err) {
+      <div class="mt-4 flex items-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
+        <ge-icon name="close" [size]="16" /> {{ err }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-5 space-y-4">
+      @if (usesSupabase) {
+        <div>
+          <label class="ge-label" for="email">Email</label>
+          <input id="email" type="email" formControlName="email" class="ge-input" placeholder="you@growthifyedge.com" autocomplete="username" />
+          @if (form.controls.email.invalid && form.controls.email.touched) {
+            <p class="mt-1 text-xs text-rose-600">Enter a valid email.</p>
+          }
+        </div>
+      }
+      <div>
+        <label class="ge-label" for="password">Password</label>
+        <input id="password" type="password" formControlName="password" class="ge-input" placeholder="••••••••" autocomplete="current-password" />
+        @if (form.controls.password.invalid && form.controls.password.touched) {
+          <p class="mt-1 text-xs text-rose-600">Password is required.</p>
+        }
+      </div>
+
+      <button type="submit" class="ge-btn-primary w-full" [disabled]="loading()">
+        @if (loading()) {
+          <span>Signing in…</span>
+        } @else {
+          <ge-icon name="lock" [size]="17" /> <span>Sign In</span>
+        }
+      </button>
+    </form>
+
+    <p class="mt-5 text-center text-xs text-slate-400">
+      Public pages stay open — only Admin Studio requires sign-in.
+    </p>
+  </div>
+</div>

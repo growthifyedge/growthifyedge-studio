@@ -11,4 +11,10 @@ export interface AppEnvironment {
   readonly supabaseAnonKey: string;
   /** Storage bucket used for thumbnail/screenshot uploads. */
   readonly supabaseBucket: string;
+  /**
+   * Demo-mode admin password gate (used ONLY when Supabase is disabled). In
+   * production the real Supabase Auth login is used and this is ignored. Note:
+   * a frontend password is demo-grade, not real security.
+   */
+  readonly adminLocalPassword: string;
 }

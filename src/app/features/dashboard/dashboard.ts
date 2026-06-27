@@ -27,14 +27,14 @@ export class Dashboard {
 
   /** Lead featured project that has a demo video — drives the hero video card. */
   protected readonly spotlight = computed(
-    () => this.featured().find((s) => s.videos.length > 0) ?? this.svc.software()[0]
+    () => this.featured().find((s) => s.videos.length > 0) ?? this.svc.visibleSoftware()[0]
   );
 
   protected readonly bento = computed(() => this.featured().slice(0, 5));
 
   protected readonly recentDemos = computed(() =>
     this.svc
-      .software()
+      .visibleSoftware()
       .filter((s) => s.videos.length > 0)
       .sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt))
       .flatMap((s) => s.videos.map((v) => ({ video: v, name: s.name })))
@@ -53,7 +53,7 @@ export class Dashboard {
 
   /** Headline business-impact figures for the cinematic impact band. */
   protected readonly impact = computed(() => {
-    const list = this.svc.software();
+    const list = this.svc.visibleSoftware();
     const hours = list.reduce((sum, s) => {
       const m = /(\d+)/.exec(s.timeSaved);
       return sum + (m ? Number(m[1]) : 0);
@@ -70,12 +70,12 @@ export class Dashboard {
   /** Distinct technologies for the marquee strip. */
   protected readonly techMarquee = computed(() => {
     const set = new Set<string>();
-    for (const s of this.svc.software()) for (const t of s.techStack) set.add(`${t.icon ?? '•'} ${t.name}`);
+    for (const s of this.svc.visibleSoftware()) for (const t of s.techStack) set.add(`${t.icon ?? '•'} ${t.name}`);
     return [...set];
   });
 
   protected readonly categories = computed<readonly CategoryCardData[]>(() => {
-    const list = this.svc.software();
+    const list = this.svc.visibleSoftware();
     const count = (pred: (c: string) => boolean) =>
       list.filter((s) => pred(s.category)).length;
     return [

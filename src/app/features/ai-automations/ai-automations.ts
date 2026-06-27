@@ -17,7 +17,7 @@ export class AiAutomations {
 
   protected readonly items = computed(() =>
     this.svc
-      .software()
+      .visibleSoftware()
       .filter((s) => s.category === 'Automation' || s.category === 'AI Tool')
       .sort((a, b) => b.impactScore - a.impactScore)
   );

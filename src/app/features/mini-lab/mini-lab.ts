@@ -24,7 +24,7 @@ export class MiniLab {
 
   /** Mini products: explicit flag, the Mini Software category or a concrete I/O example. */
   protected readonly items = computed(() =>
-    this.svc.software().filter((s) => this.svc.isMini(s))
+    this.svc.visibleSoftware().filter((s) => this.svc.isMini(s))
   );
 
   protected readonly activeVideo = signal<DemoVideo | null>(null);
