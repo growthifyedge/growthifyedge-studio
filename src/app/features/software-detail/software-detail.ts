@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { SoftwareService } from '../../core/services/software.service';
 import { PresentationService } from '../../core/services/presentation.service';
 import { DemoVideo } from '../../core/models/software.model';
-import { toEmbedUrl } from '../../core/utils/video-embed';
+import { isDirectVideo, toEmbedUrl } from '../../core/utils/video-embed';
 import { Icon, IconName } from '../../shared/components/icon/icon';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { TechChip } from '../../shared/components/tech-chip/tech-chip';
@@ -66,15 +66,18 @@ export class SoftwareDetail {
     this.activeVideo.set(video);
   }
 
-  /** Embed YouTube/Vimeo in the modal; open anything else safely in a new tab. */
+  /**
+   * YouTube/Vimeo → sanitized iframe modal; a direct video file (e.g. an .mp4
+   * from Supabase Storage) → native <video> modal; anything else → new tab.
+   */
   protected launch(link: { label: string; url: string }): void {
     const sw = this.software();
     const embed = toEmbedUrl(link.url);
-    if (embed) {
+    if (embed || isDirectVideo(link.url)) {
       this.activeVideo.set({
         id: 'live-' + link.label,
         title: `${sw?.name ?? 'Demo'} — ${link.label}`,
-        url: embed,
+        url: embed ?? link.url,
         thumbnail: sw?.coverImage ?? '',
         durationSeconds: 0
       });

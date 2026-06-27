@@ -10,12 +10,13 @@ import {
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { DemoVideo } from '../../../core/models/software.model';
-import { toEmbedUrl } from '../../../core/utils/video-embed';
+import { isDirectVideo, toEmbedUrl } from '../../../core/utils/video-embed';
 import { Icon } from '../icon/icon';
 
 /**
- * Accessible video lightbox. Renders an iframe embed (YouTube/Vimeo) and
- * closes on backdrop click or Escape.
+ * Accessible video lightbox. Plays a direct video file (mp4/webm/ogg from
+ * Supabase Storage) in a native <video>, or embeds a YouTube/Vimeo URL in a
+ * sanitized iframe. Closes on backdrop click or Escape.
  */
 @Component({
   selector: 'ge-video-modal',
@@ -55,15 +56,31 @@ import { Icon } from '../icon/icon';
         </div>
         <div class="ring-aurora overflow-hidden rounded-[24px] bg-black p-1 shadow-2xl">
           <div class="aspect-video w-full overflow-hidden rounded-[20px] bg-black">
-            <iframe
-              [src]="safeUrl()"
-              referrerpolicy="strict-origin-when-cross-origin"
-              class="h-full w-full"
-              title="{{ video().title }}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
+            @if (isFile()) {
+              <video
+                [src]="video().url"
+                class="h-full w-full bg-black object-contain"
+                controls
+                autoplay
+                preload="metadata"
+                playsinline
+              >
+                <p class="p-6 text-center text-sm text-slate-300">
+                  Your browser can’t play this video.
+                  <a [href]="video().url" target="_blank" rel="noopener" class="text-brand-300 underline">Open it in a new tab</a>.
+                </p>
+              </video>
+            } @else {
+              <iframe
+                [src]="safeUrl()"
+                referrerpolicy="strict-origin-when-cross-origin"
+                class="h-full w-full"
+                title="{{ video().title }}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            }
           </div>
         </div>
         <p class="mt-3 text-center text-xs text-slate-400">Press Esc or click outside to close</p>
@@ -77,11 +94,15 @@ export class VideoModal {
 
   private readonly sanitizer = inject(DomSanitizer);
 
+  /** Direct video file (mp4/webm/ogg…) → render a native <video> player. */
+  protected readonly isFile = computed(() => isDirectVideo(this.video().url));
+
   /**
    * Iframe `src` lives in a RESOURCE_URL security context, so a raw string is
    * blocked by Angular. We normalize the URL to its YouTube/Vimeo embed form
    * (passing through already-embeddable URLs) and mark it trusted. Memoized so
-   * the iframe isn't re-created on every change-detection pass.
+   * the iframe isn't re-created on every change-detection pass. (Only used for
+   * the iframe branch — native <video> uses Angular's safe MEDIA_URL binding.)
    */
   protected readonly safeUrl = computed<SafeResourceUrl>(() => {
     const raw = this.video().url;

@@ -1,7 +1,7 @@
 @if (active(); as shot) {
   <div class="space-y-3">
-    <!-- Main frame -->
-    <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+    <!-- Main frame: shows the full screenshot (no crop/stretch), capped responsively -->
+    <div class="group relative flex min-h-[220px] items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
       @if (hasFailed(activeIndex())) {
         <div class="ge-thumb flex aspect-video w-full flex-col items-center justify-center gap-2 text-white" style="--c1:#6d49ff;--c2:#36e0c8">
           <span class="grid h-12 w-12 place-items-center rounded-2xl border border-white/30 bg-white/15"><ge-icon name="image" [size]="22" /></span>
@@ -11,7 +11,7 @@
         <img
           [src]="shot.url"
           [alt]="shot.caption"
-          class="aspect-video w-full cursor-zoom-in object-cover"
+          class="mx-auto block h-auto max-h-[70vh] w-full cursor-zoom-in object-contain"
           (click)="openLightbox()"
           (error)="onError(activeIndex())"
           loading="lazy"
@@ -80,7 +80,7 @@
       >
         <ge-icon name="close" />
       </button>
-      <img [src]="shot.url" [alt]="shot.caption" class="max-h-[85vh] max-w-full rounded-2xl shadow-2xl" />
+      <img [src]="shot.url" [alt]="shot.caption" class="h-auto max-h-[88vh] w-auto max-w-[92vw] rounded-2xl object-contain shadow-2xl" (click)="$event.stopPropagation()" />
     </div>
   }
 }

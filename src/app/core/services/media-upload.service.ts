@@ -26,6 +26,26 @@ export class MediaUploadService {
     return Promise.all(files.map((f) => this.uploadImage(f, folder)));
   }
 
+  /** Max size for a directly-uploaded video (kept modest for browser playback). */
+  static readonly MAX_VIDEO_MB = 64;
+
+  /**
+   * Upload a video file (mp4/webm/ogg/mov) and return its public URL. The
+   * resulting URL is a direct file link the app plays in a native <video>.
+   * Throws on unsupported type or oversize file. Image uploads are unaffected.
+   */
+  async uploadVideo(file: File, folder = 'videos'): Promise<string> {
+    const okType =
+      /^video\//.test(file.type) || /\.(mp4|webm|ogg|ogv|mov|m4v)$/i.test(file.name);
+    if (!okType) {
+      throw new Error('Unsupported video type — use mp4, webm or ogg.');
+    }
+    if (file.size > MediaUploadService.MAX_VIDEO_MB * 1024 * 1024) {
+      throw new Error(`Video is too large (max ${MediaUploadService.MAX_VIDEO_MB} MB).`);
+    }
+    return this.client.uploadFile(`${folder}/${this.uniqueName(file.name)}`, file);
+  }
+
   private uniqueName(name: string): string {
     const safe = name.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '');
     const rand = Math.random().toString(36).slice(2, 8);

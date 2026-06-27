@@ -71,7 +71,7 @@
     <div class="ge-card-glass p-6">
       <h2 class="mb-4 text-sm font-bold uppercase tracking-wide text-slate-500">Media</h2>
 
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div class="grid gap-4 sm:grid-cols-3">
         <label
           class="rounded-2xl border-2 border-dashed border-slate-200 bg-white/50 p-5 text-center transition"
           [class.cursor-pointer]="uploadsEnabled"
@@ -80,7 +80,7 @@
         >
           <div class="mx-auto grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-brand-500"><ge-icon name="image" [size]="20" /></div>
           <p class="mt-2 text-sm font-semibold text-slate-700">Upload thumbnail</p>
-          <p class="text-xs text-slate-400">{{ uploadsEnabled ? 'PNG, JPG up to 4MB → Supabase Storage' : 'Enable Supabase to upload · or paste a URL below' }}</p>
+          <p class="text-xs text-slate-400">{{ uploadsEnabled ? 'PNG, JPG → Supabase Storage' : 'Enable Supabase · or paste a URL below' }}</p>
           <input type="file" accept="image/*" class="hidden" [disabled]="!uploadsEnabled" (change)="onThumbnailFile($event)" />
         </label>
         <label
@@ -91,8 +91,19 @@
         >
           <div class="mx-auto grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-brand-500"><ge-icon name="upload" [size]="20" /></div>
           <p class="mt-2 text-sm font-semibold text-slate-700">Upload screenshots</p>
-          <p class="text-xs text-slate-400">{{ uploadsEnabled ? 'Multiple files → Supabase Storage' : 'Enable Supabase to upload · or paste URLs below' }}</p>
+          <p class="text-xs text-slate-400">{{ uploadsEnabled ? 'Multiple files → Supabase Storage' : 'Enable Supabase · or paste URLs below' }}</p>
           <input type="file" accept="image/*" multiple class="hidden" [disabled]="!uploadsEnabled" (change)="onScreenshotFiles($event)" />
+        </label>
+        <label
+          class="rounded-2xl border-2 border-dashed border-slate-200 bg-white/50 p-5 text-center transition"
+          [class.cursor-pointer]="uploadsEnabled"
+          [class.hover:border-brand-300]="uploadsEnabled"
+          [class.opacity-60]="!uploadsEnabled"
+        >
+          <div class="mx-auto grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-brand-500"><ge-icon name="film" [size]="20" /></div>
+          <p class="mt-2 text-sm font-semibold text-slate-700">Upload demo video</p>
+          <p class="text-xs text-slate-400">{{ uploadsEnabled ? 'mp4 / webm / ogg up to 64MB' : 'Enable Supabase · or paste a URL below' }}</p>
+          <input type="file" accept="video/mp4,video/webm,video/ogg,video/quicktime" class="hidden" [disabled]="!uploadsEnabled" (change)="onVideoFile($event)" />
         </label>
       </div>
       @if (uploading()) {

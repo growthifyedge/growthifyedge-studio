@@ -49,3 +49,14 @@ export function toEmbedUrl(rawUrl: string | undefined | null): string | null {
 export function isEmbeddable(url: string | undefined | null): boolean {
   return toEmbedUrl(url) !== null;
 }
+
+/**
+ * True when the URL points at a direct video file (e.g. an .mp4 uploaded to
+ * Supabase Storage) that should play in a native <video> element rather than
+ * an iframe. Detection is by file extension, ignoring query/hash.
+ */
+export function isDirectVideo(url: string | undefined | null): boolean {
+  if (!url) return false;
+  const clean = url.split('?')[0].split('#')[0].toLowerCase().trim();
+  return /\.(mp4|webm|ogg|ogv|mov|m4v)$/.test(clean);
+}

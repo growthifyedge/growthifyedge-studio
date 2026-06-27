@@ -213,6 +213,23 @@ export class SoftwareForm {
     }
   }
 
+  protected async onVideoFile(event: Event): Promise<void> {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file || !this.uploadsEnabled) return;
+    this.uploading.set(true);
+    this.uploadError.set(null);
+    try {
+      const url = await this.media.uploadVideo(file, 'videos');
+      this.form.controls.videoUrl.setValue(url);
+    } catch (e) {
+      this.uploadError.set(
+        e instanceof Error ? e.message : 'Video upload failed. Check your Supabase Storage setup.'
+      );
+    } finally {
+      this.uploading.set(false);
+    }
+  }
+
   /** Build the project from current values and show it as it will appear. */
   protected openPreview(): void {
     this.preview.set(this.toSoftware());

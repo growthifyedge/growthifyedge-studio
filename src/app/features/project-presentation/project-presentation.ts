@@ -12,7 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { SoftwareService } from '../../core/services/software.service';
 import { PresentationService } from '../../core/services/presentation.service';
 import { DemoVideo } from '../../core/models/software.model';
-import { toEmbedUrl } from '../../core/utils/video-embed';
+import { isDirectVideo, toEmbedUrl } from '../../core/utils/video-embed';
 import { Icon, IconName } from '../../shared/components/icon/icon';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { ScreenshotGallery } from '../../shared/components/screenshot-gallery/screenshot-gallery';
@@ -64,11 +64,11 @@ export class ProjectPresentation {
   protected launch(link: { label: string; url: string }): void {
     const sw = this.software();
     const embed = toEmbedUrl(link.url);
-    if (embed) {
+    if (embed || isDirectVideo(link.url)) {
       this.activeVideo.set({
         id: 'live-' + link.label,
         title: `${sw?.name ?? 'Demo'} — ${link.label}`,
-        url: embed,
+        url: embed ?? link.url,
         thumbnail: sw?.coverImage ?? '',
         durationSeconds: 0
       });
