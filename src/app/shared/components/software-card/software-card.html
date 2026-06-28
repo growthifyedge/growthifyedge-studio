@@ -10,24 +10,26 @@
       [style.--c1]="software().accentColor"
       [style.--c2]="software().accentColor2"
     >
-      <!-- designed fallback (always present, sits under the image) -->
-      <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white">
-        <span class="grid h-14 w-14 place-items-center rounded-2xl border border-white/30 bg-white/15 text-2xl font-black backdrop-blur-sm">
-          {{ software().name.charAt(0) }}
-        </span>
-        <span class="rounded-full bg-black/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm">
-          {{ software().category }}
-        </span>
-      </div>
-
-      @if (!imgError()) {
+      @if (!imgError() && software().coverImage) {
+        <!-- dark neutral backdrop so contained media never crops and empty space looks intentional -->
+        <div class="absolute inset-0 bg-ink-950"></div>
         <img
           [src]="software().coverImage"
           [alt]="software().name + ' thumbnail'"
           loading="lazy"
           (error)="imgError.set(true)"
-          class="absolute inset-0 h-full w-full object-cover transition duration-[900ms] ease-out group-hover:scale-[1.09]"
+          class="absolute inset-0 h-full w-full object-contain"
         />
+      } @else {
+        <!-- designed fallback when there is no image -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white">
+          <span class="grid h-14 w-14 place-items-center rounded-2xl border border-white/30 bg-white/15 text-2xl font-black backdrop-blur-sm">
+            {{ software().name.charAt(0) }}
+          </span>
+          <span class="rounded-full bg-black/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm">
+            {{ software().category }}
+          </span>
+        </div>
       }
 
       <!-- gradient veil -->
