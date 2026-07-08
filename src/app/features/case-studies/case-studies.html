@@ -69,3 +69,32 @@
 } @else {
   <ge-empty-state icon="document" title="No case studies yet" message="Client success stories will appear here." />
 }
+
+<!-- ===== TESTIMONIALS WALL (Phase 6.4) ===== -->
+@if (testimonials().length) {
+  <section class="mt-14">
+    <div class="mb-6">
+      <p class="ge-eyebrow mb-1">In their words</p>
+      <h2 class="ge-h2">What clients say</h2>
+    </div>
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      @for (t of testimonials(); track t.id) {
+        <figure class="ge-card-glass flex flex-col p-6">
+          <div class="mb-3 flex items-center gap-0.5 text-amber-400">
+            @for (s of stars(t.rating); track $index) { <ge-icon name="star" [size]="16" /> }
+          </div>
+          <blockquote class="flex-1 text-sm leading-relaxed text-slate-700">
+            <span class="mr-1 align-top text-brand-300"><ge-icon name="quote" [size]="18" /></span>{{ t.review }}
+          </blockquote>
+          <figcaption class="mt-5 flex items-center gap-3 border-t border-slate-100 pt-4">
+            <img [src]="t.photo" [alt]="t.clientName" class="h-11 w-11 rounded-full object-cover ring-2 ring-white" loading="lazy" />
+            <div class="min-w-0">
+              <p class="truncate font-semibold text-slate-900">{{ t.clientName }}</p>
+              <p class="truncate text-xs text-slate-500">{{ t.designation }}@if (t.designation && t.company) { · }{{ t.company }}</p>
+            </div>
+          </figcaption>
+        </figure>
+      }
+    </div>
+  </section>
+}

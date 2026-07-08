@@ -6,6 +6,7 @@ import {
   DemoVideo,
   IoExample,
   PricingModel,
+  ProjectCaseStudy,
   Screenshot,
   Software,
   SoftwareCategory,
@@ -50,6 +51,7 @@ interface SoftwareRow {
   live_url: string | null;
   repo_url: string | null;
   case_study_url: string | null;
+  case_study: ProjectCaseStudy | null;
   rating: number;
   clients: number;
   impact_score: number;
@@ -140,6 +142,7 @@ export class SoftwareCloudService {
       live_url: s.liveUrl ?? null,
       repo_url: s.repoUrl ?? null,
       case_study_url: s.caseStudyUrl ?? null,
+      case_study: s.caseStudy ?? null,
       rating: s.rating,
       clients: s.clients,
       impact_score: s.impactScore,
@@ -180,6 +183,7 @@ export class SoftwareCloudService {
       liveUrl: r.live_url ?? undefined,
       repoUrl: r.repo_url ?? undefined,
       caseStudyUrl: r.case_study_url ?? undefined,
+      caseStudy: r.case_study ?? undefined,
       demoVideoUrl: r.demo_video_url ?? undefined,
       teaserVideoUrl: r.teaser_video_url ?? undefined,
       walkthroughVideoUrl: r.walkthrough_video_url ?? undefined,

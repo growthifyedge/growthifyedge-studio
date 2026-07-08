@@ -78,6 +78,41 @@ export interface CaseStudy {
   readonly publishedAt: string;
 }
 
+// --- Phase 6.4: structured case study + testimonials (per project) ------
+
+export interface CaseStudyDownload {
+  readonly label: string;
+  readonly url: string;
+}
+
+/**
+ * Structured case study embedded on a project (Phase 6.4). Backward compatible:
+ * the legacy `Software.caseStudyUrl` link is retained; this is additive.
+ */
+export interface ProjectCaseStudy {
+  readonly executiveSummary: string;
+  readonly problem: string;
+  readonly solution: string;
+  readonly implementation: string;
+  readonly technologyUsed: readonly string[];
+  readonly timeline: string;
+  readonly challenges: string;
+  readonly results: string;
+  readonly gallery: readonly Screenshot[];
+  readonly downloads: readonly CaseStudyDownload[];
+}
+
+export interface Testimonial {
+  readonly id: string;
+  readonly clientName: string;
+  readonly company: string;
+  readonly designation: string;
+  readonly photo: string;
+  readonly rating: number;
+  readonly review: string;
+  readonly featured: boolean;
+}
+
 export interface Software {
   readonly id: string;
   readonly slug: string;
@@ -117,6 +152,8 @@ export interface Software {
   readonly liveUrl?: string;
   readonly repoUrl?: string;
   readonly caseStudyUrl?: string;
+  /** Structured, embedded case study (Phase 6.4) — additive to `caseStudyUrl`. */
+  readonly caseStudy?: ProjectCaseStudy;
 
   // Dedicated client-facing video links. YouTube/Vimeo links embed in a modal;
   // any other URL opens safely in a new tab.

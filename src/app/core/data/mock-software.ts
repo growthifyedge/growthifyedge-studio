@@ -1,4 +1,4 @@
-import { CaseStudy, RoadmapItem, Software } from '../models/software.model';
+import { CaseStudy, RoadmapItem, Software, Testimonial } from '../models/software.model';
 
 /**
  * Mock dataset. Image URLs use picsum.photos seeds for realistic previews;
@@ -72,6 +72,30 @@ export const MOCK_SOFTWARE: readonly Software[] = [
     demoVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     teaserVideoUrl: 'https://youtu.be/dQw4w9WgXcQ',
     walkthroughVideoUrl: 'https://vimeo.com/76979871',
+    caseStudy: {
+      executiveSummary:
+        'Northwind Logistics deployed Nexus AI Copilot across its support and operations inboxes and cut response times by 61% within six weeks, freeing a lean team to focus on exception handling instead of repetitive replies.',
+      problem:
+        'During peak season, Northwind’s ops team faced 8+ hour response times as repetitive status requests and email triage buried higher-value work.',
+      solution:
+        'Nexus was grounded in Northwind’s SOPs and live shipment data to draft context-aware replies and trigger status-lookup automations, with a human-approval step preserved on every send.',
+      implementation:
+        'A two-week integration connected Nexus to the shared inbox, CRM and shipment API. We indexed 400+ SOP documents, configured role-based access, and rolled out to 12 agents behind a single-click approval flow.',
+      technologyUsed: ['Angular', 'Claude API', 'Node.js', 'Postgres'],
+      timeline: '2-week integration · full rollout in 6 weeks',
+      challenges:
+        'Grounding replies in fast-changing shipment data without hallucination required a retrieval layer with freshness checks and a strict approval gate before any message left the building.',
+      results:
+        '58% of inbound requests resolved with a one-click approved AI draft, response times down 61%, and 14 hours per week returned to the operations team.',
+      gallery: [
+        { id: 'cs-g-01', url: img('nexus-1'), thumbnail: img('nexus-1', 480, 300), caption: 'Copilot drafting a grounded reply' },
+        { id: 'cs-g-02', url: img('nexus-3'), thumbnail: img('nexus-3', 480, 300), caption: 'Approval flow before send' }
+      ],
+      downloads: [
+        { label: 'Northwind case study (PDF)', url: 'https://demo.growthifyedge.com/case-studies/northwind.pdf' },
+        { label: 'ROI one-pager', url: 'https://demo.growthifyedge.com/case-studies/northwind-roi.pdf' }
+      ]
+    },
     pricing: 'Subscription',
     rating: 4.8,
     clients: 42,
@@ -201,6 +225,29 @@ export const MOCK_SOFTWARE: readonly Software[] = [
       'Shareable executive snapshots'
     ],
     liveUrl: 'https://demo.growthifyedge.com/pulse',
+    caseStudy: {
+      executiveSummary:
+        'Lumen Retail replaced days-long, hand-built reporting with Pulse Analytics and now makes 3x more data-backed decisions each week from a single live cockpit.',
+      problem:
+        'Leadership waited days for manually assembled reports, so decisions consistently lagged behind the market and the retail floor.',
+      solution:
+        'Pulse unified revenue and product data into live dashboards with AI narrative insights and anomaly alerts, giving every leader the same real-time picture.',
+      implementation:
+        'We connected Pulse to Lumen’s data warehouse, modelled 30+ core metrics, and built role-based executive snapshots. Anomaly alerts were tuned against a season of historical data before go-live.',
+      technologyUsed: ['React', 'ClickHouse', 'FastAPI'],
+      timeline: '3-week rollout · live cockpit from week 4',
+      challenges:
+        'Reconciling revenue definitions across three source systems was the hardest part; we standardised a single metrics layer so every dashboard agreed to the cent.',
+      results:
+        'Reporting time fell 75%, the leadership team now makes 3x more decisions per week, and Monday guesswork became a live cockpit.',
+      gallery: [
+        { id: 'cs-g-03', url: img('pulse-1'), thumbnail: img('pulse-1', 480, 300), caption: 'Executive live cockpit' },
+        { id: 'cs-g-04', url: img('pulse-2'), thumbnail: img('pulse-2', 480, 300), caption: 'Cohort retention view' }
+      ],
+      downloads: [
+        { label: 'Lumen Retail case study (PDF)', url: 'https://demo.growthifyedge.com/case-studies/lumen.pdf' }
+      ]
+    },
     pricing: 'Subscription',
     rating: 4.9,
     clients: 31,
@@ -740,4 +787,66 @@ export const MOCK_ROADMAP: readonly RoadmapItem[] = [
   { id: 'rm-06', title: 'FieldPilot beta', description: 'First public beta of the offline-first field service app.', quarter: 'Q1 2027', status: 'Exploring', category: 'Mobile App', icon: '📱' },
   { id: 'rm-07', title: 'ReviewPilot — multi-language replies', description: 'Draft on-brand responses in 20+ languages automatically.', quarter: 'Q2 2026', status: 'Shipped', category: 'Automation', icon: '🌍' },
   { id: 'rm-08', title: 'Storefront — headless CMS blocks', description: 'Drag-and-drop content blocks for non-technical merchandisers.', quarter: 'Q2 2026', status: 'Shipped', category: 'Web App', icon: '🧱' }
+];
+
+/**
+ * Client testimonials (Phase 6.4). Curated, admin-managed proof surfaced on the
+ * Case Studies page. `featured` entries lead the public testimonials wall.
+ */
+export const MOCK_TESTIMONIALS: readonly Testimonial[] = [
+  {
+    id: 'tm-01',
+    clientName: 'Dana Whitfield',
+    company: 'Northwind Logistics',
+    designation: 'VP Operations',
+    photo: img('dana-avatar', 200, 200),
+    rating: 5,
+    review:
+      'It feels like we hired three analysts overnight — without the overhead. Nexus AI Copilot cut our response times in half and our team finally has room to breathe.',
+    featured: true
+  },
+  {
+    id: 'tm-02',
+    clientName: 'Priya Nair',
+    company: 'Lumen Retail',
+    designation: 'Chief Operating Officer',
+    photo: img('priya-avatar', 200, 200),
+    rating: 5,
+    review:
+      'Pulse turned our Monday guesswork into a live cockpit. We make faster, better decisions every single week and the whole leadership team trusts the numbers.',
+    featured: true
+  },
+  {
+    id: 'tm-03',
+    clientName: 'Marcus Lee',
+    company: 'Brightside Finance',
+    designation: 'Head of Finance Ops',
+    photo: img('marcus-avatar', 200, 200),
+    rating: 5,
+    review:
+      'FlowForge removed over a thousand manual tasks a month. We finally trust our numbers in real time and reconciliation stopped eating our week.',
+    featured: true
+  },
+  {
+    id: 'tm-04',
+    clientName: 'Sofia Marin',
+    company: 'Atlas Outdoors',
+    designation: 'Head of Customer Experience',
+    photo: img('sofia-avatar', 200, 200),
+    rating: 5,
+    review:
+      'Our reputation runs itself now — and customers feel heard. ReviewPilot AI answers every review within minutes and lifted our rating in one quarter.',
+    featured: true
+  },
+  {
+    id: 'tm-05',
+    clientName: 'Tomás Herrera',
+    company: 'Cedar & Co.',
+    designation: 'Founder',
+    photo: img('tomas-avatar', 200, 200),
+    rating: 4,
+    review:
+      'The GrowthifyEdge team ships fast and communicates clearly. Every project landed on time and the handover was genuinely painless.',
+    featured: false
+  }
 ];

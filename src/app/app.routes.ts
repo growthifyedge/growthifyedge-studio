@@ -97,6 +97,13 @@ export const routes: Routes = [
           import('./features/admin-inquiries/admin-inquiries').then((m) => m.AdminInquiries)
       },
       {
+        path: 'studio/testimonials',
+        title: 'Testimonials · GrowthifyEdge',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/admin-testimonials/admin-testimonials').then((m) => m.AdminTestimonials)
+      },
+      {
         path: 'studio/new',
         title: 'Add Software · GrowthifyEdge',
         canActivate: [adminGuard],
