@@ -1,8 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  input,
+  signal
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 import { SoftwareService } from '../../core/services/software.service';
 import { PresentationService } from '../../core/services/presentation.service';
+import { SeoService } from '../../core/services/seo.service';
 import { DemoVideo } from '../../core/models/software.model';
 import { isDirectVideo, toEmbedUrl } from '../../core/utils/video-embed';
 import { Icon, IconName } from '../../shared/components/icon/icon';
@@ -38,8 +48,17 @@ export class SoftwareDetail {
   private readonly svc = inject(SoftwareService);
   private readonly router = inject(Router);
   private readonly presentation = inject(PresentationService);
+  private readonly seo = inject(SeoService);
 
   protected readonly software = computed(() => this.svc.bySlugForViewer(this.slug()));
+
+  constructor() {
+    effect(() => {
+      const sw = this.software();
+      if (sw) this.seo.setProject(sw);
+    });
+    inject(DestroyRef).onDestroy(() => this.seo.reset());
+  }
 
   protected readonly caseStudies = computed(() => {
     const sw = this.software();

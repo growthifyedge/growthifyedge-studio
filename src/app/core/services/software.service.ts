@@ -112,8 +112,16 @@ export class SoftwareService {
         s.name.toLowerCase().includes(term) ||
         s.tagline.toLowerCase().includes(term) ||
         s.description.toLowerCase().includes(term) ||
+        s.category.toLowerCase().includes(term) ||
+        s.problem.toLowerCase().includes(term) ||
+        s.solution.toLowerCase().includes(term) ||
         s.tags.some((t) => t.toLowerCase().includes(term)) ||
-        s.techStack.some((t) => t.name.toLowerCase().includes(term));
+        s.techStack.some((t) => t.name.toLowerCase().includes(term)) ||
+        s.keyFeatures.some((f) => f.toLowerCase().includes(term)) ||
+        s.impact.some(
+          (m) =>
+            m.label.toLowerCase().includes(term) || m.value.toLowerCase().includes(term)
+        );
 
       const matchesCategory = f.category === 'All' || s.category === f.category;
       const matchesStatus = f.status === 'All' || s.status === f.status;

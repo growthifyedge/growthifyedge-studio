@@ -4,9 +4,11 @@ import {
   provideBrowserGlobalErrorListeners
 } from '@angular/core';
 import {
+  PreloadAllModules,
   provideRouter,
   withComponentInputBinding,
   withInMemoryScrolling,
+  withPreloading,
   withViewTransitions
 } from '@angular/router';
 
@@ -20,6 +22,9 @@ export const appConfig: ApplicationConfig = {
       routes,
       withComponentInputBinding(),
       withViewTransitions(),
+      // Phase 6 perf: preload lazy route chunks in the background after the
+      // initial page is interactive, so subsequent navigations are instant.
+      withPreloading(PreloadAllModules),
       withInMemoryScrolling({
         scrollPositionRestoration: 'enabled',
         anchorScrolling: 'enabled'
