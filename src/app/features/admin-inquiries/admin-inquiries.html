@@ -1,0 +1,111 @@
+<a routerLink="/studio" class="mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand-600">
+  <ge-icon name="arrow-left" [size]="16" /> Back to Studio
+</a>
+
+<ge-page-header
+  eyebrow="Client pipeline"
+  title="Inquiries"
+  subtitle="Demo, quotation and contact requests from your project pages."
+/>
+
+@if (all().length) {
+  <!-- Stats -->
+  <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-slate-900">{{ counts().total }}</p><p class="text-xs text-slate-500">Total</p></div>
+    <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-brand-600">{{ counts().newCount }}</p><p class="text-xs text-slate-500">New</p></div>
+    <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-amber-500">{{ counts().open }}</p><p class="text-xs text-slate-500">Open</p></div>
+    <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-slate-400">{{ counts().archived }}</p><p class="text-xs text-slate-500">Archived</p></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="ge-card-glass mb-6 flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
+    <label class="flex items-center gap-2 text-sm">
+      <span class="font-medium text-slate-500">Status</span>
+      <select class="ge-input !w-auto !py-2" [value]="status()" (change)="setStatus($any($event.target).value)">
+        <option value="All">All</option>
+        @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+      </select>
+    </label>
+    <label class="flex items-center gap-2 text-sm">
+      <span class="font-medium text-slate-500">Type</span>
+      <select class="ge-input !w-auto !py-2" [value]="type()" (change)="setType($any($event.target).value)">
+        <option value="All">All</option>
+        @for (t of types; track t.value) { <option [value]="t.value">{{ t.label }}</option> }
+      </select>
+    </label>
+    <label class="flex items-center gap-2 text-sm sm:ml-auto">
+      <span class="font-medium text-slate-500">Project</span>
+      <select class="ge-input !w-auto !py-2" [value]="project()" (change)="setProject($any($event.target).value)">
+        <option value="All">All</option>
+        @for (p of projectOptions(); track p) { <option [value]="p">{{ p }}</option> }
+      </select>
+    </label>
+    <span class="ge-chip !px-3 !py-1.5 text-sm font-semibold">{{ filtered().length }} shown</span>
+  </div>
+
+  <!-- Table -->
+  <div class="ge-card-glass overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="border-b border-slate-200/70 bg-slate-50/60 text-xs uppercase tracking-wide text-slate-500">
+          <tr>
+            <th class="px-5 py-3.5 font-semibold">Contact</th>
+            <th class="px-4 py-3.5 font-semibold">Type</th>
+            <th class="px-4 py-3.5 font-semibold">Project</th>
+            <th class="px-4 py-3.5 font-semibold">Message</th>
+            <th class="px-4 py-3.5 font-semibold">Status</th>
+            <th class="px-4 py-3.5 font-semibold">Created</th>
+            <th class="px-5 py-3.5 text-right font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (i of filtered(); track i.id) {
+            <tr class="align-top transition hover:bg-white/60">
+              <td class="px-5 py-3">
+                <p class="font-semibold text-slate-800">{{ i.name }}</p>
+                @if (i.company) { <p class="text-xs text-slate-400">{{ i.company }}</p> }
+                <a [href]="'mailto:' + i.email" class="text-xs text-brand-600 hover:underline">{{ i.email }}</a>
+                @if (i.phone) { <p class="text-xs text-slate-400">{{ i.phone }}</p> }
+              </td>
+              <td class="px-4 py-3 text-slate-600">{{ i.type }}</td>
+              <td class="px-4 py-3 text-slate-600">{{ i.projectName || '—' }}</td>
+              <td class="px-4 py-3 text-slate-500"><p class="line-clamp-2 max-w-[16rem]">{{ i.message }}</p></td>
+              <td class="px-4 py-3">
+                <select
+                  class="rounded-lg border-0 px-2 py-1 text-[11px] font-semibold ring-1 focus:outline-none focus:ring-2 focus:ring-brand-400"
+                  [class]="statusClass(i.status)"
+                  [value]="i.status"
+                  (change)="changeStatus(i.id, $any($event.target).value)"
+                >
+                  @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+                </select>
+              </td>
+              <td class="px-4 py-3 text-slate-500">{{ shortDate(i.createdAt) }}</td>
+              <td class="px-5 py-3">
+                <div class="flex items-center justify-end gap-1.5">
+                  @if (i.status !== 'Archived') {
+                    <button type="button" (click)="archive(i.id)" class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700" title="Archive" aria-label="Archive"><ge-icon name="document" [size]="16" /></button>
+                  }
+                  @if (pendingDelete() === i.id) {
+                    <button type="button" (click)="confirmDelete(i.id)" class="rounded-lg bg-rose-500 px-2 py-1 text-xs font-semibold text-white hover:bg-rose-600">Confirm</button>
+                    <button type="button" (click)="pendingDelete.set(null)" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100">Cancel</button>
+                  } @else {
+                    <button type="button" (click)="pendingDelete.set(i.id)" class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 hover:bg-rose-50 hover:text-rose-600" title="Delete" aria-label="Delete"><ge-icon name="trash" [size]="16" /></button>
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="px-5 py-12 text-center text-sm text-slate-400">No inquiries match your filters.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+} @else {
+  <ge-empty-state
+    icon="mail"
+    title="No inquiries yet"
+    message="When clients click Request Demo, Request Quotation or Contact Developer on a project page, their requests appear here."
+  />
+}

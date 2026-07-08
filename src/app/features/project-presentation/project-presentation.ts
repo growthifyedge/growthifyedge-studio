@@ -21,6 +21,7 @@ import { Icon, IconName } from '../../shared/components/icon/icon';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { ScreenshotGallery } from '../../shared/components/screenshot-gallery/screenshot-gallery';
 import { VideoModal } from '../../shared/components/video-modal/video-modal';
+import { InquiryCta } from '../../shared/components/inquiry-cta/inquiry-cta';
 
 /**
  * Client-facing presentation view for a single project.
@@ -34,7 +35,7 @@ import { VideoModal } from '../../shared/components/video-modal/video-modal';
   selector: 'ge-project-presentation',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Icon, StatusBadge, ScreenshotGallery, VideoModal],
+  imports: [RouterLink, Icon, StatusBadge, ScreenshotGallery, VideoModal, InquiryCta],
   templateUrl: './project-presentation.html'
 })
 export class ProjectPresentation {

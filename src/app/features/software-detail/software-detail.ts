@@ -24,6 +24,7 @@ import { ScreenshotGallery } from '../../shared/components/screenshot-gallery/sc
 import { VideoModal } from '../../shared/components/video-modal/video-modal';
 import { SoftwareCard } from '../../shared/components/software-card/software-card';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
+import { InquiryCta } from '../../shared/components/inquiry-cta/inquiry-cta';
 
 @Component({
   selector: 'ge-software-detail',
@@ -38,7 +39,8 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
     ScreenshotGallery,
     VideoModal,
     SoftwareCard,
-    EmptyState
+    EmptyState,
+    InquiryCta
   ],
   templateUrl: './software-detail.html'
 })

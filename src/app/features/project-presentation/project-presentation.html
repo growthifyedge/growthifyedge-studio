@@ -105,8 +105,8 @@
       <section class="ring-aurora mt-14 overflow-hidden rounded-[28px] bg-white/[0.04] p-8 text-center backdrop-blur sm:p-12">
         <h2 class="font-display text-3xl font-bold tracking-tightest sm:text-4xl">Ready to put <span class="text-gradient-brand">{{ sw.name }}</span> to work?</h2>
         <p class="mx-auto mt-3 max-w-xl text-slate-300">Let’s tailor a rollout for your team and show you the impact on your own data.</p>
-        <div class="mt-7 flex flex-wrap justify-center gap-3">
-          <a routerLink="/contact" [queryParams]="{ interest: sw.name }" class="ge-btn-aurora"><ge-icon name="mail" [size]="18" /> Request a Demo</a>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <ge-inquiry-cta [project]="sw" />
           <button type="button" (click)="copyLink()" class="ge-btn-dark"><ge-icon name="external" [size]="17" /> Share this presentation</button>
         </div>
       </section>

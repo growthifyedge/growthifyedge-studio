@@ -1,0 +1,89 @@
+<div class="flex flex-wrap gap-2">
+  @for (t of types; track t.value; let first = $first) {
+    <button
+      type="button"
+      (click)="launch(t.value)"
+      [class]="first ? 'ge-btn-aurora !px-4 !py-2.5' : 'ge-btn-dark !px-4 !py-2.5'"
+    >
+      <ge-icon [name]="t.value === 'Demo' ? 'play' : t.value === 'Quotation' ? 'document' : 'mail'" [size]="16" />
+      {{ t.label }}
+    </button>
+  }
+</div>
+
+@if (open(); as type) {
+  <div
+    geOverlayPortal
+    class="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-ink-950/85 p-4 backdrop-blur-md animate-fade-in-fast"
+    (click)="close()"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="ge-card-glass my-8 w-full max-w-lg animate-rise p-6 sm:p-7" (click)="$event.stopPropagation()">
+      <div class="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p class="ge-eyebrow">Work with GrowthifyEdge</p>
+          <h3 class="font-display text-xl font-bold tracking-tight text-slate-900">{{ label(type) }}</h3>
+        </div>
+        <button type="button" (click)="close()" class="grid h-9 w-9 place-items-center rounded-2xl text-slate-500 transition hover:rotate-90 hover:bg-slate-100" aria-label="Close">
+          <ge-icon name="close" [size]="18" />
+        </button>
+      </div>
+
+      @if (submitted()) {
+        <div class="flex flex-col items-center gap-3 py-8 text-center">
+          <span class="grid h-14 w-14 place-items-center rounded-2xl bg-emerald-50 text-emerald-600"><ge-icon name="check" [size]="26" /></span>
+          <p class="font-display text-lg font-bold text-slate-900">Thanks — we’ll be in touch!</p>
+          <p class="max-w-xs text-sm text-slate-500">Your {{ label(type).toLowerCase() }} request was received. Our team typically replies within 24 hours.</p>
+          <button type="button" (click)="close()" class="ge-btn-primary mt-2">Done</button>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="ge-label" for="inq-name">Name *</label>
+              <input id="inq-name" formControlName="name" class="ge-input" placeholder="Your name" />
+              @if (invalid('name')) { <p class="mt-1 text-xs text-rose-600">Please enter your name.</p> }
+            </div>
+            <div>
+              <label class="ge-label" for="inq-company">Company</label>
+              <input id="inq-company" formControlName="company" class="ge-input" placeholder="Company (optional)" />
+            </div>
+            <div>
+              <label class="ge-label" for="inq-email">Email *</label>
+              <input id="inq-email" type="email" formControlName="email" class="ge-input" placeholder="you@company.com" />
+              @if (invalid('email')) { <p class="mt-1 text-xs text-rose-600">Enter a valid email.</p> }
+            </div>
+            <div>
+              <label class="ge-label" for="inq-phone">Phone</label>
+              <input id="inq-phone" formControlName="phone" class="ge-input" placeholder="Phone (optional)" />
+            </div>
+            <div>
+              <label class="ge-label" for="inq-type">Inquiry type</label>
+              <select id="inq-type" formControlName="type" class="ge-input">
+                @for (t of types; track t.value) { <option [value]="t.value">{{ t.label }}</option> }
+              </select>
+            </div>
+            <div>
+              <label class="ge-label" for="inq-project">Project</label>
+              <select id="inq-project" formControlName="projectId" class="ge-input">
+                @for (p of projectOptions(); track p.id) { <option [value]="p.id">{{ p.name }}</option> }
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="ge-label" for="inq-message">Message *</label>
+            <textarea id="inq-message" formControlName="message" rows="3" class="ge-input" placeholder="Tell us a little about what you need…"></textarea>
+            @if (invalid('message')) { <p class="mt-1 text-xs text-rose-600">A short message is required.</p> }
+          </div>
+          <div class="flex justify-end gap-3 pt-1">
+            <button type="button" (click)="close()" class="ge-btn-ghost">Cancel</button>
+            <button type="submit" class="ge-btn-primary" [disabled]="form.invalid">
+              <ge-icon name="mail" [size]="17" /> Send request
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+}

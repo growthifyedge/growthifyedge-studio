@@ -196,7 +196,9 @@
         <div class="relative">
           <p class="font-display text-lg font-bold">Like what you see?</p>
           <p class="mt-1 text-sm text-slate-300">Get a tailored walkthrough for your team.</p>
-          <a routerLink="/contact" class="ge-btn-aurora mt-4 w-full"><ge-icon name="mail" [size]="17" /> Request a Demo</a>
+          <div class="mt-4">
+            <ge-inquiry-cta [project]="sw" />
+          </div>
         </div>
       </div>
     </aside>
