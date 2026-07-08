@@ -72,8 +72,8 @@ export class Contact {
       this.form.markAllAsTouched();
       return;
     }
-    // Backend-ready: this is where an HTTP POST to /api/demo-requests would go.
-    console.log('Demo request submitted:', this.form.getRawValue());
+    // Backend-ready: this is where an HTTP POST to /api/demo-requests would go
+    // (the InquiryService already persists client inquiries from project pages).
     this.submitted.set(true);
   }
 

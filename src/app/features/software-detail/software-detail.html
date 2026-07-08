@@ -45,7 +45,7 @@
           <div class="absolute inset-0 grid place-items-center">
             <span class="grid h-16 w-16 place-items-center rounded-2xl border border-white/30 bg-white/15 text-3xl font-black text-white backdrop-blur-sm">{{ sw.name.charAt(0) }}</span>
           </div>
-          <img [src]="sw.coverImage" [alt]="sw.name" class="absolute inset-0 h-full w-full object-cover opacity-95 transition duration-[1200ms] group-hover:scale-110" />
+          <img [src]="sw.coverImage" [alt]="sw.name" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-95 transition duration-[1200ms] group-hover:scale-110" />
           <div class="absolute inset-0 bg-gradient-to-t from-ink-950/45 to-transparent"></div>
           @if (sw.videos.length) {
             <span class="play-ring absolute left-1/2 top-1/2 grid h-[68px] w-[68px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-brand-600 shadow-glow-strong transition group-hover:scale-110"><ge-icon name="play" [size]="30" /></span>
@@ -204,7 +204,7 @@
             @for (cs of caseStudies(); track cs.id) {
               <article class="ge-card-glass p-6">
                 <div class="flex items-center gap-3">
-                  <img [src]="cs.logo" [alt]="cs.clientName" class="h-11 w-11 rounded-xl object-cover" />
+                  <img [src]="cs.logo" [alt]="cs.clientName" loading="lazy" decoding="async" class="h-11 w-11 rounded-xl object-cover" />
                   <div><p class="text-sm font-bold text-slate-900">{{ cs.clientName }}</p><p class="text-xs text-slate-500">{{ cs.industry }}</p></div>
                 </div>
                 <h3 class="mt-3 font-semibold text-slate-800">{{ cs.title }}</h3>

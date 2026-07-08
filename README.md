@@ -14,6 +14,16 @@ cinematic gradient heroes, bento grids, 24px rounded cards, aurora gradient acce
 
 ---
 
+## Documentation
+
+| Doc | What's in it |
+| --- | ------------ |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Rendering model, directory layout, the four-move feature pattern, services, state flow |
+| [supabase/README.md](supabase/README.md) | Database schema, migrations, RLS model |
+| [PRODUCTION-READINESS.md](PRODUCTION-READINESS.md) | Performance/bundle/lazy/image/signals audit, regression checklist, readiness score, technical debt |
+
+---
+
 ## Quick start
 
 ```bash
@@ -101,10 +111,16 @@ Shared components: `software-card`, `video-card`, `category-card`, `icon`,
 | `/case-studies`     | Case Studies               |
 | `/roadmap`          | Roadmap                    |
 | `/present`          | Client Presentation Mode   |
-| `/studio`           | Admin Studio               |
-| `/studio/new`       | Add Software               |
-| `/studio/edit/:id`  | Edit Software              |
 | `/contact`          | Request a Demo             |
+| `/login`            | Admin Sign In              |
+| `/studio` 🔒        | Admin Studio               |
+| `/studio/analytics` 🔒 | Project Analytics       |
+| `/studio/inquiries` 🔒 | Client Inquiries         |
+| `/studio/testimonials` 🔒 | Testimonials CRUD     |
+| `/studio/new` 🔒    | Add Software               |
+| `/studio/edit/:id` 🔒 | Edit Software            |
+
+🔒 = protected by `adminGuard`. All 19 route entries are lazy-loaded.
 
 ---
 
@@ -193,6 +209,26 @@ SPA fallback** (rewrite everything to `index.html`) — config files are include
 See [`.env.example`](.env.example) for the variable names. Angular bundles config
 at build time, so apply them in `environment.prod.ts` (or use the runtime
 override above for quick tests).
+
+---
+
+## Scripts
+
+| Command | Does |
+| ------- | ---- |
+| `npm start` | Dev server at `http://localhost:4200` |
+| `npm run build` | Production build → `dist/growthifyedge-showcase-hub/browser` |
+| `npm run watch` | Development build in watch mode |
+| `npm test` | Unit tests (`ng test`) — suite not yet written; see debt in [PRODUCTION-READINESS.md](PRODUCTION-READINESS.md) |
+
+## Testing & production readiness
+
+The build is strict (`strict`, `noUnusedLocals`, `noUnusedParameters`,
+`strictTemplates`) with zero `any`, every component is `OnPush`, and all routes
+are lazy-loaded. A full 17-route regression + a performance/bundle/image/signals
+audit are documented in [PRODUCTION-READINESS.md](PRODUCTION-READINESS.md),
+including the current readiness score and remaining technical debt (SSR, an
+automated test suite, and CI are the top items).
 
 ---
 

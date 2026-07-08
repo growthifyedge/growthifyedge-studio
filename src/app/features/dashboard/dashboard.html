@@ -56,7 +56,7 @@
           class="ring-aurora group relative block w-full overflow-hidden rounded-[28px] text-left shadow-2xl transition duration-500 hover:-translate-y-1"
         >
           <div class="ge-thumb relative aspect-video overflow-hidden rounded-[28px]" [style.--c1]="sp.accentColor" [style.--c2]="sp.accentColor2">
-            <img [src]="sp.coverImage" [alt]="sp.name" class="absolute inset-0 h-full w-full object-cover transition duration-[1200ms] group-hover:scale-110" />
+            <img [src]="sp.coverImage" [alt]="sp.name" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover transition duration-[1200ms] group-hover:scale-110" />
             <div class="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/25 to-transparent"></div>
             <span class="play-ring absolute left-1/2 top-1/2 grid h-[68px] w-[68px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-brand-600 shadow-glow-strong transition duration-300 group-hover:scale-110">
               <ge-icon name="play" [size]="30" />

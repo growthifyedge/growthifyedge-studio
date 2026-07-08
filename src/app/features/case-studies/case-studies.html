@@ -12,7 +12,7 @@
         <div class="relative flex flex-col justify-between gap-6 overflow-hidden bg-ink-950 p-6 text-white lg:w-72 lg:shrink-0">
           <div class="pointer-events-none absolute inset-0 bg-cinematic opacity-70"></div>
           <div class="relative">
-            <img [src]="cs.logo" [alt]="cs.clientName" class="h-12 w-12 rounded-2xl object-cover ring-2 ring-white/20" />
+            <img [src]="cs.logo" [alt]="cs.clientName" loading="lazy" decoding="async" class="h-12 w-12 rounded-2xl object-cover ring-2 ring-white/20" />
             <p class="mt-4 font-display text-lg font-bold">{{ cs.clientName }}</p>
             <p class="text-sm text-brand-300">{{ cs.industry }}</p>
           </div>
