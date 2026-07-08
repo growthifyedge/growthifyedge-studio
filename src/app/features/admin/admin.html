@@ -4,6 +4,9 @@
   subtitle="Add, edit and curate every project. Changes are saved to your browser and flow to the whole site."
 >
   <div actions class="flex flex-wrap items-center gap-2">
+    <a routerLink="/studio/analytics" class="ge-btn-ghost !py-2.5">
+      <ge-icon name="chart" [size]="16" /> Analytics
+    </a>
     <button type="button" (click)="exportJson()" class="ge-btn-ghost !py-2.5">
       <ge-icon name="upload" [size]="16" /> Export JSON
     </button>

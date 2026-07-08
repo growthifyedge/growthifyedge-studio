@@ -83,6 +83,13 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin/admin').then((m) => m.Admin)
       },
       {
+        path: 'studio/analytics',
+        title: 'Analytics · GrowthifyEdge',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/admin-analytics/admin-analytics').then((m) => m.AdminAnalytics)
+      },
+      {
         path: 'studio/new',
         title: 'Add Software · GrowthifyEdge',
         canActivate: [adminGuard],

@@ -1,0 +1,140 @@
+<a routerLink="/studio" class="mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand-600">
+  <ge-icon name="arrow-left" [size]="16" /> Back to Studio
+</a>
+
+<ge-page-header
+  eyebrow="Insights"
+  title="Analytics"
+  subtitle="How clients engage with your showcase — views, presentations, demo and case-study clicks."
+>
+  @if (hasData()) {
+    <button actions type="button" (click)="pendingReset.set(true)" class="ge-btn-ghost !py-2.5">
+      <ge-icon name="trash" [size]="16" /> Clear analytics
+    </button>
+  }
+</ge-page-header>
+
+@if (hasData()) {
+  <!-- Summary tiles -->
+  <section class="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    @for (tile of [
+      { label: 'Total views', value: totals().views, icon: 'eye', tint: '#6d49ff' },
+      { label: 'Presentation views', value: totals().presentationViews, icon: 'presentation', tint: '#f43bb8' },
+      { label: 'Live demo clicks', value: totals().demoClicks, icon: 'external', tint: '#10c5ac' },
+      { label: 'Case study clicks', value: totals().caseStudyClicks, icon: 'document', tint: '#f59e0b' }
+    ]; track tile.label) {
+      <div class="ge-card-glass p-5">
+        <div class="grid h-11 w-11 place-items-center rounded-2xl text-white shadow-glow" [style.background]="tile.tint">
+          <ge-icon [name]="$any(tile.icon)" [size]="20" />
+        </div>
+        <p class="mt-4 font-display text-3xl font-bold tracking-tightest text-slate-900">{{ tile.value }}</p>
+        <p class="mt-0.5 text-sm text-slate-500">{{ tile.label }}</p>
+      </div>
+    }
+  </section>
+
+  <div class="grid gap-6 lg:grid-cols-3">
+    <!-- Monthly trend + most viewed -->
+    <div class="space-y-6 lg:col-span-1">
+      <div class="ge-card-glass p-6">
+        <h2 class="mb-4 text-sm font-bold uppercase tracking-wide text-slate-500">Monthly views trend</h2>
+        <div class="space-y-3">
+          @for (m of monthly(); track m.month) {
+            <div>
+              <div class="mb-1 flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-600">{{ m.month }}</span>
+                <span class="font-bold text-slate-800">{{ m.views }}</span>
+              </div>
+              <div class="h-2 overflow-hidden rounded-full bg-slate-100">
+                <div class="h-full rounded-full bg-aurora" [style.width.%]="m.pct"></div>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-sm text-slate-400">No view history yet.</p>
+          }
+        </div>
+      </div>
+
+      <div class="ge-card-glass p-6">
+        <h2 class="mb-4 text-sm font-bold uppercase tracking-wide text-slate-500">Most viewed</h2>
+        <ol class="space-y-3">
+          @for (r of mostViewed(); track r.id; let i = $index) {
+            <li class="flex items-center gap-3">
+              <span class="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-brand-50 text-xs font-bold text-brand-600">{{ i + 1 }}</span>
+              <a [routerLink]="['/software', r.slug]" class="min-w-0 flex-1 truncate text-sm font-semibold text-slate-800 hover:text-brand-600">{{ r.name }}</a>
+              <span class="inline-flex items-center gap-1 text-sm font-bold text-slate-900"><ge-icon name="eye" [size]="14" /> {{ r.totalViews }}</span>
+            </li>
+          } @empty {
+            <li class="text-sm text-slate-400">No views recorded yet.</li>
+          }
+        </ol>
+      </div>
+    </div>
+
+    <!-- Per-project table + recent activity -->
+    <div class="space-y-6 lg:col-span-2">
+      <div class="ge-card-glass overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="border-b border-slate-200/70 bg-slate-50/60 text-xs uppercase tracking-wide text-slate-500">
+              <tr>
+                <th class="px-5 py-3.5 font-semibold">Project</th>
+                <th class="px-4 py-3.5 text-center font-semibold">Views</th>
+                <th class="px-4 py-3.5 text-center font-semibold">Present.</th>
+                <th class="px-4 py-3.5 text-center font-semibold">Demo</th>
+                <th class="px-4 py-3.5 text-center font-semibold">Case</th>
+                <th class="px-5 py-3.5 font-semibold">Last viewed</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (r of rows(); track r.id) {
+                <tr class="transition hover:bg-white/60">
+                  <td class="px-5 py-3"><a [routerLink]="['/software', r.slug]" class="font-semibold text-slate-800 hover:text-brand-600">{{ r.name }}</a></td>
+                  <td class="px-4 py-3 text-center font-bold text-slate-900">{{ r.totalViews }}</td>
+                  <td class="px-4 py-3 text-center text-slate-600">{{ r.presentationViews }}</td>
+                  <td class="px-4 py-3 text-center text-slate-600">{{ r.demoClicks }}</td>
+                  <td class="px-4 py-3 text-center text-slate-600">{{ r.caseStudyClicks }}</td>
+                  <td class="px-5 py-3 text-slate-500">{{ shortDate(r.lastViewedAt) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="ge-card-glass p-6">
+        <h2 class="mb-4 text-sm font-bold uppercase tracking-wide text-slate-500">Recent activity</h2>
+        <ul class="space-y-3">
+          @for (a of recent(); track $index) {
+            <li class="flex items-center gap-3 text-sm">
+              <span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-500"><ge-icon [name]="a.icon" [size]="15" /></span>
+              <span class="min-w-0 flex-1 truncate text-slate-700"><span class="font-semibold text-slate-900">{{ a.label }}</span> · {{ a.name }}</span>
+              <span class="shrink-0 text-xs text-slate-400">{{ a.when }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+} @else {
+  <ge-empty-state
+    icon="chart"
+    title="No analytics yet"
+    message="As clients view projects, open presentations, or click demo / case-study links, activity will appear here."
+  />
+}
+
+<!-- Clear analytics confirm -->
+@if (pendingReset()) {
+  <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-ink-950/70 p-4 backdrop-blur-sm animate-fade-in-fast" (click)="pendingReset.set(false)">
+    <div class="ge-card-glass w-full max-w-md p-6" (click)="$event.stopPropagation()">
+      <div class="grid h-12 w-12 place-items-center rounded-2xl bg-rose-50 text-rose-500"><ge-icon name="trash" [size]="22" /></div>
+      <h3 class="mt-4 font-display text-lg font-bold text-slate-900">Clear all analytics?</h3>
+      <p class="mt-1.5 text-sm text-slate-500">This removes every recorded view and click from this browser. This can’t be undone.</p>
+      <div class="mt-6 flex justify-end gap-3">
+        <button type="button" (click)="pendingReset.set(false)" class="ge-btn-ghost">Cancel</button>
+        <button type="button" (click)="confirmReset()" class="ge-btn !bg-rose-500 !text-white hover:!bg-rose-600">Clear</button>
+      </div>
+    </div>
+  </div>
+}

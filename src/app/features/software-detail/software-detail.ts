@@ -13,6 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 import { SoftwareService } from '../../core/services/software.service';
 import { PresentationService } from '../../core/services/presentation.service';
 import { SeoService } from '../../core/services/seo.service';
+import { AnalyticsService } from '../../core/services/analytics.service';
 import { DemoVideo } from '../../core/models/software.model';
 import { isDirectVideo, toEmbedUrl } from '../../core/utils/video-embed';
 import { Icon, IconName } from '../../shared/components/icon/icon';
@@ -49,15 +50,29 @@ export class SoftwareDetail {
   private readonly router = inject(Router);
   private readonly presentation = inject(PresentationService);
   private readonly seo = inject(SeoService);
+  private readonly analytics = inject(AnalyticsService);
 
   protected readonly software = computed(() => this.svc.bySlugForViewer(this.slug()));
 
   constructor() {
+    let viewTracked = false;
     effect(() => {
       const sw = this.software();
-      if (sw) this.seo.setProject(sw);
+      if (!sw) return;
+      this.seo.setProject(sw);
+      if (!viewTracked) {
+        viewTracked = true;
+        this.analytics.track(sw.id, 'view');
+      }
     });
     inject(DestroyRef).onDestroy(() => this.seo.reset());
+  }
+
+  protected trackDemo(id: string): void {
+    this.analytics.track(id, 'demo');
+  }
+  protected trackCaseStudy(id: string): void {
+    this.analytics.track(id, 'case_study');
   }
 
   protected readonly caseStudies = computed(() => {

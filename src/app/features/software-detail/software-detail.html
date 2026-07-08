@@ -30,10 +30,10 @@
             </button>
           }
           @if (sw.liveUrl) {
-            <a [href]="sw.liveUrl" target="_blank" rel="noopener" class="ge-btn-dark"><ge-icon name="external" [size]="17" /> Live Project</a>
+            <a [href]="sw.liveUrl" (click)="trackDemo(sw.id)" target="_blank" rel="noopener" class="ge-btn-dark"><ge-icon name="external" [size]="17" /> Live Project</a>
           }
           @if (sw.caseStudyUrl) {
-            <a [href]="sw.caseStudyUrl" target="_blank" rel="noopener" class="ge-btn-dark"><ge-icon name="document" [size]="17" /> Case Study</a>
+            <a [href]="sw.caseStudyUrl" (click)="trackCaseStudy(sw.id)" target="_blank" rel="noopener" class="ge-btn-dark"><ge-icon name="document" [size]="17" /> Case Study</a>
           }
           <button type="button" (click)="present()" class="ge-btn-dark"><ge-icon name="presentation" [size]="17" /> Present to Client</button>
         </div>
