@@ -70,6 +70,31 @@ export class AuthService {
     this.store.clear();
   }
 
+  /**
+   * Request a password-reset email via Supabase Auth. Recovery only exists in
+   * cloud mode — the local demo gate has no email to recover. `redirectTo` is
+   * the Reset Password page URL the emailed link points back to.
+   */
+  async requestPasswordReset(email: string, redirectTo: string): Promise<void> {
+    if (!this.client.enabled) {
+      throw new Error('Password recovery is unavailable in demo mode.');
+    }
+    await this.client.sendPasswordRecovery(email.trim(), redirectTo);
+  }
+
+  /**
+   * Complete a password reset using the recovery `accessToken` from the emailed
+   * link's URL fragment. On success the user is signed out and should log in
+   * again with the new password.
+   */
+  async completePasswordReset(accessToken: string, newPassword: string): Promise<void> {
+    if (!this.client.enabled) {
+      throw new Error('Password recovery is unavailable in demo mode.');
+    }
+    await this.client.updatePassword(accessToken, newPassword);
+    this.store.clear();
+  }
+
   private async tryRefresh(refreshToken: string): Promise<void> {
     try {
       const res = await this.client.refreshSession(refreshToken);

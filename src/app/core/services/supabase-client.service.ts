@@ -81,6 +81,41 @@ export class SupabaseClientService {
     });
   }
 
+  /**
+   * Send a password-recovery email (GoTrue `/recover`). `redirectTo` is where
+   * Supabase sends the user after they click the link — it must be listed in the
+   * project's allowed redirect URLs. Returns 200 regardless of whether the email
+   * is registered, so this never reveals account existence.
+   */
+  async sendPasswordRecovery(email: string, redirectTo: string): Promise<void> {
+    const url = `${this.cfg.url}/auth/v1/recover?redirect_to=${encodeURIComponent(redirectTo)}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { apikey: this.cfg.anonKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (!res.ok) throw new Error('Could not send the reset email. Please try again.');
+  }
+
+  /**
+   * Set a new password for the user identified by the recovery `accessToken`
+   * (GoTrue `PUT /user`). The token comes from the recovery link's URL fragment.
+   */
+  async updatePassword(accessToken: string, password: string): Promise<void> {
+    const res = await fetch(`${this.cfg.url}/auth/v1/user`, {
+      method: 'PUT',
+      headers: {
+        apikey: this.cfg.anonKey,
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password })
+    });
+    if (!res.ok) {
+      throw new Error('This reset link has expired or is invalid. Request a new one.');
+    }
+  }
+
   // --- PostgREST (data) ---------------------------------------------------
 
   async select<T>(table: string, query = 'select=*'): Promise<T[]> {
