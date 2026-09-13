@@ -76,14 +76,6 @@ export class SeoService {
       provider: { '@type': 'Organization', name: 'GrowthifyEdge', url: this.origin() }
     };
     if (image) ld['image'] = image;
-    if (sw.rating > 0) {
-      ld['aggregateRating'] = {
-        '@type': 'AggregateRating',
-        ratingValue: sw.rating,
-        bestRating: 5,
-        ratingCount: Math.max(sw.clients, 1)
-      };
-    }
     return ld;
   }
 

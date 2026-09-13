@@ -32,18 +32,15 @@ export class Sidebar {
   protected readonly presentation = inject(PresentationService);
 
   protected readonly showcaseNav: readonly NavItem[] = [
-    { label: 'Executive Dashboard', path: '/', icon: 'home', exact: true },
-    { label: 'Software Gallery', path: '/gallery', icon: 'grid' },
-    { label: 'AI Automation Gallery', path: '/automations', icon: 'robot' },
-    { label: 'Mini Software Lab', path: '/lab', icon: 'beaker' },
-    { label: 'Demo Theatre', path: '/theatre', icon: 'film' },
-    { label: 'Case Studies', path: '/case-studies', icon: 'document' },
-    { label: 'Roadmap', path: '/roadmap', icon: 'map' }
+    { label: 'Home', path: '/', icon: 'home', exact: true },
+    { label: 'Work', path: '/work', icon: 'grid' },
+    { label: 'Capabilities', path: '/capabilities', icon: 'bolt' },
+    { label: 'About', path: '/about', icon: 'users' },
+    { label: 'Contact', path: '/contact', icon: 'mail' }
   ];
 
   protected readonly workspaceNav: readonly NavItem[] = [
-    { label: 'Admin Studio', path: '/studio', icon: 'settings' },
-    { label: 'Request a Demo', path: '/contact', icon: 'mail' }
+    { label: 'Admin Studio', path: '/admin/projects', icon: 'settings' }
   ];
 
   protected onNavigate(): void {

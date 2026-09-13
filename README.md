@@ -151,9 +151,11 @@ Service layer: `SupabaseClientService` (thin REST wrapper, no SDK dependency),
 5. (Optional) Seed the cloud: in Admin Studio click **Export JSON**, then import
    that file once the backend is on — or `POST` the rows directly.
 
-> Auth is intentionally not added yet (Phase 5). The RLS policies currently allow
-> anon read+write so Admin Studio works locally; `schema.sql` includes the
-> commented `authenticated`-only policy to tighten later.
+> Supabase Auth protects admin access. The base schema allows public reads only;
+> project and media writes require an authenticated user whose
+> `app_metadata.role` is `admin`. Existing Supabase projects should run
+> [`supabase/phase1-portfolio-security.sql`](supabase/phase1-portfolio-security.sql)
+> once before using the streamlined editor in cloud mode.
 
 ### Quick toggle without a rebuild
 

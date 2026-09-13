@@ -58,6 +58,9 @@ interface SoftwareRow {
   launched_at: string;
   updated_at: string;
   tags: string[];
+  published?: boolean;
+  outcome?: string | null;
+  metrics?: BusinessImpactMetric[] | null;
 }
 
 const TABLE = 'software_projects';
@@ -149,6 +152,9 @@ export class SoftwareCloudService {
       launched_at: s.launchedAt,
       updated_at: s.updatedAt,
       tags: [...s.tags]
+      ,published: s.published ?? true
+      ,outcome: s.outcome ?? null
+      ,metrics: s.metrics ? [...s.metrics] : null
     };
   }
 
@@ -194,6 +200,9 @@ export class SoftwareCloudService {
       launchedAt: r.launched_at ?? r.updated_at ?? '',
       updatedAt: r.updated_at ?? '',
       tags: r.tags ?? []
+      ,published: r.published ?? true
+      ,outcome: r.outcome ?? undefined
+      ,metrics: r.metrics ?? undefined
     };
   }
 }

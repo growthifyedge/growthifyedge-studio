@@ -32,6 +32,7 @@ create table if not exists public.software_projects (
   visibility            text not null default 'public',   -- public | private | client-only
   pricing               text not null default 'Custom Quote',
   featured              boolean not null default false,
+  published             boolean not null default true,
   is_mini               boolean not null default false,
   cover_image           text default '',                  -- thumbnailUrl
   accent_color          text default '#6d49ff',
@@ -53,6 +54,8 @@ create table if not exists public.software_projects (
   rating                numeric(2,1) default 0,
   clients               integer default 0,
   impact_score          integer default 0,
+  outcome               text,
+  metrics               jsonb,
   launched_at           date,
   tags                  jsonb not null default '[]'::jsonb,
   created_at            timestamptz not null default now(),
@@ -79,25 +82,26 @@ create trigger trg_software_projects_touch
 
 -- ---------------------------------------------------------------------
 --  Row Level Security
---  PHASE 4: Admin Studio is open (no auth yet), so we allow anon read+write.
---  PHASE 5: tighten writes to authenticated users — see the commented policy.
+--  Public visitors can read. Only users with app_metadata.role = 'admin'
+--  may write; never expose service_role credentials in the browser.
 -- ---------------------------------------------------------------------
 alter table public.software_projects enable row level security;
 
 drop policy if exists "public read"  on public.software_projects;
 drop policy if exists "anon write"   on public.software_projects;
+drop policy if exists "auth write"   on public.software_projects;
+drop policy if exists "admin write"  on public.software_projects;
 
 create policy "public read"
   on public.software_projects for select
-  using ( true );
+  to anon, authenticated
+  using (visibility = 'public' and published = true);
 
-create policy "anon write"
+create policy "admin write"
   on public.software_projects for all
-  using ( true ) with check ( true );
-
--- PHASE 5 (replace "anon write" with):
--- create policy "auth write" on public.software_projects for all
---   to authenticated using ( true ) with check ( true );
+  to authenticated
+  using (coalesce((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin', false))
+  with check (coalesce((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin', false));
 
 -- ---------------------------------------------------------------------
 --  Storage bucket for thumbnail + screenshot uploads (public read)
@@ -108,14 +112,16 @@ on conflict (id) do nothing;
 
 drop policy if exists "media public read"  on storage.objects;
 drop policy if exists "media anon upload"  on storage.objects;
+drop policy if exists "media admin write"  on storage.objects;
 
 create policy "media public read"
   on storage.objects for select
   using ( bucket_id = 'project-media' );
 
-create policy "media anon upload"
-  on storage.objects for insert
-  with check ( bucket_id = 'project-media' );
+create policy "media admin write"
+  on storage.objects for all to authenticated
+  using (bucket_id = 'project-media' and coalesce((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin', false))
+  with check (bucket_id = 'project-media' and coalesce((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin', false));
 
 
 -- =====================================================================

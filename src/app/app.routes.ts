@@ -20,10 +20,20 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard)
       },
       {
-        path: 'gallery',
-        title: 'Software Gallery · GrowthifyEdge',
-        loadComponent: () =>
-          import('./features/software-library/software-library').then((m) => m.SoftwareLibrary)
+        path: 'work',
+        title: 'Work · GrowthifyEdge',
+        loadComponent: () => import('./features/software-library/software-library').then((m) => m.SoftwareLibrary)
+      },
+      { path: 'gallery', redirectTo: 'work', pathMatch: 'full' },
+      {
+        path: 'capabilities',
+        title: 'Capabilities · GrowthifyEdge',
+        loadComponent: () => import('./features/capabilities/capabilities').then((m) => m.Capabilities)
+      },
+      {
+        path: 'about',
+        title: 'About · GrowthifyEdge',
+        loadComponent: () => import('./features/about/about').then((m) => m.About)
       },
       {
         path: 'software/:slug',
@@ -89,6 +99,24 @@ export const routes: Routes = [
           import('./features/reset-password/reset-password').then((m) => m.ResetPassword)
       },
       {
+        path: 'admin/projects',
+        title: 'Projects · GrowthifyEdge',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/admin/admin').then((m) => m.Admin)
+      },
+      {
+        path: 'admin/projects/new',
+        title: 'Add project · GrowthifyEdge',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/software-form/software-form').then((m) => m.SoftwareForm)
+      },
+      {
+        path: 'admin/projects/:id',
+        title: 'Edit project · GrowthifyEdge',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/software-form/software-form').then((m) => m.SoftwareForm)
+      },
+      {
         path: 'studio',
         title: 'Admin Studio · GrowthifyEdge',
         canActivate: [adminGuard],
@@ -117,13 +145,17 @@ export const routes: Routes = [
       },
       {
         path: 'studio/new',
-        title: 'Add Software · GrowthifyEdge',
-        canActivate: [adminGuard],
-        loadComponent: () => import('./features/software-form/software-form').then((m) => m.SoftwareForm)
+        redirectTo: 'admin/projects/new',
+        pathMatch: 'full'
       },
       {
         path: 'studio/edit/:id',
-        title: 'Edit Software · GrowthifyEdge',
+        redirectTo: 'admin/projects/:id',
+        pathMatch: 'full'
+      },
+      {
+        path: 'studio/legacy-new',
+        title: 'Add Software · GrowthifyEdge',
         canActivate: [adminGuard],
         loadComponent: () => import('./features/software-form/software-form').then((m) => m.SoftwareForm)
       },

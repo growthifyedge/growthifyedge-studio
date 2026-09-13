@@ -169,6 +169,11 @@ export class SupabaseClientService {
     if (!res.ok) throw new Error(`Supabase delete ${table} failed: ${res.status}`);
   }
 
+  async rpc(name: string, body: Record<string, unknown>): Promise<void> {
+    const res = await fetch(`${this.cfg.url}/rest/v1/rpc/${name}`, { method: 'POST', headers: this.headers(), body: JSON.stringify(body) });
+    if (!res.ok) throw new Error(`Supabase RPC ${name} failed: ${res.status}`);
+  }
+
   // --- Storage (files) ----------------------------------------------------
 
   async uploadFile(path: string, file: File): Promise<string> {

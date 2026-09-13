@@ -1,11 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { SoftwareService } from '../../../core/services/software.service';
-import {
-  CATEGORY_OPTIONS,
-  SORT_OPTIONS,
-  STATUS_OPTIONS
-} from '../../../core/models/filters.model';
+import { SORT_OPTIONS } from '../../../core/models/filters.model';
+import { SoftwareCategory } from '../../../core/models/software.model';
 import { Icon } from '../icon/icon';
 
 /**
@@ -23,21 +20,16 @@ import { Icon } from '../icon/icon';
 export class FilterBar {
   protected readonly svc = inject(SoftwareService);
 
-  protected readonly categories = CATEGORY_OPTIONS;
-  protected readonly statuses = STATUS_OPTIONS;
-  protected readonly sorts = SORT_OPTIONS;
+  protected readonly categories: readonly ('All' | SoftwareCategory)[] = ['All', 'Website', 'Software', 'Dashboard', 'Automation', 'Integration'];
+  protected readonly sorts = SORT_OPTIONS.filter((sort) => sort.value !== 'impact' && sort.value !== 'rating');
   protected readonly techs = this.svc.technologies;
 
   protected get filters() {
     return this.svc.filters();
   }
 
-  protected setCategory(category: (typeof CATEGORY_OPTIONS)[number]): void {
+  protected setCategory(category: 'All' | SoftwareCategory): void {
     this.svc.patchFilters({ category });
-  }
-
-  protected setStatus(value: string): void {
-    this.svc.patchFilters({ status: value as (typeof STATUS_OPTIONS)[number] });
   }
 
   protected setTech(value: string): void {

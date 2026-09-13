@@ -22,6 +22,8 @@ export const DEFAULT_FILTERS: SoftwareFilters = {
 
 export const CATEGORY_OPTIONS: readonly (SoftwareCategory | 'All')[] = [
   'All',
+  'Website',
+  'Software',
   'AI Tool',
   'Automation',
   'Mini Software',

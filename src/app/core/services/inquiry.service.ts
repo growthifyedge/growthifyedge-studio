@@ -1,6 +1,8 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 
 import { Inquiry, InquiryStatus, InquiryType } from '../models/inquiry.model';
+import { SupabaseClientService } from './supabase-client.service';
+import { AuthService } from './auth.service';
 
 export interface InquiryInput {
   name: string;
@@ -23,6 +25,8 @@ export interface InquiryInput {
  */
 @Injectable({ providedIn: 'root' })
 export class InquiryService {
+  private readonly cloud = inject(SupabaseClientService);
+  private readonly auth = inject(AuthService);
   private static readonly KEY = 'growthifyedge.inquiries.v1';
 
   private readonly _inquiries = signal<Inquiry[]>(this.load());
@@ -35,6 +39,9 @@ export class InquiryService {
 
   constructor() {
     effect(() => this.save(this._inquiries()));
+    effect(() => {
+      if (this.cloud.enabled && this.auth.isAuthenticated()) void this.refreshFromCloud();
+    });
   }
 
   /** Create a new inquiry (status defaults to New). Safe for anonymous use. */
@@ -53,6 +60,9 @@ export class InquiryService {
       createdAt: new Date().toISOString()
     };
     this._inquiries.update((list) => [inquiry, ...list]);
+    if (this.cloud.enabled) {
+      void this.cloud.rpc('submit_inquiry', { p_name: inquiry.name, p_company: inquiry.company, p_email: inquiry.email, p_phone: inquiry.phone, p_type: inquiry.type, p_project_id: inquiry.projectId ?? '', p_project_name: inquiry.projectName, p_message: inquiry.message }).catch(() => {});
+    }
     return inquiry;
   }
 
@@ -60,6 +70,9 @@ export class InquiryService {
     this._inquiries.update((list) =>
       list.map((i) => (i.id === id ? { ...i, status } : i))
     );
+    if (this.cloud.enabled && this.auth.isAuthenticated()) {
+      void this.cloud.patch<InquiryRow>('inquiries', 'id', id, { status }).catch(() => {});
+    }
   }
 
   archive(id: string): void {
@@ -68,6 +81,23 @@ export class InquiryService {
 
   remove(id: string): void {
     this._inquiries.update((list) => list.filter((i) => i.id !== id));
+    if (this.cloud.enabled && this.auth.isAuthenticated()) {
+      void this.cloud.remove('inquiries', 'id', id).catch(() => {});
+    }
+  }
+
+  private async refreshFromCloud(): Promise<void> {
+    try {
+      const rows = await this.cloud.select<InquiryRow>('inquiries', 'select=*&order=created_at.desc');
+      this._inquiries.set(rows.map((row) => ({
+        id: row.id, name: row.name, company: row.company ?? '', email: row.email,
+        phone: row.phone ?? '', type: row.type as InquiryType, projectId: row.project_id,
+        projectName: row.project_name ?? '', message: row.message,
+        status: row.status as InquiryStatus, createdAt: row.created_at
+      })));
+    } catch {
+      /* Keep the local cache when the cloud is unavailable or access is denied. */
+    }
   }
 
   // --- persistence --------------------------------------------------------
@@ -90,4 +120,18 @@ export class InquiryService {
       /* quota / privacy mode */
     }
   }
+}
+
+interface InquiryRow {
+  id: string;
+  name: string;
+  company: string | null;
+  email: string;
+  phone: string | null;
+  type: string;
+  project_id: string | null;
+  project_name: string | null;
+  message: string;
+  status: string;
+  created_at: string;
 }

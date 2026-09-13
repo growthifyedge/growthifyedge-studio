@@ -1,7 +1,7 @@
 <ge-page-header
-  eyebrow="Manage your showcase"
-  title="Admin Studio"
-  subtitle="Add, edit and curate every project. Changes are saved to your browser and flow to the whole site."
+  eyebrow="Portfolio management"
+  title="Projects"
+  subtitle="A simple, fast view of every project in your portfolio."
 >
   <div actions class="flex flex-wrap items-center gap-2">
     <a routerLink="/studio/analytics" class="ge-btn-ghost !py-2.5">
@@ -10,9 +10,11 @@
     <a routerLink="/studio/inquiries" class="ge-btn-ghost !py-2.5">
       <ge-icon name="mail" [size]="16" /> Inquiries
     </a>
-    <a routerLink="/studio/testimonials" class="ge-btn-ghost !py-2.5">
-      <ge-icon name="quote" [size]="16" /> Testimonials
-    </a>
+    @if (!svc.cloudEnabled) {
+      <a routerLink="/studio/testimonials" class="ge-btn-ghost !py-2.5">
+        <ge-icon name="quote" [size]="16" /> Testimonials
+      </a>
+    }
     <button type="button" (click)="exportJson()" class="ge-btn-ghost !py-2.5">
       <ge-icon name="upload" [size]="16" /> Export JSON
     </button>
@@ -20,13 +22,15 @@
       <ge-icon name="document" [size]="16" /> Import JSON
       <input type="file" accept="application/json,.json" class="hidden" (change)="onImportFile($event)" />
     </label>
-    <button type="button" (click)="pendingReset.set(true)" class="ge-btn-ghost !py-2.5">
-      <ge-icon name="trash" [size]="16" /> Reset demo data
-    </button>
+    @if (!svc.cloudEnabled) {
+      <button type="button" (click)="pendingReset.set(true)" class="ge-btn-ghost !py-2.5">
+        <ge-icon name="trash" [size]="16" /> Reset demo data
+      </button>
+    }
     <button type="button" (click)="logout()" class="ge-btn-ghost !py-2.5" [title]="adminEmail() ? 'Signed in as ' + adminEmail() : 'Log out'">
       <ge-icon name="lock" [size]="16" /> Log out
     </button>
-    <a routerLink="/studio/new" class="ge-btn-primary"><ge-icon name="plus" [size]="18" /> Add Software</a>
+    <a routerLink="/admin/projects/new" class="ge-btn-primary"><ge-icon name="plus" [size]="18" /> Add project</a>
   </div>
 </ge-page-header>
 
@@ -39,9 +43,9 @@
 <!-- Stats -->
 <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
   <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-slate-900">{{ stats().total }}</p><p class="text-xs text-slate-500">Total projects</p></div>
-  <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-emerald-600">{{ stats().live }}</p><p class="text-xs text-slate-500">Live</p></div>
-  <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-brand-600">{{ stats().automations }}</p><p class="text-xs text-slate-500">AI &amp; automations</p></div>
-  <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-amber-500">{{ stats().avgRating }}</p><p class="text-xs text-slate-500">Avg rating</p></div>
+  <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-emerald-600">{{ stats().published }}</p><p class="text-xs text-slate-500">Published</p></div>
+  <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-brand-600">{{ stats().drafts }}</p><p class="text-xs text-slate-500">Drafts</p></div>
+  <div class="ge-card-glass p-5"><p class="font-display text-3xl font-bold text-amber-500">{{ stats().featured }}</p><p class="text-xs text-slate-500">Featured</p></div>
 </div>
 
 <!-- Toolbar: search + filters -->
@@ -80,7 +84,7 @@
         <tr>
           <th class="px-5 py-3.5 font-semibold">Project</th>
           <th class="px-5 py-3.5 font-semibold">Category</th>
-          <th class="px-5 py-3.5 font-semibold">Status</th>
+          <th class="px-5 py-3.5 font-semibold">Publishing</th>
           <th class="px-5 py-3.5 font-semibold">Visibility</th>
           <th class="px-5 py-3.5 font-semibold">Flags</th>
           <th class="px-5 py-3.5 text-right font-semibold">Actions</th>
@@ -99,7 +103,7 @@
               </div>
             </td>
             <td class="px-5 py-3.5 text-slate-600">{{ s.category }}</td>
-            <td class="px-5 py-3.5"><ge-status-badge [status]="s.status" /></td>
+            <td class="px-5 py-3.5"><span class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold" [class]="s.published === false ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'">{{ s.published === false ? 'Draft' : 'Published' }}</span></td>
             <td class="px-5 py-3.5">
               @let vm = visibilityMeta(s.visibility);
               <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1" [class]="vm.cls">
@@ -118,22 +122,12 @@
                 >
                   <ge-icon name="star" [size]="13" /> Featured
                 </button>
-                <button
-                  type="button"
-                  (click)="toggleMini(s.id)"
-                  class="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold ring-1 transition"
-                  [class]="isMini(s) ? 'bg-brand-50 text-brand-600 ring-brand-200' : 'text-slate-400 ring-slate-200 hover:text-brand-500'"
-                  [attr.aria-pressed]="isMini(s)"
-                  title="Toggle mini software"
-                >
-                  <ge-icon name="beaker" [size]="13" /> Mini
-                </button>
               </div>
             </td>
             <td class="px-5 py-3.5">
               <div class="flex items-center justify-end gap-1.5">
                 <a [routerLink]="['/software', s.slug]" class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-brand-600" aria-label="View"><ge-icon name="eye" [size]="16" /></a>
-                <a [routerLink]="['/studio/edit', s.id]" class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-brand-600" aria-label="Edit"><ge-icon name="edit" [size]="16" /></a>
+                <a [routerLink]="['/admin/projects', s.id]" class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-brand-600" aria-label="Edit"><ge-icon name="edit" [size]="16" /></a>
                 @if (pendingDelete() === s.id) {
                   <span class="inline-flex items-center gap-1">
                     <button type="button" (click)="confirmDelete(s.id)" class="rounded-lg bg-rose-500 px-2 py-1 text-xs font-semibold text-white hover:bg-rose-600">Confirm</button>
@@ -158,7 +152,7 @@
 </div>
 
 <!-- Reset confirm dialog -->
-@if (pendingReset()) {
+@if (!svc.cloudEnabled && pendingReset()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-ink-950/70 p-4 backdrop-blur-sm animate-fade-in-fast" (click)="pendingReset.set(false)">
     <div class="ge-card-glass w-full max-w-md p-6" (click)="$event.stopPropagation()">
       <div class="grid h-12 w-12 place-items-center rounded-2xl bg-rose-50 text-rose-500"><ge-icon name="trash" [size]="22" /></div>

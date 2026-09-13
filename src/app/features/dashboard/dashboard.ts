@@ -24,13 +24,17 @@ export class Dashboard {
 
   protected readonly stats = this.svc.stats;
   protected readonly featured = this.svc.featured;
+  protected readonly hasProjects = computed(() => this.svc.visibleSoftware().length > 0);
 
   /** Lead featured project that has a demo video — drives the hero video card. */
   protected readonly spotlight = computed(
     () => this.featured().find((s) => s.videos.length > 0) ?? this.svc.visibleSoftware()[0]
   );
 
-  protected readonly bento = computed(() => this.featured().slice(0, 5));
+  protected readonly bento = computed(() => {
+    const highlighted = this.featured();
+    return (highlighted.length ? highlighted : this.svc.visibleSoftware()).slice(0, 5);
+  });
 
   protected readonly recentDemos = computed(() =>
     this.svc
@@ -44,26 +48,20 @@ export class Dashboard {
   protected readonly statTiles = computed(() => {
     const s = this.stats();
     return [
-      { label: 'Projects shipped', value: `${s.total}`, icon: 'layers' as const, tint: '#6d49ff' },
-      { label: 'Live in production', value: `${s.live}`, icon: 'bolt' as const, tint: '#10c5ac' },
-      { label: 'Demo videos', value: `${s.videos}`, icon: 'film' as const, tint: '#f43bb8' },
-      { label: 'Client case studies', value: `${s.caseStudies}`, icon: 'document' as const, tint: '#f59e0b' }
+      { label: 'Published projects', value: `${s.total}`, icon: 'layers' as const, tint: '#6d49ff' },
+      { label: 'Portfolio projects', value: `${s.total}`, icon: 'bolt' as const, tint: '#10c5ac' },
+      { label: 'Technology stacks', value: `${this.techMarquee().length}`, icon: 'film' as const, tint: '#f43bb8' },
+      { label: 'Solution types', value: '5', icon: 'document' as const, tint: '#f59e0b' }
     ];
   });
 
-  /** Headline business-impact figures for the cinematic impact band. */
+  /** A concise summary of the kinds of work GrowthifyEdge offers. */
   protected readonly impact = computed(() => {
-    const list = this.svc.visibleSoftware();
-    const hours = list.reduce((sum, s) => {
-      const m = /(\d+)/.exec(s.timeSaved);
-      return sum + (m ? Number(m[1]) : 0);
-    }, 0);
-    const s = this.stats();
     return [
-      { value: `${hours}h+`, label: 'Saved every week', sub: 'across all deployments' },
-      { value: `${s.clients}+`, label: 'Clients served', sub: 'and counting' },
-      { value: `${s.automations}`, label: 'AI & automations', sub: 'shipped to production' },
-      { value: `${s.avgRating}★`, label: 'Average rating', sub: 'from client teams' }
+      { value: 'Web', label: 'Responsive experiences', sub: 'sites and storefronts' },
+      { value: 'Apps', label: 'Business software', sub: 'tools teams use daily' },
+      { value: 'Data', label: 'Dashboards', sub: 'clarity for better decisions' },
+      { value: 'Flow', label: 'Automation', sub: 'less repetitive work' }
     ];
   });
 
@@ -79,10 +77,11 @@ export class Dashboard {
     const count = (pred: (c: string) => boolean) =>
       list.filter((s) => pred(s.category)).length;
     return [
-      { label: 'AI Tools', description: 'Copilots and assistants that think alongside your team.', icon: 'robot', count: count((c) => c === 'AI Tool'), link: '/gallery', queryParams: { category: 'AI Tool' }, gradient: 'linear-gradient(135deg,#6d49ff,#f43bb8)' },
-      { label: 'Automations', description: 'Workflows that run the busywork on autopilot.', icon: 'flow', count: count((c) => c === 'Automation'), link: '/automations', gradient: 'linear-gradient(135deg,#f43bb8,#36e0c8)' },
-      { label: 'Dashboards', description: 'Live cockpits that turn data into decisions.', icon: 'chart', count: count((c) => c === 'Dashboard'), link: '/gallery', queryParams: { category: 'Dashboard' }, gradient: 'linear-gradient(135deg,#36e0c8,#6d49ff)' },
-      { label: 'Mini Software', description: 'Sharp, focused tools that deliver quick wins.', icon: 'beaker', count: count((c) => c === 'Mini Software'), link: '/lab', gradient: 'linear-gradient(135deg,#6d49ff,#10c5ac)' }
+      { label: 'Websites', description: 'Clear, responsive websites built around a business goal.', icon: 'document', count: count((c) => c === 'Website'), link: '/work', queryParams: { category: 'Website' }, gradient: 'linear-gradient(135deg,#6d49ff,#f43bb8)' },
+      { label: 'Software', description: 'Focused tools that help teams do useful work.', icon: 'layers', count: count((c) => c === 'Software'), link: '/work', queryParams: { category: 'Software' }, gradient: 'linear-gradient(135deg,#f43bb8,#36e0c8)' },
+      { label: 'Dashboards', description: 'Useful reporting views for confident decisions.', icon: 'chart', count: count((c) => c === 'Dashboard'), link: '/work', queryParams: { category: 'Dashboard' }, gradient: 'linear-gradient(135deg,#36e0c8,#6d49ff)' },
+      { label: 'Automations', description: 'Reliable workflows that reduce repetitive work.', icon: 'flow', count: count((c) => c === 'Automation'), link: '/work', queryParams: { category: 'Automation' }, gradient: 'linear-gradient(135deg,#6d49ff,#10c5ac)' },
+      { label: 'Integrations', description: 'Connected systems that keep information moving.', icon: 'bolt', count: count((c) => c === 'Integration'), link: '/work', queryParams: { category: 'Integration' }, gradient: 'linear-gradient(135deg,#f59e0b,#f43bb8)' }
     ];
   });
 

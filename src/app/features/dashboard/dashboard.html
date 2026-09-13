@@ -17,39 +17,38 @@
           <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-aqua-400 opacity-75"></span>
           <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-aqua-400"></span>
         </span>
-        Software Showcase Hub
+        GrowthifyEdge · Digital solutions
       </span>
       <h1 class="mt-6 font-display text-[2.6rem] font-bold leading-[1.02] tracking-tightest sm:text-6xl">
-        We design, build &<br />
-        <span class="text-gradient-brand">ship software</span><br />
-        that moves the needle.
+        Websites, software,<br />
+        <span class="text-gradient-brand">dashboards & automation</span><br />
+        built for real work.
       </h1>
       <p class="mt-6 max-w-lg text-base leading-relaxed text-slate-300/90 sm:text-[17px]">
-        Explore every product, AI automation and mini tool we’ve built — with live demos,
-        screenshots, real business impact and client case studies in one premium hub.
+        I build practical digital tools that simplify operations, improve customer experiences, and help businesses move faster.
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a routerLink="/gallery" class="ge-btn-aurora !px-6 !py-3.5">
-          <ge-icon name="grid" [size]="18" /> Explore the Gallery
+        <a routerLink="/work" class="ge-btn-aurora !px-6 !py-3.5">
+          <ge-icon name="grid" [size]="18" /> View My Work
         </a>
-        <a routerLink="/present" class="ge-btn-dark !px-6 !py-3.5">
-          <ge-icon name="presentation" [size]="18" /> Start Presentation
+        <a routerLink="/contact" class="ge-btn-dark !px-6 !py-3.5">
+          <ge-icon name="mail" [size]="18" /> Start a Project
         </a>
       </div>
 
       <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-slate-400">
-        <span class="inline-flex items-center gap-2"><ge-icon name="check" [size]="16" class="text-aqua-400" /> {{ stats().live }} live products</span>
+        <span class="inline-flex items-center gap-2"><ge-icon name="check" [size]="16" class="text-aqua-400" /> Websites & e-commerce</span>
         <span class="h-4 w-px bg-white/10"></span>
-        <span class="inline-flex items-center gap-2"><ge-icon name="check" [size]="16" class="text-aqua-400" /> {{ stats().clients }}+ clients</span>
+        <span class="inline-flex items-center gap-2"><ge-icon name="check" [size]="16" class="text-aqua-400" /> Custom business software</span>
         <span class="h-4 w-px bg-white/10"></span>
-        <span class="inline-flex items-center gap-2"><ge-icon name="star" [size]="16" class="text-amber-300" /> {{ stats().avgRating }} avg rating</span>
+        <span class="inline-flex items-center gap-2"><ge-icon name="star" [size]="16" class="text-amber-300" /> Automations & integrations</span>
       </div>
     </div>
 
     <!-- Featured software video card -->
     @if (spotlight(); as sp) {
       <div class="animate-fade-in lg:pl-4">
-        <p class="mb-3 ge-eyebrow !text-brand-300">Featured demo</p>
+        <p class="mb-3 ge-eyebrow !text-brand-300">Highlighted project</p>
         <button
           type="button"
           (click)="sp.videos[0] && play(sp.videos[0])"
@@ -76,7 +75,8 @@
   </div>
 </section>
 
-<!-- ============ IMPACT STATS ============ -->
+@if (hasProjects()) {
+<!-- ============ PORTFOLIO SUMMARY ============ -->
 <section class="reveal mb-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
   @for (tile of statTiles(); track tile.label) {
     <div class="ge-card-glass group relative overflow-hidden p-5 transition duration-500 hover:-translate-y-1">
@@ -108,7 +108,7 @@
   <div class="pointer-events-none absolute -right-16 top-0 h-56 w-56 rounded-full bg-flush-500/30 blur-[90px]"></div>
   <div class="relative">
     <p class="ge-eyebrow !text-brand-300">By the numbers</p>
-    <h2 class="mt-1.5 font-display text-2xl font-bold tracking-tightest sm:text-3xl">Business impact we’ve delivered</h2>
+    <h2 class="mt-1.5 font-display text-2xl font-bold tracking-tightest sm:text-3xl">What GrowthifyEdge builds</h2>
     <div class="reveal mt-8 grid grid-cols-2 gap-6 lg:grid-cols-4">
       @for (m of impact(); track m.label) {
         <div class="relative">
@@ -128,7 +128,7 @@
       <p class="ge-eyebrow mb-1">Hand-picked</p>
       <h2 class="ge-h2">Featured Projects</h2>
     </div>
-    <a routerLink="/gallery" class="ge-btn-ghost !py-2.5">View all <ge-icon name="arrow-right" [size]="16" /></a>
+    <a routerLink="/work" class="ge-btn-ghost !py-2.5">View all <ge-icon name="arrow-right" [size]="16" /></a>
   </div>
 
   <div class="grid auto-rows-[minmax(0,1fr)] grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -145,9 +145,9 @@
   <div class="mb-5 flex items-end justify-between">
     <div>
       <p class="ge-eyebrow mb-1">Fresh from the studio</p>
-      <h2 class="ge-h2">Recent Demos</h2>
+      <h2 class="ge-h2">Project Walkthroughs</h2>
     </div>
-    <a routerLink="/theatre" class="ge-btn-ghost !py-2.5">Demo Theatre <ge-icon name="film" [size]="16" /></a>
+    <a routerLink="/theatre" class="ge-btn-ghost !py-2.5">View walkthroughs <ge-icon name="film" [size]="16" /></a>
   </div>
 
   <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -169,6 +169,14 @@
     }
   </div>
 </section>
+} @else {
+  <section class="mb-12 rounded-[28px] border border-dashed border-slate-300 bg-slate-50 p-8 text-center sm:p-12">
+    <p class="ge-eyebrow">Portfolio in progress</p>
+    <h2 class="mt-2 font-display text-2xl font-bold text-slate-900">New work will appear here soon.</h2>
+    <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-600">GrowthifyEdge is preparing selected websites, software, dashboards, automations, and integrations for the portfolio.</p>
+    <a routerLink="/contact" class="ge-btn mt-6"><ge-icon name="mail" [size]="16" /> Discuss a project</a>
+  </section>
+}
 
 <!-- ============ CLIENT CTA ============ -->
 <section
@@ -186,7 +194,7 @@
     </div>
     <div class="flex shrink-0 flex-wrap gap-3">
       <a routerLink="/contact" class="ge-btn-aurora"><ge-icon name="mail" [size]="18" /> Request a Demo</a>
-      <a routerLink="/case-studies" class="ge-btn-dark"><ge-icon name="document" [size]="18" /> See the Results</a>
+      <a routerLink="/work" class="ge-btn-dark"><ge-icon name="grid" [size]="18" /> Browse work</a>
     </div>
   </div>
 </section>

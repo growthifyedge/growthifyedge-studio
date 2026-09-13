@@ -1,7 +1,8 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 
 import { Testimonial } from '../models/software.model';
 import { MOCK_TESTIMONIALS } from '../data/mock-software';
+import { SupabaseClientService } from './supabase-client.service';
 
 export interface TestimonialInput {
   clientName: string;
@@ -16,14 +17,12 @@ export interface TestimonialInput {
 /**
  * Client testimonials (Phase 6.4).
  *
- * localStorage-first signal store (mirrors {@link InquiryService}). Seeded from
- * MOCK_TESTIMONIALS on first run so the public Case Studies page is never empty.
- * The admin curates entries; anonymous visitors only read them. Cloud mode
- * (Supabase `testimonials`, public read + admin write) is prepared in
- * supabase/testimonials.sql and can be wired later without changing callers.
+ * local fixtures for development. In Supabase mode this intentionally returns
+ * no endorsements until a real testimonials integration is introduced.
  */
 @Injectable({ providedIn: 'root' })
 export class TestimonialService {
+  private readonly cloud = inject(SupabaseClientService);
   private static readonly KEY = 'growthifyedge.testimonials.v1';
 
   private readonly _testimonials = signal<Testimonial[]>(this.load());
@@ -80,6 +79,10 @@ export class TestimonialService {
   // --- persistence --------------------------------------------------------
 
   private load(): Testimonial[] {
+    // Never let an older browser cache make showcase fixtures look like live
+    // client endorsements in a Supabase-backed portfolio.
+    if (this.cloud.enabled) return [];
+
     try {
       const raw = typeof localStorage !== 'undefined' && localStorage.getItem(TestimonialService.KEY);
       if (!raw) return MOCK_TESTIMONIALS.map((t) => ({ ...t }));

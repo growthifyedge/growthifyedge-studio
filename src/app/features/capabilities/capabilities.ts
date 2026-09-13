@@ -1,0 +1,5 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Icon } from '../../shared/components/icon/icon';
+@Component({selector:'ge-capabilities',standalone:true,changeDetection:ChangeDetectionStrategy.OnPush,imports:[RouterLink,Icon],templateUrl:'./capabilities.html'})
+export class Capabilities { protected readonly groups=[{title:'Web & E-commerce',items:['Business websites','Responsive frontends','E-commerce storefronts','Shopify and WordPress solutions']},{title:'Custom Software',items:['Business web applications','Internal management systems','Admin dashboards','Booking, inventory and CRM-style tools']},{title:'Automation',items:['Workflow automation','API-driven processes','Data and repetitive-task automation','Operational integrations']},{title:'AI & Integrations',items:['AI-enabled workflows','AI features in applications','REST APIs','Third-party service integrations']}]; protected readonly stack=['Angular','TypeScript','JavaScript','Tailwind CSS','Supabase','PostgreSQL','Firebase','Shopify','WordPress','REST APIs','Git/GitHub','Vercel']; }

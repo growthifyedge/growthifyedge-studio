@@ -17,7 +17,6 @@ import { AnalyticsService } from '../../core/services/analytics.service';
 import { DemoVideo } from '../../core/models/software.model';
 import { isDirectVideo, toEmbedUrl } from '../../core/utils/video-embed';
 import { Icon, IconName } from '../../shared/components/icon/icon';
-import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { TechChip } from '../../shared/components/tech-chip/tech-chip';
 import { ImpactStat } from '../../shared/components/impact-stat/impact-stat';
 import { ScreenshotGallery } from '../../shared/components/screenshot-gallery/screenshot-gallery';
@@ -33,7 +32,6 @@ import { InquiryCta } from '../../shared/components/inquiry-cta/inquiry-cta';
   imports: [
     RouterLink,
     Icon,
-    StatusBadge,
     TechChip,
     ImpactStat,
     ScreenshotGallery,

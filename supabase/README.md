@@ -18,6 +18,7 @@ This folder holds the SQL migrations and documents the schema.
 | [`analytics.sql`](analytics.sql) | `project_analytics_events` + `project_analytics`, `record_analytics_event()` RPC | Prepared (app uses localStorage today) |
 | [`inquiries.sql`](inquiries.sql) | `inquiries` table + `submit_inquiry()` RPC | Prepared |
 | [`testimonials.sql`](testimonials.sql) | `testimonials` table + `software_projects.case_study` column | Prepared |
+| [`phase1-portfolio-security.sql`](phase1-portfolio-security.sql) | locks project/media writes to admin users and adds Phase 1 portfolio fields | Run once for an existing project |
 
 ---
 
@@ -90,6 +91,7 @@ Anonymous **writes** never go direct to a table — they flow through
 `SECURITY DEFINER` RPCs that validate and constrain the payload. All admin
 mutations run as an authenticated Supabase user (GoTrue JWT via `AuthService`).
 
-> The base `schema.sql` currently ships anon read+write policies so Admin Studio
-> works before auth is wired in cloud mode; it includes the commented
-> `authenticated`-only policy to tighten for production.
+> The base `schema.sql` allows public reads only. Project and media writes require
+> an authenticated user with `app_metadata.role = 'admin'`. For an existing
+> Supabase project, run [`phase1-portfolio-security.sql`](phase1-portfolio-security.sql)
+> once; it changes policies and adds fields without deleting existing data.

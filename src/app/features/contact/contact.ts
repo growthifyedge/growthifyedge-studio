@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 
 import { SoftwareService } from '../../core/services/software.service';
+import { InquiryService } from '../../core/services/inquiry.service';
 import { PageHeader } from '../../shared/components/page-header/page-header';
 import { Icon } from '../../shared/components/icon/icon';
 
@@ -40,6 +41,7 @@ export class Contact {
 
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly svc = inject(SoftwareService);
+  private readonly inquiries = inject(InquiryService);
 
   protected readonly products = computed(() => this.svc.visibleSoftware());
   protected readonly budgets = ['< $5k', '$5k – $20k', '$20k – $50k', '$50k+', 'Not sure yet'];
@@ -72,8 +74,13 @@ export class Contact {
       this.form.markAllAsTouched();
       return;
     }
-    // Backend-ready: this is where an HTTP POST to /api/demo-requests would go
-    // (the InquiryService already persists client inquiries from project pages).
+    const value = this.form.getRawValue();
+    const project = this.products().find((item) => item.name === value.interest);
+    this.inquiries.create({
+      name: value.name, company: value.company, email: value.email, phone: '',
+      type: 'Contact', projectId: project?.id ?? null, projectName: project?.name ?? value.interest,
+      message: `${value.message}\n\nProject type / interest: ${value.interest || 'Other'}\nBudget: ${value.budget}`
+    });
     this.submitted.set(true);
   }
 

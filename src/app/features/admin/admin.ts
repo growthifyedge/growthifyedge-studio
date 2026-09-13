@@ -9,14 +9,13 @@ import {
   STATUS_OPTIONS
 } from '../../core/models/filters.model';
 import { PageHeader } from '../../shared/components/page-header/page-header';
-import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { Icon, IconName } from '../../shared/components/icon/icon';
 
 @Component({
   selector: 'ge-admin',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, PageHeader, StatusBadge, Icon],
+  imports: [RouterLink, PageHeader, Icon],
   templateUrl: './admin.html'
 })
 export class Admin {
@@ -26,7 +25,12 @@ export class Admin {
 
   protected readonly adminEmail = this.auth.email;
 
-  protected readonly stats = this.svc.stats;
+  protected readonly stats = computed(() => {
+    const list = this.svc.software();
+    return { total: list.length, published: list.filter((p) => p.published !== false).length,
+      drafts: list.filter((p) => p.published === false).length,
+      featured: list.filter((p) => p.featured).length };
+  });
 
   protected readonly categories = CATEGORY_OPTIONS;
   protected readonly statuses = STATUS_OPTIONS;
@@ -55,10 +59,6 @@ export class Admin {
   protected readonly pendingDelete = signal<string | null>(null);
   protected readonly pendingReset = signal(false);
 
-  protected isMini(s: Software): boolean {
-    return this.svc.isMini(s);
-  }
-
   protected visibilityMeta(v: Visibility): { label: string; icon: IconName; cls: string } {
     switch (v) {
       case 'public':
@@ -83,9 +83,6 @@ export class Admin {
 
   protected toggleFeatured(id: string): void {
     this.svc.toggleFeatured(id);
-  }
-  protected toggleMini(id: string): void {
-    this.svc.toggleMini(id);
   }
 
   protected askDelete(id: string): void {

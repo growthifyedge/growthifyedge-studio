@@ -5,6 +5,8 @@
  */
 
 export type SoftwareCategory =
+  | 'Website'
+  | 'Software'
   | 'AI Tool'
   | 'Automation'
   | 'Mini Software'
@@ -12,6 +14,10 @@ export type SoftwareCategory =
   | 'Dashboard'
   | 'Integration'
   | 'Mobile App';
+
+/** The five categories used by the streamlined portfolio editor. Legacy
+ * categories above are retained so older records and public views keep working. */
+export type PortfolioCategory = 'Website' | 'Software' | 'Dashboard' | 'Automation' | 'Integration';
 
 export type SoftwareStatus = 'Live' | 'Beta' | 'In Development' | 'Concept' | 'Archived';
 
@@ -168,6 +174,11 @@ export interface Software {
   readonly launchedAt: string;
   readonly updatedAt: string;
   readonly tags: readonly string[];
+
+  /** Phase 1 portfolio fields. Optional so existing local/cloud records remain valid. */
+  readonly published?: boolean;
+  readonly outcome?: string;
+  readonly metrics?: readonly BusinessImpactMetric[];
 }
 
 export type RoadmapStatus = 'Shipped' | 'In Progress' | 'Planned' | 'Exploring';

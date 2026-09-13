@@ -27,9 +27,13 @@ export class SoftwareService {
   private readonly cloud = inject(SoftwareCloudService);
   private readonly auth = inject(AuthService);
 
-  private readonly _software = signal<readonly Software[]>(this.storage.load());
-  private readonly _caseStudies = signal<readonly CaseStudy[]>(MOCK_CASE_STUDIES);
-  private readonly _roadmap = signal<readonly RoadmapItem[]>(MOCK_ROADMAP);
+  // In Supabase mode, the cloud is the source of truth. Starting empty avoids
+  // a flash of local showcase fixtures before the first fetch finishes.
+  private readonly _software = signal<readonly Software[]>(
+    this.cloud.enabled ? [] : this.storage.load(),
+  );
+  private readonly _caseStudies = signal<readonly CaseStudy[]>(this.cloud.enabled ? [] : MOCK_CASE_STUDIES);
+  private readonly _roadmap = signal<readonly RoadmapItem[]>(this.cloud.enabled ? [] : MOCK_ROADMAP);
 
   /** Reflects whether the Supabase backend is active (else localStorage demo). */
   readonly cloudEnabled = this.cloud.enabled;
@@ -50,7 +54,9 @@ export class SoftwareService {
     this.syncState.set('syncing');
     try {
       const list = await this.cloud.list();
-      if (list.length) this._software.set(list);
+      // In cloud mode Supabase is authoritative, including an intentionally
+      // empty portfolio. Seed fixtures must never become public proof.
+      this._software.set(list);
       this.syncState.set('idle');
     } catch (err) {
       console.warn('[GrowthifyEdge] Supabase load failed — using local data.', err);
@@ -86,7 +92,7 @@ export class SoftwareService {
   readonly visibleSoftware = computed<readonly Software[]>(() =>
     this.isAdmin()
       ? this._software()
-      : this._software().filter((s) => s.visibility === 'public')
+      : this._software().filter((s) => s.visibility === 'public' && s.published !== false)
   );
 
   readonly total = computed(() => this.visibleSoftware().length);
@@ -202,7 +208,7 @@ export class SoftwareService {
     const s = this.bySlug(slug);
     if (!s) return undefined;
     if (this.isAdmin()) return s;
-    return s.visibility === 'private' ? undefined : s;
+    return s.visibility === 'private' || s.published === false ? undefined : s;
   }
 
   getCaseStudiesFor(softwareId: string): readonly CaseStudy[] {

@@ -19,13 +19,6 @@
 
   <div class="mt-4 flex flex-col gap-3 border-t border-slate-200/70 pt-4 lg:flex-row lg:items-center">
     <label class="flex items-center gap-2 text-sm">
-      <span class="font-medium text-slate-500">Status</span>
-      <select class="ge-input !w-auto !py-2" [value]="filters.status" (change)="setStatus($any($event.target).value)">
-        @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
-      </select>
-    </label>
-
-    <label class="flex items-center gap-2 text-sm">
       <span class="font-medium text-slate-500">Technology</span>
       <select class="ge-input !w-auto !py-2" [value]="filters.tech" (change)="setTech($any($event.target).value)">
         <option value="All">All</option>
