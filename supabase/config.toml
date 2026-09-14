@@ -1,0 +1,5 @@
+[functions.notify-inquiry]
+# This function is called by pg_net after an inquiry commits, so there is no
+# browser or Supabase user JWT. It authenticates the request with its private
+# x-inquiry-hook-secret inside the function instead.
+verify_jwt = false

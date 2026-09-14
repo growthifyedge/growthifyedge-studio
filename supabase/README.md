@@ -19,6 +19,7 @@ This folder holds the SQL migrations and documents the schema.
 | [`inquiries.sql`](inquiries.sql) | `inquiries` table + `submit_inquiry()` RPC | Prepared |
 | [`testimonials.sql`](testimonials.sql) | `testimonials` table + `software_projects.case_study` column | Prepared |
 | [`phase1-portfolio-security.sql`](phase1-portfolio-security.sql) | locks project/media writes to admin users and adds Phase 1 portfolio fields | Run once for an existing project |
+| [`phase4-inquiry-email-notifications.sql`](phase4-inquiry-email-notifications.sql) | queues a private Edge Function notification after an inquiry is committed | Optional; deploy `notify-inquiry` first |
 
 ---
 
@@ -68,6 +69,8 @@ camelCase ⇄ snake_case translation).
 
 - **`inquiries`** — demo/quotation/contact requests (`status`: `New → Contacted → Quoted → Closed → Archived`).
 - **`submit_inquiry(...)`** — `SECURITY DEFINER` RPC; forces `status = 'New'` and validates `type`, so anonymous submits are safe.
+- **`notify-inquiry`** — optional Edge Function that sends an asynchronous
+  notification after an insert. See its [setup guide](functions/notify-inquiry/README.md).
 
 ---
 
