@@ -1,6 +1,7 @@
-<!-- ============ CINEMATIC HERO ============ -->
+@if (false) {
+<!-- ============ RETAINED HERO MARKUP (not rendered; reserved for future Featured Work reuse) ============ -->
 <section
-  class="vignette noise relative mb-10 overflow-hidden rounded-[36px] border border-white/10 bg-ink-950 text-white shadow-premium"
+  class="vignette noise relative mb-10 overflow-hidden rounded-[36px] border border-white/10 bg-ink-950 text-white shadow-premium lg:left-1/2 lg:w-[calc(100vw-21.5rem)] lg:max-w-[1500px] lg:-translate-x-1/2"
 >
   <div class="pointer-events-none absolute inset-0 bg-cinematic animate-glow-breathe"></div>
   <div class="pointer-events-none absolute inset-0 bg-grid-faint bg-grid opacity-[0.25]"></div>
@@ -9,7 +10,7 @@
   <div class="pointer-events-none absolute -right-16 -top-10 h-64 w-64 rounded-full bg-flush-500/30 blur-[90px]"></div>
   <div class="pointer-events-none absolute bottom-0 left-1/2 h-56 w-72 -translate-x-1/2 rounded-full bg-aqua-500/20 blur-[90px]"></div>
 
-  <div class="relative grid gap-10 p-7 sm:p-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:p-14">
+  <div class="relative grid gap-10 p-7 sm:p-10 lg:min-h-[540px] lg:grid-cols-2 lg:items-center lg:gap-12 lg:px-16 lg:py-14">
     <!-- Copy -->
     <div>
       <span class="ge-chip-dark animate-fade-in shadow-inner-top">
@@ -47,7 +48,7 @@
 
     <!-- Featured software video card -->
     @if (spotlight(); as sp) {
-      <div class="animate-fade-in lg:pl-4">
+      <div class="animate-fade-in">
         <p class="mb-3 ge-eyebrow !text-brand-300">Highlighted project</p>
         <button
           type="button"
@@ -74,6 +75,11 @@
     }
   </div>
 </section>
+
+}
+
+<ge-campaign-slide />
+<ge-technology-banner />
 
 @if (hasProjects()) {
 <!-- ============ PORTFOLIO SUMMARY ============ -->

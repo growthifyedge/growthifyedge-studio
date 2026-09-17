@@ -11,12 +11,14 @@ import {
   CategoryCardData
 } from '../../shared/components/category-card/category-card';
 import { Icon } from '../../shared/components/icon/icon';
+import { TechnologyBanner } from '../../shared/components/technology-banner/technology-banner';
+import { CampaignSlide } from '../../shared/components/campaign-slide/campaign-slide';
 
 @Component({
   selector: 'ge-dashboard',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, SoftwareCard, VideoCard, VideoModal, CategoryCard, Icon],
+  imports: [RouterLink, SoftwareCard, VideoCard, VideoModal, CategoryCard, Icon, TechnologyBanner, CampaignSlide],
   templateUrl: './dashboard.html'
 })
 export class Dashboard {

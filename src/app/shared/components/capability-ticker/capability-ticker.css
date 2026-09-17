@@ -1,0 +1,24 @@
+:host { display: block; overflow: hidden; }
+
+.capability-ticker { background: radial-gradient(circle at 18% 50%, rgba(109,73,255,.23), transparent 28%), radial-gradient(circle at 84% 52%, rgba(16,197,172,.15), transparent 32%), linear-gradient(110deg, rgba(5,6,13,.99), rgba(21,12,43,.98) 48%, rgba(5,22,29,.98)); box-shadow: inset 0 1px rgba(255,255,255,.13), inset 0 0 30px rgba(109,73,255,.08), 0 16px 42px rgba(9,8,25,.24); }
+.ticker-grid { background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px); background-size: 24px 24px; mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent); opacity: .45; }
+.ticker-sheen { background: linear-gradient(100deg, transparent, rgba(255,255,255,.13), transparent); filter: blur(5px); transform: translateX(-170%) skewX(-20deg); animation: ticker-sheen 5.6s linear infinite; }
+.ticker-track { animation: ticker-scroll 16s linear infinite; will-change: transform; }
+.ticker-group { perspective: 650px; }
+.ticker-item { display: inline-block; margin: 0 12px 0 18px; border: 1px solid rgba(176,164,255,.3); border-radius: 12px; background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(31,20,67,.54)); box-shadow: inset 0 1px rgba(255,255,255,.18), 0 9px 20px rgba(0,0,0,.28), 0 0 16px rgba(109,73,255,.16); padding: 11px 16px; color: #fff; font-family: 'Space Grotesk', Inter, sans-serif; font-size: 21px; font-weight: 800; letter-spacing: .065em; line-height: 1; text-transform: uppercase; text-shadow: 0 2px 0 rgba(4,5,12,.9), 0 0 14px rgba(176,164,255,.52); transform: rotateX(8deg) rotateY(-4deg) translateZ(7px); transition: color .2s ease, filter .2s ease, transform .2s ease, border-color .2s ease; }
+.ticker-group .ticker-item:nth-of-type(3n) { border-color: rgba(54,224,200,.44); background: linear-gradient(135deg, rgba(54,224,200,.16), rgba(8,35,39,.58)); color: #d5fff8; text-shadow: 0 2px 0 rgba(4,5,12,.9), 0 0 15px rgba(54,224,200,.65); transform: rotateX(7deg) rotateY(4deg) translateZ(13px); }
+.ticker-group .ticker-item:nth-of-type(4n) { border-color: rgba(244,59,184,.46); background: linear-gradient(135deg, rgba(244,59,184,.15), rgba(48,13,45,.57)); color: #ffe1f4; text-shadow: 0 2px 0 rgba(4,5,12,.9), 0 0 15px rgba(244,59,184,.65); }
+.ticker-item:hover { border-color: rgba(255,255,255,.7); color: #fff; filter: brightness(1.2); transform: rotateX(4deg) rotateY(0) translateZ(22px); }
+.ticker-separator { display: inline-grid; height: 18px; width: 18px; place-items: center; color: #a78bfa; font-size: 11px; text-shadow: 0 0 14px #8b73ff; transform: rotate(15deg) translateZ(8px); }
+.ticker-item, .ticker-group .ticker-item:nth-of-type(3n), .ticker-group .ticker-item:nth-of-type(4n) { margin: 0 18px; border: 0; border-radius: 0; background: transparent; box-shadow: none; padding: 0; color: #fff; font-size: 24px; font-weight: 800; letter-spacing: .055em; text-shadow: 0 2px 0 rgba(4,5,12,.92), 0 0 16px rgba(176,164,255,.52); transform: rotateX(6deg) rotateY(-3deg) translateZ(7px); }
+.ticker-group .ticker-item:nth-of-type(3n) { color: #cffff7; text-shadow: 0 2px 0 rgba(4,5,12,.92), 0 0 16px rgba(54,224,200,.68); transform: rotateX(5deg) rotateY(3deg) translateZ(12px); }
+.ticker-group .ticker-item:nth-of-type(4n) { color: #ffe0f3; text-shadow: 0 2px 0 rgba(4,5,12,.92), 0 0 16px rgba(244,59,184,.68); }
+.ticker-item:hover { border: 0; filter: brightness(1.18); transform: rotateX(3deg) rotateY(0) translateZ(16px); }
+.ticker-fade-left { background: linear-gradient(90deg, #070812, transparent); }.ticker-fade-right { background: linear-gradient(-90deg, #08111a, transparent); }
+
+@keyframes ticker-scroll { to { transform: translateX(-50%); } }
+@keyframes ticker-sheen { to { transform: translateX(430%) skewX(-20deg); } }
+
+@media (max-width: 1023px) { .ticker-item, .ticker-group .ticker-item:nth-of-type(3n), .ticker-group .ticker-item:nth-of-type(4n) { margin: 0 14px; padding: 0; font-size: 19px; } }
+@media (max-width: 639px) { .ticker-item, .ticker-group .ticker-item:nth-of-type(3n), .ticker-group .ticker-item:nth-of-type(4n) { margin: 0 10px; padding: 0; font-size: 15px; letter-spacing: .06em; } .ticker-separator { width: 14px; font-size: 9px; } .ticker-grid { background-size: 20px 20px; } }
+@media (prefers-reduced-motion: reduce) { .ticker-track, .ticker-sheen { animation: none; } .ticker-track { transform: translateX(-18%); } }

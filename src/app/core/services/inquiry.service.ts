@@ -46,7 +46,28 @@ export class InquiryService {
 
   /** Create a new inquiry (status defaults to New). Safe for anonymous use. */
   create(input: InquiryInput): Inquiry {
-    const inquiry: Inquiry = {
+    const inquiry = this.toInquiry(input);
+    this._inquiries.update((list) => [inquiry, ...list]);
+    if (this.cloud.enabled) {
+      void this.submitToCloud(inquiry).catch(() => {});
+    }
+    return inquiry;
+  }
+
+  /**
+   * Durable submission for forms that need to show success only after the
+   * Supabase inquiry RPC accepts the record. Existing callers can retain the
+   * optimistic `create` flow above.
+   */
+  async submit(input: InquiryInput): Promise<Inquiry> {
+    const inquiry = this.toInquiry(input);
+    if (this.cloud.enabled) await this.submitToCloud(inquiry);
+    this._inquiries.update((list) => [inquiry, ...list]);
+    return inquiry;
+  }
+
+  private toInquiry(input: InquiryInput): Inquiry {
+    return {
       id: `inq-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
       name: input.name.trim(),
       company: input.company.trim(),
@@ -59,11 +80,14 @@ export class InquiryService {
       status: 'New',
       createdAt: new Date().toISOString()
     };
-    this._inquiries.update((list) => [inquiry, ...list]);
-    if (this.cloud.enabled) {
-      void this.cloud.rpc('submit_inquiry', { p_name: inquiry.name, p_company: inquiry.company, p_email: inquiry.email, p_phone: inquiry.phone, p_type: inquiry.type, p_project_id: inquiry.projectId ?? '', p_project_name: inquiry.projectName, p_message: inquiry.message }).catch(() => {});
-    }
-    return inquiry;
+  }
+
+  private submitToCloud(inquiry: Inquiry): Promise<void> {
+    return this.cloud.rpc('submit_inquiry', {
+      p_name: inquiry.name, p_company: inquiry.company, p_email: inquiry.email,
+      p_phone: inquiry.phone, p_type: inquiry.type, p_project_id: inquiry.projectId ?? '',
+      p_project_name: inquiry.projectName, p_message: inquiry.message
+    });
   }
 
   updateStatus(id: string, status: InquiryStatus): void {

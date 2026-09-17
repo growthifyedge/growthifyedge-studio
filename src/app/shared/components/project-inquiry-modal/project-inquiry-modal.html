@@ -1,0 +1,53 @@
+<div geOverlayPortal class="fixed inset-0 z-[100] grid place-items-center bg-ink-950/70 p-4 backdrop-blur-md motion-safe:animate-fade-in-fast sm:p-6" (click)="close()">
+  <section #dialog role="dialog" aria-modal="true" aria-labelledby="project-modal-title" style="width: min(1200px, calc(100vw - 64px)); max-width: none;" class="relative max-h-[calc(100vh-2rem)] overflow-y-auto rounded-[30px] border border-white/15 bg-slate-950 text-white shadow-2xl sm:max-h-[calc(100vh-3rem)]" (click)="$event.stopPropagation()">
+    <button type="button" (click)="close()" class="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-xl border border-white/20 bg-ink-950/70 text-white shadow-lg transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 sm:right-5 sm:top-5" aria-label="Close project inquiry form"><ge-icon name="close" [size]="21" /></button>
+    <div class="grid lg:grid-cols-[.58fr_1fr]">
+      <aside class="vignette noise relative overflow-hidden border-b border-white/10 bg-ink-950 p-9 sm:p-11 lg:border-b-0 lg:border-r lg:p-12">
+        <div class="pointer-events-none absolute inset-0 bg-cinematic opacity-80"></div>
+        <div class="relative">
+          <p class="ge-eyebrow !text-brand-300">GrowthifyEdge</p>
+          <h2 class="mt-4 font-display text-3xl font-bold tracking-tightest sm:text-[2.6rem]">Let’s Build Something Useful.</h2>
+          <p class="mt-5 text-[15px] leading-relaxed text-slate-300">Practical digital solutions shaped around real business requirements—not unnecessary complexity.</p>
+          <ul class="mt-8 space-y-5 text-[15px] text-slate-100">
+            <li class="flex gap-3"><ge-icon name="globe" [size]="18" class="shrink-0 text-aqua-300" /> Websites &amp; E-commerce</li>
+            <li class="flex gap-3"><ge-icon name="layers" [size]="18" class="shrink-0 text-brand-300" /> Custom Business Software</li>
+            <li class="flex gap-3"><ge-icon name="chart" [size]="18" class="shrink-0 text-flush-300" /> Dashboards &amp; Internal Systems</li>
+            <li class="flex gap-3"><ge-icon name="flow" [size]="18" class="shrink-0 text-aqua-300" /> Automation, AI &amp; Integrations</li>
+          </ul>
+          <p class="mt-10 border-t border-white/10 pt-6 text-[15px] font-medium text-slate-300">From idea to working product.</p>
+        </div>
+      </aside>
+      <div class="bg-white p-8 text-slate-900 sm:p-11 lg:p-12">
+        @if (success()) {
+          <div class="flex min-h-[370px] flex-col items-center justify-center text-center">
+            <div class="grid h-14 w-14 place-items-center rounded-2xl bg-emerald-50 text-emerald-600"><ge-icon name="check" [size]="28" /></div>
+            <h2 id="project-modal-title" class="mt-5 font-display text-2xl font-bold">Thanks — your inquiry is safely received.</h2>
+            <p class="mt-3 max-w-md text-sm leading-relaxed text-slate-600">I’ll review what you shared and get back to you with the most practical next step.</p>
+            <button type="button" (click)="close()" class="ge-btn-primary mt-7">Done</button>
+          </div>
+        } @else {
+          <p class="ge-eyebrow">Project inquiry</p>
+          <h2 id="project-modal-title" class="mt-3 font-display text-[2rem] font-bold tracking-tightest sm:text-[2.35rem]">Start a Project</h2>
+          <p class="mt-3 text-[15px] leading-relaxed text-slate-500">Tell me what you need and I’ll get back to you with the best practical next step.</p>
+          <form class="mt-8 space-y-6" [formGroup]="form" (ngSubmit)="submit()">
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div><label class="ge-label" for="project-name">Full Name *</label><input id="project-name" formControlName="name" class="ge-input min-h-[50px]" autocomplete="name" />@if(invalid('name')){<p class="mt-1 text-xs text-rose-600">Please enter your name.</p>}</div>
+              <div><label class="ge-label" for="project-email">Email *</label><input id="project-email" type="email" formControlName="email" class="ge-input min-h-[50px]" autocomplete="email" />@if(invalid('email')){<p class="mt-1 text-xs text-rose-600">Enter a valid email.</p>}</div>
+            </div>
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div><label class="ge-label" for="project-phone">Phone <span class="font-normal text-slate-400">optional</span></label><input id="project-phone" formControlName="phone" class="ge-input min-h-[50px]" autocomplete="tel" /></div>
+              <div><label class="ge-label" for="project-company">Company / Business <span class="font-normal text-slate-400">optional</span></label><input id="project-company" formControlName="company" class="ge-input min-h-[50px]" autocomplete="organization" /></div>
+            </div>
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div><label class="ge-label" for="project-type">Project Type *</label><select id="project-type" formControlName="projectType" class="ge-input min-h-[50px]"><option value="" disabled>Select a type</option>@for(type of projectTypes;track type){<option [value]="type">{{type}}</option>}</select>@if(invalid('projectType')){<p class="mt-1 text-xs text-rose-600">Choose a project type.</p>}</div>
+              <div><label class="ge-label" for="project-budget">Budget Range <span class="font-normal text-slate-400">optional</span></label><select id="project-budget" formControlName="budget" class="ge-input min-h-[50px]">@for(budget of budgets;track budget){<option [value]="budget">{{budget}}</option>}</select></div>
+            </div>
+            <div><label class="ge-label" for="project-message">Message *</label><textarea id="project-message" rows="5" formControlName="message" class="ge-input min-h-[130px] resize-y" placeholder="What would you like to improve, build, or automate?"></textarea>@if(invalid('message')){<p class="mt-1 text-xs text-rose-600">Please add at least 10 characters.</p>}</div>
+            @if(error()){<p role="alert" class="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">Your inquiry could not be sent just now. Please try again—your details are still here.</p>}
+            <button type="submit" class="ge-btn-primary min-h-[55px] w-full text-[15px]" [disabled]="sending() || form.invalid">@if(sending()){Sending…} @else {<ge-icon name="mail" [size]="18" /> Discuss My Project}</button>
+          </form>
+        }
+      </div>
+    </div>
+  </section>
+</div>

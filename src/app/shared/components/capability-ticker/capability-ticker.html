@@ -1,0 +1,19 @@
+<section class="capability-ticker relative mb-4 overflow-hidden rounded-[18px] border border-white/10 text-white shadow-premium lg:left-1/2 lg:w-[calc(100vw-2rem)] lg:max-w-[1800px] lg:-translate-x-1/2" aria-label="GrowthifyEdge capabilities">
+  <div class="ticker-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+  <div class="ticker-sheen pointer-events-none absolute inset-y-0 z-10 w-1/3" aria-hidden="true"></div>
+  <div class="ticker-fade ticker-fade-left pointer-events-none absolute inset-y-0 left-0 z-20 w-16 sm:w-24" aria-hidden="true"></div>
+  <div class="ticker-fade ticker-fade-right pointer-events-none absolute inset-y-0 right-0 z-20 w-16 sm:w-24" aria-hidden="true"></div>
+
+  <div class="ticker-viewport relative flex h-[60px] items-center sm:h-[68px] lg:h-[72px]">
+    <div class="ticker-track flex w-max items-center" aria-hidden="true">
+      @for (repeat of [0, 1]; track repeat) {
+        <div class="ticker-group flex shrink-0 items-center">
+          @for (capability of capabilities; track capability) {
+            <span class="ticker-item whitespace-nowrap">{{ capability }}</span>
+            <span class="ticker-separator" aria-hidden="true">✦</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>

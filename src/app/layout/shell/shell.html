@@ -4,6 +4,20 @@
     <router-outlet />
   </div>
 } @else {
+  @if (publicLayout()) {
+    <div class="relative flex min-h-screen flex-col" [class.bg-slate-100]="!homeRoute()" [class.bg-[#06131c]]="homeRoute()">
+      <div class="pointer-events-none fixed inset-0 bg-mesh-light" [class.hidden]="homeRoute()"></div>
+      <ge-public-navbar [homeOverlay]="homeRoute()" />
+      <main class="relative flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+        <div class="mx-auto w-full max-w-[1800px] animate-fade-in">
+          <router-outlet />
+        </div>
+      </main>
+      <footer class="relative px-6 py-8 text-center text-xs text-slate-400 lg:px-8">
+        © 2026 GrowthifyEdge · Digital Solutions Portfolio.
+      </footer>
+    </div>
+  } @else {
   <div class="relative min-h-screen bg-slate-100">
     <!-- Ambient light mesh on the canvas -->
     <div class="pointer-events-none fixed inset-0 bg-mesh-light"></div>
@@ -39,4 +53,10 @@
       </footer>
     </div>
   </div>
+
+  }
+
+  @if (projectModalOpen()) {
+    <ge-project-inquiry-modal (dismissed)="markProjectModalSeen()" (submitted)="markProjectModalSubmitted()" />
+  }
 }

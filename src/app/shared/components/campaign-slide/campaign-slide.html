@@ -1,0 +1,46 @@
+<section #scene class="scroll-campaign-scene" [class.scene-face-one]="activeIndex() === 0" [class.scene-face-two]="activeIndex() === 1" [class.scene-face-three]="activeIndex() === 2" aria-label="GrowthifyEdge campaign stories">
+  <div #stage class="scroll-campaign-stage">
+    <div class="scroll-campaign-atmosphere" aria-hidden="true"></div>
+    <div class="scroll-campaign-grid" aria-hidden="true"></div>
+    <div class="scroll-campaign-wordmark" aria-hidden="true">{{ activeWord() }}</div>
+    <div class="cube-aura" aria-hidden="true"><span class="cube-aura-cyan"></span><span class="cube-aura-violet"></span><span class="cube-aura-inner"></span></div>
+
+    <div class="scroll-campaign-controls" aria-label="Campaign story controls">
+      <button type="button" class="cube-control" [disabled]="isProgrammaticTransition() || activeIndex() === 0" (click)="goToFace(activeIndex() - 1)" aria-label="Previous campaign story">↑<span>Up</span></button>
+      <div class="scroll-campaign-indicators" aria-label="Campaign story progress">
+        @for (face of faces; track face.eyebrow; let index = $index) {
+          <span [class.scroll-campaign-indicator-active]="activeIndex() === index"></span>
+        }
+      </div>
+      <button type="button" class="cube-control" [disabled]="isProgrammaticTransition() || activeIndex() === faces.length - 1" (click)="goToFace(activeIndex() + 1)" aria-label="Next campaign story">↓<span>Down</span></button>
+    </div>
+
+    <div class="campaign-cube-shell" aria-live="polite">
+      <div class="campaign-cube" [class.campaign-cube-settled]="isSettled()" [style.--cube-rotation]="cubeAngle() + 'deg'">
+        @for (face of faces; track face.eyebrow; let index = $index) {
+          <article class="cube-face cube-face-{{ index + 1 }}" [class.cube-face-front]="activeIndex() === index" [attr.aria-hidden]="activeIndex() !== index" [attr.inert]="activeIndex() === index ? null : ''" [style.--face-surface]="faceSurfaceIntensity(index)" [style.--face-content]="faceContentIntensity(index)" [style.--face-darkness]="faceDarkness(index)">
+            <div class="face-light face-light-{{ index + 1 }}" aria-hidden="true"></div>
+            <div class="face-art" aria-hidden="true">
+              @if (index === 0) {
+                <div class="web-art-browser"><div><i></i><i></i><i></i><b></b></div><section><span></span><span></span><span></span><em></em></section><footer><b></b><b></b><b></b></footer></div>
+                <div class="web-art-panel"><span></span><span></span><i></i><i></i><i></i></div>
+              } @else if (index === 1) {
+                <div class="app-art-phone"><b></b><header></header><section><i></i><i></i><i></i><i></i></section><footer><span></span><span></span><span></span></footer></div>
+                <div class="app-art-dashboard"><header><i></i><span></span></header><section><b></b><b></b><b></b><b></b></section><footer></footer></div>
+              } @else {
+                <svg class="ai-art-paths" viewBox="0 0 460 240" fill="none"><path d="M230 120 C145 42 77 50 34 84 M230 120 C320 41 382 48 427 87 M230 120 C151 202 78 194 35 164 M230 120 C314 201 382 194 426 164" /><path class="ai-art-pulse" d="M230 120 C145 42 77 50 34 84" /><path class="ai-art-pulse ai-art-pulse-two" d="M230 120 C314 201 382 194 426 164" /></svg>
+                <div class="ai-art-core">AI</div><span class="ai-art-node node-api">API</span><span class="ai-art-node node-flow">FLOW</span><span class="ai-art-node node-data">DATA</span><span class="ai-art-node node-cloud">CLOUD</span>
+              }
+            </div>
+            <div class="face-copy">
+              <p>{{ face.eyebrow }}</p>
+              <h1>{{ face.title[0] }}<br /><span>{{ face.title[1] }}</span></h1>
+              <p class="face-description">{{ face.copy }}</p>
+              <a [routerLink]="face.route" class="ge-btn-aurora face-cta">{{ face.action }} <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  </div>
+</section>
