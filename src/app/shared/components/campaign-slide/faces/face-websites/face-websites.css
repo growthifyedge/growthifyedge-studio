@@ -1,0 +1,120 @@
+/* Face 1 artwork: Websites & Software.
+   Every dimension is expressed in --u, one design pixel at the 720px square, derived from the locked --cube-size.
+   The composition therefore scales like a single render across the 720 / 665 / 450 squares and never touches
+   the cube geometry, the .face-art box, or the copy block. */
+:host { display:contents; --u:calc(var(--cube-size) / 720); }
+@media (max-width:1023px) { :host { --u:calc(var(--cube-size) * .74 / 619); } }
+
+/* ---- shared surfaces ---- */
+.ws-phone,.ws-browser,.ws-dev { position:absolute; box-sizing:border-box; border:1px solid rgba(110,186,255,.28); background:linear-gradient(165deg,#0c1d3b 0%,#08142c 55%,#060e22 100%); }
+.ws-browser *,.ws-dev *,.ws-phone * { box-sizing:border-box; }
+
+/* ---- third element: phone silhouette, behind the browser at lower left ---- */
+.ws-phone { left:0; bottom:calc(8 * var(--u)); width:calc(108 * var(--u)); height:calc(204 * var(--u)); padding:calc(6 * var(--u)); border-radius:calc(17 * var(--u)); border-color:rgba(110,186,255,.34); box-shadow:0 calc(18 * var(--u)) calc(36 * var(--u)) rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.12),inset 1px 0 0 rgba(94,214,255,.18); transform:rotateY(18deg) rotateX(3deg) translateZ(calc(-24 * var(--u))); }
+.ws-phone-screen { position:relative; height:100%; overflow:hidden; border-radius:calc(11 * var(--u)); padding:calc(14 * var(--u)) calc(8 * var(--u)) 0; background:linear-gradient(180deg,#0d2448 0%,#08152f 45%,#060f24 100%); }
+.ws-phone-notch { position:absolute; left:50%; top:calc(4 * var(--u)); width:calc(26 * var(--u)); height:calc(4 * var(--u)); border-radius:99px; background:rgba(0,0,0,.6); transform:translateX(-50%); }
+.ws-phone-nav { display:flex; align-items:center; justify-content:space-between; height:calc(14 * var(--u)); padding:0 calc(3 * var(--u)); font-family:'Space Grotesk','Inter',sans-serif; font-size:calc(4.8 * var(--u)); font-weight:700; color:rgba(255,255,255,.66); }
+.ws-phone-nav i { width:calc(9 * var(--u)); height:calc(1.4 * var(--u)); border-radius:99px; background:rgba(255,255,255,.55); box-shadow:0 calc(-3 * var(--u)) 0 rgba(255,255,255,.55),0 calc(3 * var(--u)) 0 rgba(255,255,255,.55); }
+.ws-phone-hero { display:flex; flex-direction:column; align-items:flex-start; padding:calc(9 * var(--u)) calc(3 * var(--u)) calc(11 * var(--u)); font-family:'Inter',system-ui,sans-serif; background:radial-gradient(ellipse 90% 70% at 50% 0,rgba(24,140,255,.35),transparent 70%); }
+.ws-phone-hero small { font-size:calc(3.7 * var(--u)); font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(94,214,255,.78); }
+.ws-phone-hero strong { margin-top:calc(4 * var(--u)); font-family:'Space Grotesk','Inter',sans-serif; font-size:calc(6.4 * var(--u)); font-weight:700; line-height:1.1; letter-spacing:-.02em; color:rgba(255,255,255,.8); }
+.ws-phone-hero em { display:grid; place-items:center; margin-top:calc(6 * var(--u)); height:calc(12 * var(--u)); padding:0 calc(8 * var(--u)); border-radius:99px; font-style:normal; font-size:calc(4.1 * var(--u)); font-weight:700; color:rgba(255,255,255,.9); background:linear-gradient(110deg,#0b7ad0,#22c0ea); opacity:.9; }
+.ws-phone-card { display:flex; align-items:center; gap:calc(5 * var(--u)); height:calc(22 * var(--u)); margin-top:calc(6 * var(--u)); padding:0 calc(6 * var(--u)); border-radius:calc(5 * var(--u)); border:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.05); font-family:'Inter',system-ui,sans-serif; font-size:calc(4.1 * var(--u)); font-weight:600; color:rgba(255,255,255,.52); }
+.ws-phone-card i { flex:none; width:calc(8 * var(--u)); height:calc(8 * var(--u)); border-radius:calc(2 * var(--u)); background:linear-gradient(135deg,rgba(94,214,255,.9),rgba(31,124,255,.7)); }
+
+/* ---- primary object: browser window ---- */
+.ws-browser { left:calc(86 * var(--u)); top:calc(8 * var(--u)); width:calc(456 * var(--u)); height:calc(276 * var(--u)); overflow:hidden; border-radius:calc(12 * var(--u)); border-color:rgba(110,186,255,.34); background:radial-gradient(ellipse 70% 55% at 18% 0%,rgba(70,150,255,.16),transparent 62%),linear-gradient(165deg,#0d2040 0%,#08142c 55%,#060e22 100%); box-shadow:0 calc(24 * var(--u)) calc(48 * var(--u)) rgba(0,0,0,.55),0 calc(6 * var(--u)) calc(16 * var(--u)) rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14),inset 1px 0 0 rgba(94,214,255,.14); transform:rotateY(-5.5deg) rotateX(3deg) translateZ(calc(12 * var(--u))); }
+.ws-browser::before { content:''; position:absolute; left:0; right:0; top:0; z-index:2; height:1px; background:linear-gradient(90deg,transparent,rgba(120,220,255,.65) 28%,rgba(120,220,255,.65) 62%,transparent); }
+
+.ws-chrome { position:relative; display:flex; align-items:center; gap:calc(5 * var(--u)); height:calc(26 * var(--u)); padding:0 calc(11 * var(--u)); border-bottom:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.035); }
+.ws-chrome > i { width:calc(6 * var(--u)); height:calc(6 * var(--u)); border-radius:50%; background:rgba(255,255,255,.22); }
+.ws-url { display:flex; align-items:center; gap:calc(5 * var(--u)); width:calc(180 * var(--u)); height:calc(14 * var(--u)); margin-left:calc(8 * var(--u)); padding:0 calc(7 * var(--u)); border-radius:99px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.05); }
+.ws-url b { width:calc(5 * var(--u)); height:calc(6 * var(--u)); border-radius:1px; background:rgba(94,214,255,.7); }
+.ws-url span { width:calc(92 * var(--u)); height:calc(3 * var(--u)); border-radius:99px; background:rgba(255,255,255,.4); }
+/* Neutral slot reserved for the official GE mark. Renders as an empty outlined tile until /brand/ge-mark.png exists. */
+.ws-ge-slot { margin-left:auto; width:calc(15 * var(--u)); height:calc(15 * var(--u)); border-radius:calc(4 * var(--u)); border:1px solid rgba(255,255,255,.16); background-color:rgba(255,255,255,.04); background-image:url('/brand/ge-mark.png'); background-size:contain; background-position:center; background-repeat:no-repeat; }
+
+.ws-nav { display:flex; align-items:center; gap:calc(11 * var(--u)); height:calc(24 * var(--u)); padding:0 calc(16 * var(--u)); border-bottom:1px solid rgba(255,255,255,.06); }
+.ws-nav { font-family:'Inter',system-ui,sans-serif; }
+.ws-nav-brand { margin-right:calc(10 * var(--u)); font-family:'Space Grotesk','Inter',sans-serif; font-size:calc(7.4 * var(--u)); font-weight:700; letter-spacing:-.01em; color:rgba(255,255,255,.92); }
+.ws-nav > span { font-size:calc(5.6 * var(--u)); font-weight:500; color:rgba(255,255,255,.56); }
+.ws-nav > span:first-of-type { color:rgba(255,255,255,.88); }
+.ws-nav > em { display:grid; place-items:center; margin-left:auto; height:calc(13 * var(--u)); padding:0 calc(7 * var(--u)); border-radius:99px; border:1px solid rgba(94,214,255,.55); font-style:normal; font-size:calc(4.8 * var(--u)); font-weight:700; letter-spacing:.02em; color:#8fe4ff; }
+
+.ws-hero { position:relative; display:grid; grid-template-columns:1fr calc(158 * var(--u)); gap:calc(16 * var(--u)); height:calc(128 * var(--u)); padding:calc(18 * var(--u)) calc(18 * var(--u)) 0; background:radial-gradient(ellipse 58% 95% at 80% 42%,rgba(22,132,255,.4) 0,rgba(22,132,255,.12) 45%,transparent 72%),radial-gradient(ellipse 40% 60% at 6% 100%,rgba(54,224,200,.12),transparent 70%); }
+.ws-hero-copy { display:flex; flex-direction:column; align-items:flex-start; font-family:'Inter',system-ui,sans-serif; }
+.ws-eyebrow { font-style:normal; font-size:calc(5 * var(--u)); font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:rgba(94,214,255,.9); }
+.ws-h1 { margin-top:calc(7 * var(--u)); font-family:'Space Grotesk','Inter',sans-serif; font-size:calc(13.5 * var(--u)); font-weight:700; line-height:1.08; letter-spacing:-.025em; color:#fff; }
+.ws-p { margin-top:calc(6 * var(--u)); max-width:calc(200 * var(--u)); font-size:calc(6 * var(--u)); line-height:1.4; color:rgba(255,255,255,.62); }
+.ws-actions { display:flex; gap:calc(7 * var(--u)); margin-top:calc(10 * var(--u)); }
+.ws-btn,.ws-btn-ghost { display:grid; place-items:center; height:calc(17 * var(--u)); padding:0 calc(10 * var(--u)); border-radius:calc(5 * var(--u)); font-style:normal; font-size:calc(5.8 * var(--u)); font-weight:700; letter-spacing:.01em; color:#fff; }
+.ws-btn { background:linear-gradient(110deg,#0b7ad0,#22c0ea); box-shadow:0 calc(6 * var(--u)) calc(14 * var(--u)) rgba(20,160,232,.35); }
+.ws-btn-ghost { border:1px solid rgba(255,255,255,.22); color:rgba(255,255,255,.85); }
+
+.ws-hero-visual { position:relative; align-self:end; height:calc(100 * var(--u)); }
+.ws-card-back { position:absolute; right:calc(-8 * var(--u)); top:calc(-9 * var(--u)); width:100%; height:100%; border-radius:calc(9 * var(--u)); border:1px solid rgba(110,186,255,.18); background:rgba(10,28,58,.7); }
+.ws-card { position:relative; display:flex; flex-direction:column; gap:calc(7 * var(--u)); height:100%; padding:calc(9 * var(--u)) calc(10 * var(--u)); border-radius:calc(9 * var(--u)); border:1px solid rgba(110,186,255,.32); background:linear-gradient(180deg,#0e2246,#091734); box-shadow:0 calc(14 * var(--u)) calc(26 * var(--u)) rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12); }
+.ws-card-head { display:flex; align-items:center; gap:calc(5 * var(--u)); }
+.ws-card-head i { width:calc(6 * var(--u)); height:calc(6 * var(--u)); border-radius:2px; background:#36d6ff; }
+.ws-card-head span { font-family:'Inter',system-ui,sans-serif; font-size:calc(5.4 * var(--u)); font-weight:600; letter-spacing:.01em; color:rgba(255,255,255,.78); }
+.ws-card svg { display:block; width:100%; height:calc(44 * var(--u)); overflow:visible; }
+.ws-spark-area { fill:url(#ws-spark-fill); }
+.ws-spark-line { fill:none; stroke:#5fd6ff; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
+.ws-card-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:calc(5 * var(--u)); }
+.ws-card-stats b { display:flex; flex-direction:column; justify-content:space-between; height:calc(16 * var(--u)); padding:calc(2.5 * var(--u)) calc(4 * var(--u)) calc(3 * var(--u)); border-radius:calc(3 * var(--u)); border:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.06); font-family:'Inter',system-ui,sans-serif; font-size:calc(4.2 * var(--u)); font-weight:600; letter-spacing:.02em; color:rgba(255,255,255,.62); white-space:nowrap; overflow:hidden; }
+.ws-card-stats b i { display:block; height:calc(2 * var(--u)); width:72%; border-radius:99px; background:linear-gradient(90deg,#36d6ff,rgba(54,214,255,.25)); }
+.ws-card-stats b:nth-child(2) i { width:88%; }
+.ws-card-stats b:nth-child(3) i { width:56%; }
+
+.ws-sections { display:grid; grid-template-columns:repeat(3,1fr); gap:calc(10 * var(--u)); padding:calc(14 * var(--u)) calc(18 * var(--u)); }
+.ws-section { display:flex; flex-direction:column; gap:calc(5 * var(--u)); height:calc(60 * var(--u)); padding:calc(9 * var(--u)); border-radius:calc(7 * var(--u)); border:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.035); }
+.ws-section i { width:calc(11 * var(--u)); height:calc(11 * var(--u)); margin-bottom:calc(2 * var(--u)); border-radius:calc(3 * var(--u)); background:linear-gradient(135deg,rgba(94,214,255,.9),rgba(31,124,255,.7)); }
+.ws-section { font-family:'Inter',system-ui,sans-serif; white-space:nowrap; overflow:hidden; }
+.ws-section b { font-size:calc(6 * var(--u)); font-weight:700; letter-spacing:-.01em; color:rgba(255,255,255,.9); }
+.ws-section span { font-size:calc(4.8 * var(--u)); color:rgba(255,255,255,.5); }
+
+/* ---- secondary object: developer / component panel, in front at lower right ---- */
+.ws-dev { right:calc(-26 * var(--u)); bottom:calc(-8 * var(--u)); width:calc(178 * var(--u)); height:calc(126 * var(--u)); overflow:hidden; border-radius:calc(10 * var(--u)); border-color:rgba(110,200,255,.36); background:linear-gradient(160deg,#0c1c38 0%,#081431 50%,#060e22 100%); box-shadow:0 calc(26 * var(--u)) calc(50 * var(--u)) rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.16),inset 1px 0 0 rgba(94,214,255,.16); transform:rotateY(12deg) rotateX(-3deg) translateZ(calc(44 * var(--u))); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+.ws-dev-tabs { display:flex; align-items:stretch; gap:calc(10 * var(--u)); height:calc(22 * var(--u)); padding:0 calc(11 * var(--u)); border-bottom:1px solid rgba(255,255,255,.08); font-size:calc(7 * var(--u)); letter-spacing:.02em; color:rgba(255,255,255,.4); }
+.ws-dev-tabs > span { display:flex; align-items:center; border-bottom:1px solid transparent; }
+.ws-tab-active { color:#7fe0ff; border-bottom-color:#5fd6ff!important; }
+.ws-swatches { display:flex; align-items:center; gap:calc(4 * var(--u)); margin-left:auto; }
+.ws-swatches i { width:calc(7 * var(--u)); height:calc(7 * var(--u)); border-radius:50%; border:1px solid rgba(255,255,255,.18); background:#0b1a33; }
+.ws-swatches i:nth-child(2) { background:#1f7cff; }
+.ws-swatches i:nth-child(3) { background:#36d6ff; }
+.ws-code { margin:0; padding:calc(8 * var(--u)) calc(11 * var(--u)); overflow:hidden; font:inherit; font-size:calc(6.6 * var(--u)); line-height:calc(11 * var(--u)); color:rgba(255,255,255,.78); white-space:pre; }
+.ws-k { color:#5fd6ff; }
+.ws-s { color:#36e0c8; }
+.ws-t { color:#9cc4ff; }
+.ws-dev-foot { position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:calc(7 * var(--u)); height:calc(20 * var(--u)); padding:0 calc(11 * var(--u)); border-top:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.025); }
+.ws-bp { border:1px solid rgba(255,255,255,.3); border-radius:2px; }
+.ws-bp-desktop { width:calc(13 * var(--u)); height:calc(9 * var(--u)); }
+.ws-bp-tablet { width:calc(9 * var(--u)); height:calc(11 * var(--u)); }
+.ws-bp-phone { width:calc(6 * var(--u)); height:calc(10 * var(--u)); }
+.ws-bp-active { border-color:#5fd6ff; background:rgba(95,214,255,.12); box-shadow:0 0 calc(6 * var(--u)) rgba(95,214,255,.5); }
+.ws-bp-label { margin-left:auto; font-size:calc(6 * var(--u)); letter-spacing:.06em; color:rgba(255,255,255,.4); }
+
+/* ---- motion: Face 1 stays the quietest of the three faces, but every effect below is real, visible motion
+   (geometry or position), not just an opacity or shadow flicker. A drawing chart line, a clearly noticeable
+   dev-panel float, a light sweep that is actually visible mid-cycle, an independent slow phone float, a
+   button glow, and a blinking cursor. Timings are staggered so nothing moves in sync; only the main browser
+   window itself never moves. ---- */
+.ws-hero::after { content:''; position:absolute; top:0; bottom:0; left:0; width:42%; pointer-events:none; background:linear-gradient(100deg,transparent,rgba(170,228,255,.22) 50%,transparent); transform:translateX(-160%) skewX(-16deg); animation:ws-sweep 8s ease-in-out infinite; }
+.ws-dev { animation:ws-float 7s ease-in-out infinite; }
+.ws-phone { animation:ws-phone-float 11s ease-in-out infinite; animation-delay:2s; }
+.ws-spark-line { stroke-dasharray:26 14; animation:ws-line-draw 6s linear infinite; }
+.ws-btn { animation:ws-btn-glow 9s ease-in-out infinite; animation-delay:1.5s; }
+.ws-cursor { display:inline-block; width:calc(1.1 * var(--u)); height:calc(6.4 * var(--u)); margin-left:calc(1 * var(--u)); background:#5fd6ff; vertical-align:-1px; animation:ws-cursor-blink 1.1s steps(1,end) infinite; }
+@keyframes ws-sweep { 0% { transform:translateX(-160%) skewX(-16deg); } 62% { transform:translateX(340%) skewX(-16deg); } 100% { transform:translateX(340%) skewX(-16deg); } }
+@keyframes ws-float {
+  0%,100% { transform:rotateY(12deg) rotateX(-3deg) translateZ(calc(44 * var(--u))) translateY(0); }
+  50% { transform:rotateY(12deg) rotateX(-3deg) translateZ(calc(44 * var(--u))) translateY(calc(-5 * var(--u))); }
+}
+@keyframes ws-phone-float {
+  0%,100% { transform:rotateY(18deg) rotateX(3deg) translateZ(calc(-24 * var(--u))) translateY(0); }
+  50% { transform:rotateY(18deg) rotateX(3deg) translateZ(calc(-24 * var(--u))) translateY(calc(-2.5 * var(--u))); }
+}
+@keyframes ws-line-draw { 0% { stroke-dashoffset:0; } 100% { stroke-dashoffset:-80; } }
+@keyframes ws-btn-glow { 0%,100% { box-shadow:0 calc(6 * var(--u)) calc(14 * var(--u)) rgba(20,160,232,.35); } 50% { box-shadow:0 calc(6 * var(--u)) calc(18 * var(--u)) rgba(20,160,232,.55); } }
+@keyframes ws-cursor-blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+@media (prefers-reduced-motion:reduce) { .ws-dev,.ws-phone,.ws-hero::after,.ws-spark-line,.ws-btn,.ws-cursor { animation:none; } .ws-cursor { opacity:1; } }

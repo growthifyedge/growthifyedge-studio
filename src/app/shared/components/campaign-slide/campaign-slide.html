@@ -22,25 +22,42 @@
             <div class="face-light face-light-{{ index + 1 }}" aria-hidden="true"></div>
             <div class="face-art" aria-hidden="true">
               @if (index === 0) {
-                <div class="web-art-browser"><div><i></i><i></i><i></i><b></b></div><section><span></span><span></span><span></span><em></em></section><footer><b></b><b></b><b></b></footer></div>
-                <div class="web-art-panel"><span></span><span></span><i></i><i></i><i></i></div>
+                <ge-face-websites />
               } @else if (index === 1) {
-                <div class="app-art-phone"><b></b><header></header><section><i></i><i></i><i></i><i></i></section><footer><span></span><span></span><span></span></footer></div>
-                <div class="app-art-dashboard"><header><i></i><span></span></header><section><b></b><b></b><b></b><b></b></section><footer></footer></div>
+                <ge-face-apps />
               } @else {
-                <svg class="ai-art-paths" viewBox="0 0 460 240" fill="none"><path d="M230 120 C145 42 77 50 34 84 M230 120 C320 41 382 48 427 87 M230 120 C151 202 78 194 35 164 M230 120 C314 201 382 194 426 164" /><path class="ai-art-pulse" d="M230 120 C145 42 77 50 34 84" /><path class="ai-art-pulse ai-art-pulse-two" d="M230 120 C314 201 382 194 426 164" /></svg>
-                <div class="ai-art-core">AI</div><span class="ai-art-node node-api">API</span><span class="ai-art-node node-flow">FLOW</span><span class="ai-art-node node-data">DATA</span><span class="ai-art-node node-cloud">CLOUD</span>
+                <ge-face-automation />
               }
             </div>
             <div class="face-copy">
               <p>{{ face.eyebrow }}</p>
               <h1>{{ face.title[0] }}<br /><span>{{ face.title[1] }}</span></h1>
               <p class="face-description">{{ face.copy }}</p>
-              <a [routerLink]="face.route" class="ge-btn-aurora face-cta">{{ face.action }} <span aria-hidden="true">→</span></a>
+              <a [routerLink]="face.route" class="face-cta" tabindex="-1" aria-hidden="true">{{ face.action }} <span aria-hidden="true">→</span></a>
             </div>
           </article>
         }
       </div>
+
+      <!--
+        Real CTA hit target, kept outside the rotating 3D cube on purpose.
+        .campaign-cube rotates via rotateX(--cube-rotation); at exactly 90deg (Face 2's settled angle) its
+        own projected bounding box is a mathematically degenerate zero-height line, which makes Chromium's
+        3D hit-testing fail for everything inside it regardless of that content's own pointer-events value
+        (confirmed directly: elementFromPoint at the real button's centre resolves to an ancestor several
+        levels up, not the button, only when Face 2 is the settled face; Face 1 at 0deg and Face 3 at 180deg
+        are unaffected because neither rotation angle is edge-on). This is a pre-existing property of the
+        locked cube geometry, not something introduced by the face artwork.
+        This proxy sits in ordinary 2D space (a sibling of .campaign-cube, never rotated), always reflects
+        the currently active face's label and route, and is only shown once the cube is settled so it never
+        appears as a second, non-rotating button during a transition. The in-cube anchor above is kept for
+        its exact visual rendering (gradient, shadow, rotation, fade with the settled face) but is no longer
+        part of the tab order or hit-testable, so there is exactly one interactive CTA at a time on every face.
+      -->
+      <a
+        [class]="'face-cta cube-cta-proxy cube-cta-proxy-' + (activeIndex() + 1) + (isSettled() ? '' : ' cube-cta-proxy-hidden')"
+        [routerLink]="faces[activeIndex()].route"
+      >{{ faces[activeIndex()].action }} <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>

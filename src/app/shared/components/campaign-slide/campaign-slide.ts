@@ -1,12 +1,15 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, OnDestroy, ViewChild, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FaceApps } from './faces/face-apps/face-apps';
+import { FaceAutomation } from './faces/face-automation/face-automation';
+import { FaceWebsites } from './faces/face-websites/face-websites';
 
 interface CampaignFace {
   readonly eyebrow: string;
   readonly title: readonly [string, string];
   readonly copy: string;
   readonly action: string;
-  readonly route?: string;
+  readonly route: string;
   readonly word: string;
 }
 
@@ -15,7 +18,7 @@ interface CampaignFace {
   selector: 'ge-campaign-slide',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, FaceWebsites, FaceApps, FaceAutomation],
   templateUrl: './campaign-slide.html',
   styleUrl: './campaign-slide.css'
 })
