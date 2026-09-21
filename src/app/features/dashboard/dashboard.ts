@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { SoftwareService } from '../../core/services/software.service';
@@ -23,6 +23,30 @@ import { CampaignSlide } from '../../shared/components/campaign-slide/campaign-s
 })
 export class Dashboard {
   private readonly svc = inject(SoftwareService);
+
+  /** True once the process section has scrolled into view; drives its one-shot entrance animation. */
+  protected readonly processInView = signal(false);
+  private readonly processStepsEl = viewChild<ElementRef<HTMLElement>>('processStepsEl');
+
+  constructor() {
+    afterNextRender(() => {
+      const el = this.processStepsEl()?.nativeElement;
+      if (!el || typeof IntersectionObserver === 'undefined') {
+        this.processInView.set(true);
+        return;
+      }
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            this.processInView.set(true);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.2 }
+      );
+      observer.observe(el);
+    });
+  }
 
   protected readonly stats = this.svc.stats;
   protected readonly featured = this.svc.featured;
@@ -50,20 +74,20 @@ export class Dashboard {
   protected readonly statTiles = computed(() => {
     const s = this.stats();
     return [
-      { label: 'Published projects', value: `${s.total}`, icon: 'layers' as const, tint: '#6d49ff' },
-      { label: 'Portfolio projects', value: `${s.total}`, icon: 'bolt' as const, tint: '#10c5ac' },
-      { label: 'Technology stacks', value: `${this.techMarquee().length}`, icon: 'film' as const, tint: '#f43bb8' },
-      { label: 'Solution types', value: '5', icon: 'document' as const, tint: '#f59e0b' }
+      { label: 'Published Projects', value: `${s.total}`, sub: 'Real work currently showcased', cta: 'View Projects', route: '/work', icon: 'rocket' as const, tint: '#6d49ff' },
+      { label: 'Portfolio Projects', value: `${s.total}`, sub: 'Selected digital solutions', cta: 'Explore Work', route: '/work', icon: 'grid' as const, tint: '#10c5ac' },
+      { label: 'Technology Stacks', value: `${this.techMarquee().length}`, sub: 'Modern production technologies', cta: 'View Stack', route: '/capabilities', icon: 'layers' as const, tint: '#f43bb8' },
+      { label: 'Solution Types', value: '5', sub: 'Web, software, data, automation & AI', cta: 'Explore Solutions', route: '/capabilities', icon: 'flow' as const, tint: '#f59e0b' }
     ];
   });
 
-  /** A concise summary of the kinds of work GrowthifyEdge offers. */
-  protected readonly impact = computed(() => {
+  /** The 4-step engagement process shown between the metric cards and Featured Projects. */
+  protected readonly processSteps = computed(() => {
     return [
-      { value: 'Web', label: 'Responsive experiences', sub: 'sites and storefronts' },
-      { value: 'Apps', label: 'Business software', sub: 'tools teams use daily' },
-      { value: 'Data', label: 'Dashboards', sub: 'clarity for better decisions' },
-      { value: 'Flow', label: 'Automation', sub: 'less repetitive work' }
+      { step: '01', title: 'Discover', sub: 'Understand goals, workflows and real business needs.', icon: 'search' as const, tint: '#6d49ff' },
+      { step: '02', title: 'Design', sub: 'Shape the right experience, system and technical direction.', icon: 'wand' as const, tint: '#10c5ac' },
+      { step: '03', title: 'Build', sub: 'Develop, integrate and test the solution for real-world use.', icon: 'settings' as const, tint: '#f43bb8' },
+      { step: '04', title: 'Scale', sub: 'Improve, automate and expand as the business grows.', icon: 'trend-up' as const, tint: '#f59e0b' }
     ];
   });
 

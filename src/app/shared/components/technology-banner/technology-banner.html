@@ -4,53 +4,99 @@
   <div class="pointer-events-none absolute -right-16 bottom-0 h-52 w-64 rounded-full bg-aqua-500/20 blur-[100px]"></div>
 
   <div class="relative grid min-h-[430px] gap-7 p-7 sm:p-10 lg:h-full lg:min-h-0 lg:grid-cols-[.82fr_1fr] lg:items-center lg:gap-10 lg:px-16 lg:py-14">
-    <div class="relative z-10">
-      <p class="ge-eyebrow !text-brand-300">GrowthifyEdge · Digital solutions</p>
-      <h1 class="mt-3 max-w-xl font-display text-[2.6rem] font-bold leading-[1.02] tracking-tightest sm:text-6xl">
-        Websites, Software,<br /><span class="text-gradient-brand">Dashboards &amp; Automation</span><br />Built for Real Work.
-      </h1>
-      <p class="mt-6 max-w-lg text-base leading-relaxed text-slate-300/90 sm:text-[17px]">
-        I build practical digital tools that simplify operations, improve customer experiences, and help businesses move faster.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a routerLink="/work" class="ge-btn-aurora !px-6 !py-3.5">View My Work</a>
-        <button type="button" class="ge-btn-dark !px-6 !py-3.5" (click)="openProjectInquiry()">Start a Project</button>
+    <!--
+      This card's visible left side is now a pure promo slider (per request, replacing the headline/body/CTA
+      group). The page's only rendered <h1> lived here, so a visually-hidden one is kept for SEO/accessibility
+      - it takes no layout space and changes nothing visible - rather than leaving the page with no <h1> at all.
+    -->
+    <h1 class="sr-only">Websites, Software, Dashboards &amp; Automation Built for Real Work.</h1>
+
+    <div
+      #slider
+      class="promo-slider relative z-10 flex h-[300px] flex-col sm:h-[340px] lg:h-[410px]"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="GrowthifyEdge services"
+      (mouseenter)="pause()"
+      (mouseleave)="resume()"
+      (touchstart)="handleTouchStart($event)"
+      (touchmove)="handleTouchMove($event)"
+      (touchend)="handleTouchEnd($event)"
+    >
+      <div class="promo-slides">
+        @for (slide of slides; track slide.id; let i = $index) {
+          <article class="promo-slide promo-slide-{{ slide.id }}" [class.is-active]="i === activeIndex()" [attr.aria-hidden]="i === activeIndex() ? null : 'true'">
+            <div class="promo-visual" aria-hidden="true">
+              @if (slide.image) {
+                <img class="promo-visual-image" [src]="slide.image" [alt]="''" />
+              } @else {
+                <span></span><span></span><span></span>
+              }
+            </div>
+            <p class="promo-eyebrow">{{ slide.eyebrow }}</p>
+            <h2 class="promo-title">{{ slide.title }}</h2>
+            <p class="promo-sub">{{ slide.sub }}</p>
+          </article>
+        }
       </div>
-      <a routerLink="/capabilities" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-brand-200 transition hover:text-white">
-        Explore Capabilities <span aria-hidden="true">→</span>
-      </a>
-      <div class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-300">
-        <span>Websites &amp; E-commerce</span><span class="h-4 w-px bg-white/15"></span><span>Custom Business Software</span><span class="h-4 w-px bg-white/15"></span><span>Automation &amp; Integrations</span>
+
+      <div class="promo-dots" role="tablist" aria-label="Slides">
+        @for (slide of slides; track slide.id; let i = $index) {
+          <button
+            type="button"
+            role="tab"
+            class="promo-dot"
+            [class.is-active]="i === activeIndex()"
+            [class.is-paused]="paused()"
+            [attr.aria-selected]="i === activeIndex()"
+            [attr.aria-label]="'Go to ' + slide.title + ' slide'"
+            (click)="goTo(i)"
+          ><span></span></button>
+        }
       </div>
     </div>
 
+    <!--
+      Orchestration-hub visual: one central system core with a single slow processing halo, elegant workflow
+      paths carrying data pulses out to six labelled GrowthifyEdge service cards (5 larger modules + 2 compact
+      chips = the 7 requested labels), and nothing else - no scan sweeps, comet trails or unlabelled glass
+      shards. Depth comes from three deliberate translateZ bands (routes/halo behind, modules and chips at
+      mid-depth, core in front) rather than extra floating decoration.
+    -->
     <div class="technology-visual relative mx-auto h-[255px] w-full max-w-[680px] sm:h-[300px] lg:h-[410px]" aria-hidden="true" (pointermove)="updateTilt($event)" (pointerleave)="resetTilt($event)">
       <div class="technology-engine">
-        <div class="technology-scan"></div><div class="technology-trail technology-trail-one"></div><div class="technology-trail technology-trail-two"></div>
+        <div class="technology-engine-grid"></div>
+
         <svg class="technology-data-routes" viewBox="0 0 680 330" fill="none" preserveAspectRatio="xMidYMid meet">
-          <path class="route route-violet" d="M340 164 C236 65 142 76 60 112 M340 164 C456 64 550 76 625 108 M340 164 C232 261 145 242 55 216 M340 164 C449 264 544 246 631 215" />
-          <path class="route route-cyan" d="M340 164 C303 88 350 45 422 29 M340 164 C382 242 430 274 514 282" />
+          <defs>
+            <linearGradient id="technology-route-gradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#8fe0ff" />
+              <stop offset="1" stop-color="#b39cff" />
+            </linearGradient>
+          </defs>
+          <path class="route" d="M340 164 C236 65 142 76 60 112 M340 164 C456 64 550 76 625 108 M340 164 C232 261 145 242 55 216 M340 164 C449 264 544 246 631 215 M340 164 C303 88 350 45 422 29 M340 164 C382 242 430 274 514 282" />
           <path class="route-pulse pulse-one" d="M340 164 C236 65 142 76 60 112" />
           <path class="route-pulse pulse-two" d="M340 164 C456 64 550 76 625 108" />
           <path class="route-pulse pulse-three" d="M340 164 C449 264 544 246 631 215" />
+          <path class="route-pulse pulse-four" d="M340 164 C382 242 430 274 514 282" />
         </svg>
 
-        <div class="technology-ring technology-ring-outer"><span></span></div>
-        <div class="technology-ring technology-ring-inner"><span></span></div>
+        <div class="technology-halo"><span></span></div>
+
         <div class="technology-core">
           <div class="technology-core-layer technology-core-back"></div>
           <div class="technology-core-layer technology-core-mid"></div>
           <div class="technology-core-face"><i></i><b>GE</b></div>
         </div>
 
-        <div class="technology-module technology-module-web"><div class="module-top"><i></i><i></i><i></i><span>WEB APP</span></div><div class="module-code"><b></b><b></b><b></b></div></div>
-        <div class="technology-module technology-module-ai"><div class="module-top"><i></i><span>AI ENGINE</span></div><div class="module-brain">✦<em></em></div></div>
-        <div class="technology-module technology-module-flow"><div class="module-top"><i></i><span>AUTOMATION</span></div><div class="module-flow"><b></b><b></b><b></b></div></div>
-        <div class="technology-module technology-module-api"><div class="module-top"><i></i><span>API LAYER</span></div><div class="module-api">API&nbsp;↔</div></div>
-        <div class="technology-module technology-module-data"><div class="module-top"><i></i><span>DATA CORE</span></div><div class="module-data"><b></b><b></b><b></b></div></div>
-        <div class="technology-chip technology-chip-cloud">CLOUD</div>
-        <div class="technology-chip technology-chip-software">SOFTWARE</div>
-        <div class="technology-foreground technology-foreground-one"></div><div class="technology-foreground technology-foreground-two"></div>
+        <div class="technology-module technology-module-web"><div class="module-top"><i></i><span>Web App</span></div><div class="module-code"><b></b><b></b><b></b></div></div>
+        <div class="technology-module technology-module-ai"><div class="module-top"><i></i><span>AI Engine</span></div><div class="module-brain"><i></i><i></i><i></i><em></em><em></em></div></div>
+        <div class="technology-module technology-module-flow"><div class="module-top"><i></i><span>Automation</span></div><div class="module-flow"><b></b><b></b><b></b></div></div>
+        <div class="technology-module technology-module-api"><div class="module-top"><i></i><span>Integrations</span></div><div class="module-api"><i></i><em></em><i></i></div></div>
+        <div class="technology-module technology-module-data"><div class="module-top"><i></i><span>Data Core</span></div><div class="module-data"><b></b><b></b><b></b></div></div>
+
+        <div class="technology-chip technology-chip-dashboard">DASHBOARD</div>
+        <div class="technology-chip technology-chip-software">BUSINESS SOFTWARE</div>
       </div>
     </div>
   </div>

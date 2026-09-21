@@ -85,44 +85,245 @@
 <!-- ============ PORTFOLIO SUMMARY ============ -->
 <section class="reveal mb-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
   @for (tile of statTiles(); track tile.label) {
-    <div class="ge-card-glass group relative overflow-hidden p-5 transition duration-500 hover:-translate-y-1">
-      <div class="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full opacity-15 blur-2xl transition group-hover:opacity-30" [style.background]="tile.tint"></div>
-      <div class="grid h-12 w-12 place-items-center rounded-2xl text-white shadow-glow" [style.background]="tile.tint">
-        <ge-icon [name]="tile.icon" [size]="21" />
+    <a
+      [routerLink]="tile.route"
+      [style.--ge-stat-tint]="tile.tint"
+      class="ge-stat-trace group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.05] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_18px_40px_-18px_rgba(0,0,0,.6)] backdrop-blur-xl transition-all duration-500 [transition-timing-function:cubic-bezier(.22,1,.36,1)] hover:-translate-y-1.5 hover:border-white/25 hover:shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_28px_54px_-18px_rgba(0,0,0,.68)]"
+    >
+      <div class="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full opacity-20 blur-3xl transition-opacity duration-500 group-hover:opacity-45" [style.background]="tile.tint"></div>
+      <div class="pointer-events-none absolute inset-x-5 top-0 h-px opacity-70" [style.background]="'linear-gradient(90deg, transparent, ' + tile.tint + ', transparent)'"></div>
+
+      <div class="relative flex items-center justify-between">
+        <div class="grid h-12 w-12 place-items-center rounded-2xl text-white shadow-lg transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-110" [style.background]="tile.tint">
+          <ge-icon [name]="tile.icon" [size]="21" />
+        </div>
+        <span class="grid h-8 w-8 place-items-center rounded-full border border-white/15 text-white/55 transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-white/35 group-hover:text-white">
+          <ge-icon name="arrow-up-right" [size]="14" />
+        </span>
       </div>
-      <p class="mt-4 font-display text-[2rem] font-bold leading-none tracking-tightest text-slate-900">{{ tile.value }}</p>
-      <p class="mt-1.5 text-sm text-slate-500">{{ tile.label }}</p>
-    </div>
+
+      <p class="relative mt-5 font-display text-[2.15rem] font-bold leading-none tracking-tightest text-white">{{ tile.value }}</p>
+      <p class="relative mt-2 text-[15px] font-bold leading-snug text-white">{{ tile.label }}</p>
+      <p class="relative mt-1 text-xs leading-relaxed text-white/50">{{ tile.sub }}</p>
+
+      <span class="relative mt-4 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide" [style.color]="tile.tint">
+        {{ tile.cta }}
+        <ge-icon name="arrow-right" [size]="12" class="transition-transform duration-300 group-hover:translate-x-1" />
+      </span>
+    </a>
   }
 </section>
 
-<!-- ============ TECH STACK ============ -->
-<section class="mb-12">
-  <p class="mb-4 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
-    Built with a modern, production-grade stack
-  </p>
-  <div class="mx-auto flex max-w-4xl flex-wrap justify-center gap-2.5">
-    @for (t of techMarquee(); track t) {
-      <span class="ge-chip whitespace-nowrap !px-3.5 !py-2 text-sm">{{ t }}</span>
-    }
-  </div>
-</section>
+<style>
+  @property --ge-stat-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
 
-<!-- ============ BUSINESS IMPACT BAND ============ -->
+  .ge-stat-trace::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--ge-stat-angle),
+      transparent 0deg,
+      transparent 288deg,
+      color-mix(in srgb, var(--ge-stat-tint) 90%, white) 330deg,
+      var(--ge-stat-tint) 344deg,
+      transparent 360deg
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.55;
+    transition: opacity 0.4s ease;
+    animation: ge-stat-border-spin 6.5s linear infinite;
+  }
+
+  .ge-stat-trace:hover::after {
+    opacity: 0.9;
+  }
+
+  @keyframes ge-stat-border-spin {
+    to {
+      --ge-stat-angle: 360deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ge-stat-trace::after {
+      animation: none;
+    }
+  }
+
+  .ge-process-line,
+  .ge-process-line-v {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .ge-process-dot {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 9999px;
+    background: radial-gradient(circle, #fff 0%, rgba(255, 255, 255, 0.65) 45%, transparent 75%);
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+  }
+
+  .ge-process-line .ge-process-dot {
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+    animation: ge-process-dot-h 7.2s ease-in-out infinite;
+  }
+
+  .ge-process-line-v .ge-process-dot {
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: ge-process-dot-v 7.2s ease-in-out infinite;
+  }
+
+  @keyframes ge-process-dot-h {
+    0%   { left: 0%;    opacity: 1; }
+    25%  { left: 33.3%; opacity: 1; }
+    50%  { left: 66.6%; opacity: 1; }
+    75%  { left: 100%;  opacity: 1; }
+    88%  { left: 100%;  opacity: 0; }
+    100% { left: 0%;    opacity: 0; }
+  }
+
+  @keyframes ge-process-dot-v {
+    0%   { top: 0%;    opacity: 1; }
+    25%  { top: 33.3%; opacity: 1; }
+    50%  { top: 66.6%; opacity: 1; }
+    75%  { top: 100%;  opacity: 1; }
+    88%  { top: 100%;  opacity: 0; }
+    100% { top: 0%;    opacity: 0; }
+  }
+
+  /* Icon box + badge: gentle glow pulse and tiny lift, timed to the travelling dot via per-step animation-delay set inline. */
+  .ge-process-icon-box {
+    animation: ge-process-icon-pulse 7.2s ease-in-out infinite;
+  }
+
+  .ge-process-badge {
+    animation: ge-process-badge-pulse 7.2s ease-in-out infinite;
+  }
+
+  @keyframes ge-process-icon-pulse {
+    0%, 100% { transform: translateY(0); box-shadow: 0 0 0 0 transparent; }
+    8%       { transform: translateY(-3px); box-shadow: 0 0 18px 1px var(--ge-process-glow, rgba(255, 255, 255, 0.5)); }
+    20%      { transform: translateY(0); box-shadow: 0 0 0 0 transparent; }
+  }
+
+  @keyframes ge-process-badge-pulse {
+    0%, 100% { filter: brightness(1); box-shadow: 0 0 0 0 transparent; }
+    8%       { filter: brightness(1.4); box-shadow: 0 0 12px var(--ge-process-glow, rgba(255, 255, 255, 0.6)); }
+    20%      { filter: brightness(1); box-shadow: 0 0 0 0 transparent; }
+  }
+
+  /* Hover: a static glow boost on its own layer so it never fights the running pulse animation. */
+  .ge-process-icon-box {
+    position: relative;
+  }
+
+  .ge-process-icon-box::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: inherit;
+    background: radial-gradient(circle, var(--ge-process-glow, #fff), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .ge-process-step:hover .ge-process-icon-box::before {
+    opacity: 0.35;
+  }
+
+  /* Entrance: one-shot fade/slide-in staggered across the 4 steps, triggered by IntersectionObserver in dashboard.ts. */
+  .ge-process-steps > div {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .ge-process-steps.ge-process-in > div {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ge-process-steps.ge-process-in > div:nth-child(1) { transition-delay: 0.02s; }
+  .ge-process-steps.ge-process-in > div:nth-child(2) { transition-delay: 0.14s; }
+  .ge-process-steps.ge-process-in > div:nth-child(3) { transition-delay: 0.26s; }
+  .ge-process-steps.ge-process-in > div:nth-child(4) { transition-delay: 0.38s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ge-process-dot {
+      animation: none;
+      opacity: 0;
+    }
+
+    .ge-process-icon-box,
+    .ge-process-badge {
+      animation: none;
+    }
+
+    .ge-process-steps > div {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<!-- ============ PROCESS ============ -->
 <section class="vignette noise relative mb-12 overflow-hidden rounded-[32px] border border-white/10 bg-ink-950 p-8 text-white sm:p-10">
   <div class="pointer-events-none absolute inset-0 bg-cinematic opacity-80 animate-glow-breathe"></div>
   <div class="pointer-events-none absolute -right-16 top-0 h-56 w-56 rounded-full bg-flush-500/30 blur-[90px]"></div>
   <div class="relative">
-    <p class="ge-eyebrow !text-brand-300">By the numbers</p>
-    <h2 class="mt-1.5 font-display text-2xl font-bold tracking-tightest sm:text-3xl">What GrowthifyEdge builds</h2>
-    <div class="reveal mt-8 grid grid-cols-2 gap-6 lg:grid-cols-4">
-      @for (m of impact(); track m.label) {
-        <div class="relative">
-          <p class="text-gradient-brand font-display text-4xl font-bold leading-none tracking-tightest sm:text-5xl">{{ m.value }}</p>
-          <p class="mt-3 text-sm font-semibold text-white">{{ m.label }}</p>
-          <p class="text-xs text-slate-400">{{ m.sub }}</p>
-        </div>
-      }
+    <p class="ge-eyebrow !text-brand-300">Our process</p>
+    <h2 class="mt-1.5 font-display text-2xl font-bold tracking-tightest sm:text-3xl">How GrowthifyEdge Works</h2>
+
+    <div class="relative mt-10">
+      <div class="ge-process-line pointer-events-none absolute left-[12.5%] right-[12.5%] top-8 hidden h-px lg:block">
+        <span class="ge-process-dot"></span>
+      </div>
+      <div class="ge-process-line-v pointer-events-none absolute left-8 top-4 bottom-4 w-px lg:hidden">
+        <span class="ge-process-dot"></span>
+      </div>
+
+      <div #processStepsEl class="ge-process-steps grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-6" [class.ge-process-in]="processInView()">
+        @for (p of processSteps(); track p.step; let i = $index) {
+          <div class="ge-process-step relative flex items-start gap-4 lg:flex-col lg:gap-0">
+            <div
+              class="ge-process-icon-box relative z-10 grid h-16 w-16 shrink-0 place-items-center rounded-2xl border"
+              [style.border-color]="p.tint + '40'"
+              [style.background]="'linear-gradient(135deg, ' + p.tint + '26, rgba(255,255,255,.03))'"
+              [style.--ge-process-glow]="p.tint"
+              [style.animation-delay.s]="i * 1.8"
+            >
+              <ge-icon [name]="p.icon" [size]="22" [style.color]="p.tint" />
+              <span
+                class="ge-process-badge absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full text-[10px] font-bold text-white shadow"
+                [style.background]="p.tint"
+                [style.animation-delay.s]="i * 1.8"
+              >{{ p.step }}</span>
+            </div>
+            <div class="lg:mt-4">
+              <h3 class="font-display text-lg font-bold text-white">{{ p.title }}</h3>
+              <p class="mt-1 max-w-[220px] text-sm text-slate-400">{{ p.sub }}</p>
+            </div>
+          </div>
+        }
+      </div>
     </div>
   </div>
 </section>

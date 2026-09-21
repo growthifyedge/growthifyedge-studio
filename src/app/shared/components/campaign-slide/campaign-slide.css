@@ -6,10 +6,6 @@
 .face-art { position:relative; z-index:2; margin:calc(var(--cube-size) * .045) auto 0; height:calc(var(--cube-size) * .47); width:86%; perspective:900px; transform-style:preserve-3d; }.face-copy { position:relative; z-index:4; display:flex; flex-direction:column; align-items:center; padding:8px 46px 36px; text-align:center; }.face-copy > p:first-child { margin:0; color:rgba(255,255,255,.78); font-size:12px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; }.face-copy h1 { margin:12px 0 0; color:#fff; font-family:'Space Grotesk',sans-serif; font-size:clamp(1.9rem,2.5vw,2.4rem); font-weight:800; letter-spacing:-.045em; line-height:1.03; }.face-copy h1 span { background:linear-gradient(100deg,#ffffff,#e2e8ff 55%,#e4f8ff); background-clip:text; -webkit-background-clip:text; color:transparent; }.face-description { max-width:440px; margin:12px 0 0; color:rgba(255,255,255,.84); font-size:15px; line-height:1.45; }.face-cta { position:relative; display:inline-flex; align-items:center; justify-content:center; gap:.5rem; overflow:hidden; margin-top:18px; min-height:45px; padding:10px 20px; color:#fff; font-size:14px; line-height:1.25rem; }.face-cta:focus { outline:2px solid transparent; outline-offset:2px; }
 .face-light-1 { background:radial-gradient(ellipse 66% 46% at 50% 28%,rgba(24,150,255,.55) 0,rgba(20,190,255,.2) 48%,transparent 100%),linear-gradient(180deg,#041c38 0%,#031226 52%,#020a17 100%); }.face-light-2 { background:radial-gradient(ellipse 66% 46% at 50% 28%,rgba(140,84,255,.55) 0,rgba(200,60,180,.16) 50%,transparent 100%),linear-gradient(180deg,#130c36 0%,#0b0824 50%,#040312 100%); }.face-light-3 { background:radial-gradient(ellipse 36% 30% at 50% 32%,rgba(40,140,230,.28) 0,rgba(30,170,230,.1) 55%,transparent 100%),linear-gradient(180deg,#05080f 0%,#030509 55%,#010203 100%); }.cube-face .face-cta { border-radius:12px; font-weight:700; transition:transform .2s ease,filter .2s ease,box-shadow .2s ease; }.cube-face .face-cta:hover { transform:translateY(-2px); filter:brightness(1.08); }.cube-face-1 .face-cta { background:linear-gradient(110deg,#0879c9,#19bce1); box-shadow:0 10px 24px rgba(20,160,232,.25); }.cube-face-2 .face-cta { background:linear-gradient(110deg,#653cc9,#b833a7); box-shadow:0 10px 24px rgba(151,61,204,.25); }.cube-face-3 .face-cta { background:linear-gradient(110deg,#0a6b9d,#148caa); box-shadow:0 10px 24px rgba(20,136,170,.2); }
 .scroll-campaign-controls { position:absolute; left:5.2%; top:50%; z-index:3; display:flex; flex-direction:column; align-items:center; gap:12px; transform:translateY(-50%); }.cube-control { display:grid; place-items:center; width:40px; min-height:44px; border:1px solid rgba(255,255,255,.2); border-radius:12px; background:rgba(5,12,30,.5); box-shadow:inset 0 1px rgba(255,255,255,.14),0 7px 20px rgba(0,0,0,.22); color:#e9e9ff; font-size:18px; line-height:1; transition:border-color .2s ease,background .2s ease,transform .2s ease; }.cube-control span { margin-top:2px; font-size:8px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }.cube-control:not(:disabled):hover { border-color:rgba(112,228,216,.7); background:rgba(72,52,160,.42); transform:translateZ(8px); }.cube-control:disabled { cursor:not-allowed; opacity:.3; }.scroll-campaign-indicators { display:flex; flex-direction:column; align-items:center; gap:11px; }.scroll-campaign-indicators > span { height:9px; width:9px; border-radius:99px; background:rgba(255,255,255,.37); box-shadow:0 0 0 1px rgba(255,255,255,.12); transition:all .22s ease; }.scroll-campaign-indicators .scroll-campaign-indicator-active { height:28px; border-radius:8px; background:linear-gradient(#a78bfa,#f43bb8,#36e0c8); box-shadow:0 0 13px rgba(109,73,255,.62); }
-@media (max-width:1023px) { .scroll-campaign-stage { --halo-size:calc(min(76vw,720px,calc(100vh - 140px)) * 1.15); }.campaign-cube-shell { --cube-size:min(76vw,720px,calc(100vh - 140px)); }.scroll-campaign-controls { left:3%; }.face-art { width:74%; } }
-@media (max-width:639px) { .scroll-campaign-scene { height:205vh; }.scroll-campaign-stage { --halo-size:calc(min(90vw,460px,calc(100vh - 130px)) * 1.15); min-height:0; }.campaign-cube-shell { --cube-size:min(90vw,460px,calc(100vh - 130px)); }.scroll-campaign-controls { left:12px; gap:8px; }.cube-control { width:34px; min-height:38px; border-radius:10px; font-size:15px; }.cube-control span { display:none; }.scroll-campaign-indicators { gap:8px; }.scroll-campaign-indicators > span { height:7px; width:7px; }.scroll-campaign-indicators .scroll-campaign-indicator-active { height:21px; }.face-art { height:calc(var(--cube-size) * .42); margin-top:calc(var(--cube-size) * .04); }.face-copy { padding:4px 22px 24px; }.face-copy > p:first-child { font-size:10px; }.face-copy h1 { margin-top:10px; font-size:clamp(1.35rem,6.5vw,1.8rem); }.face-description { margin-top:9px; font-size:13px; line-height:1.35; }.face-cta { min-height:38px; margin-top:12px; padding:7px 15px; font-size:12px; }.cube-cta-proxy { bottom:24px; }}
-@media (prefers-reduced-motion:reduce) { .campaign-cube { transition:none; } }
-
 /*
  * CTA hit-target fix (see the long comment beside this element in campaign-slide.html for the root cause).
  * .cube-cta-proxy reuses the plain .face-cta rule above for sizing/padding/font, and only re-declares here
@@ -25,3 +21,40 @@
 .cube-cta-proxy-2 { background:linear-gradient(110deg,#653cc9,#b833a7); box-shadow:0 10px 24px rgba(151,61,204,.25); }
 .cube-cta-proxy-3 { background:linear-gradient(110deg,#0a6b9d,#148caa); box-shadow:0 10px 24px rgba(20,136,170,.2); }
 .cube-cta-proxy-hidden { opacity:0; pointer-events:none; }
+@media (max-width:1023px) { .scroll-campaign-stage { --halo-size:calc(min(76vw,720px,calc(100vh - 140px)) * 1.15); touch-action:pan-x; }.campaign-cube-shell { --cube-size:min(76vw,720px,calc(100vh - 140px)); }.scroll-campaign-controls { left:3%; }.face-art { width:74%; } }
+@media (max-width:639px) {
+  /* The base 205vh comes from when the only way to move between faces was continuous scroll-scrubbing across
+     the full 0-180deg range, which needed a large excess of scroll distance (105vh) beyond one viewport to
+     scrub smoothly. Mobile now has a dedicated swipe engine for discrete face changes, so that excess is
+     mostly dead scroll: the section stays pinned, visually static, for a long stretch before the next section
+     can begin. .scroll-campaign-stage itself must stay 100vh (unchanged, matches desktop) because
+     isSceneActive() in the engine requires the scene to still span a full viewport height for gesture
+     detection to activate at all, and the settle-scroll-sync formula (scrollYForProgress) derives its travel
+     distance from this same scene-minus-stage excess - both are keyed off the same value, so shrinking it
+     shrinks the dead pinned-scroll zone while leaving gesture activation and settle-sync self-consistent at
+     any excess >= 0. 32px keeps a small excess (needed for position:sticky to have any pinning range at all)
+     while making the next section begin shortly after the pinned view instead of after 105vh of blank scroll. */
+  .scroll-campaign-scene { height:calc(100vh + 32px); }
+  .scroll-campaign-stage { --halo-size:calc(min(90vw,460px,calc(100vh - 130px)) * 1.15); min-height:0; }
+  /* The sticky public navbar (78px tall pre-lg) overlays the top of this section's own sticky stage, since
+     both pin to the viewport's top:0 independently; the base rule's top:calc(50% + 47px) centres the cube
+     against the stage's full height with no knowledge of that overlay, leaving a large gap. This keeps the
+     cube's own size/--cube-size untouched and only repositions it: 78px clears the navbar, +30px is the
+     intended breathing room, and the --cube-size/2 term re-centres correctly given the shell's own
+     translate(-50%,-50%). The height-dependent terms cancel algebraically, so the resulting gap is a
+     constant ~29px regardless of viewport height within this breakpoint. */
+  .campaign-cube-shell { --cube-size:min(90vw,460px,calc(100vh - 130px)); top:calc(78px + 30px + var(--cube-size) / 2); }
+  /* The word's clamp(7rem,15vw,19rem) floor (112px) is wider than any phone viewport can hold for a
+     13-character word, so at these widths it always renders at the 112px floor - about 746px wide - and gets
+     cropped by the stage's necessary overflow:hidden. A vw-only mobile size lets it scale with the viewport
+     instead, so the full word fits and reads as a wide background word rather than a clipped fragment.
+     The base rule's bottom:calc(-10% + 80px) anchors the word to the STAGE's own bottom edge, which is fine
+     on desktop where the cube fills most of the stage, but on mobile the cube-shell fix above intentionally
+     moves the card much higher, leaving a large gap between the card and a word still anchored to the far-
+     away stage bottom. Anchoring to the card's own bottom edge instead - the identical
+     navbar+gap+cubeSize/2+cubeSize/2 arithmetic as the shell's own top rule, so it always tracks the card
+     exactly - closes that gap to a fixed, controlled distance regardless of viewport height. */
+  .scroll-campaign-wordmark { font-size:14vw; top:calc(78px + 30px + min(90vw,460px,calc(100vh - 130px)) + 30px); bottom:auto; }
+  .scroll-campaign-controls { left:12px; gap:8px; }.cube-control { width:34px; min-height:38px; border-radius:10px; font-size:15px; }.cube-control span { display:none; }.scroll-campaign-indicators { gap:8px; }.scroll-campaign-indicators > span { height:7px; width:7px; }.scroll-campaign-indicators .scroll-campaign-indicator-active { height:21px; }.face-art { height:calc(var(--cube-size) * .37); margin-top:calc(var(--cube-size) * .025); }.face-copy { padding:4px 20px 16px; }.face-copy > p:first-child { font-size:10px; }.face-copy h1 { margin-top:6px; font-size:clamp(1.15rem,5.6vw,1.5rem); line-height:1.08; }.face-description { margin-top:6px; font-size:12.5px; line-height:1.3; }.face-cta { min-height:36px; margin-top:8px; padding:6px 14px; font-size:12px; }.cube-cta-proxy { bottom:16px; }}
+@media (prefers-reduced-motion:reduce) { .campaign-cube { transition:none; } }
+

@@ -39,6 +39,24 @@ export class CampaignSlide implements AfterViewInit, OnDestroy {
   private wheelGestureEndTimer: ReturnType<typeof setTimeout> | undefined;
   private static readonly WHEEL_QUIET_PERIOD_MS = 120;
 
+  /**
+   * Mobile touch swipe. Deliberately separate from the wheel engine above (never touches its state) because
+   * a raw scroll-scrubbed mapping of touch position feels laggy and indecisive on a touchscreen: it waits on
+   * scroll momentum and needs a very long drag to cross a face. This recognises one decisive vertical swipe
+   * per physical touch, the same way a native app's page-view swiper does, and reuses the existing tween via
+   * transitionToFace so there is exactly one place that owns the cube's angle. Touch events never fire from
+   * mouse/wheel/trackpad input, so this can never engage on desktop.
+   */
+  private touchActive = false;
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private touchStartAt = 0;
+  private touchHorizontal = false;
+  private touchConsumed = false;
+  private static readonly TOUCH_DISTANCE_PX = 40;
+  private static readonly TOUCH_VELOCITY_PX_MS = 0.5;
+  private static readonly TOUCH_TRANSITION_MS = 300;
+
   protected readonly faces: readonly CampaignFace[] = [
     { eyebrow: 'Digital Experiences', title: ['Websites & Software', 'Built Around Your Business.'], copy: 'From customer-facing experiences to internal systems, built around real workflows.', action: 'View My Work', route: '/work', word: 'GROWTHIFYEDGE' },
     { eyebrow: 'Build • Manage • Scale', title: ['Apps & Dashboards', 'That Keep Work Moving.'], copy: 'Purpose-built interfaces and operational systems designed to make daily work clearer and faster.', action: 'Explore Capabilities', route: '/capabilities', word: 'BUILD' },
@@ -108,6 +126,70 @@ export class CampaignSlide implements AfterViewInit, OnDestroy {
     this.wheelGestureConsumed = true;
     this.transitionToFace(boundaryTarget, 520);
     return false;
+  }
+
+  @HostListener('touchstart', ['$event'])
+  protected handleTouchStart(event: TouchEvent): void {
+    if (!this.isSceneActive() || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    this.touchActive = true;
+    this.touchStartX = touch.clientX;
+    this.touchStartY = touch.clientY;
+    this.touchStartAt = performance.now();
+    this.touchHorizontal = false;
+    this.touchConsumed = false;
+  }
+
+  @HostListener('touchmove', ['$event'])
+  protected handleTouchMove(event: TouchEvent): false | void {
+    if (!this.touchActive || event.touches.length !== 1) return;
+    if (!this.isSceneActive()) { this.touchActive = false; return; }
+
+    // A second finger joining mid-gesture (pinch, etc.) hands control back to the browser entirely.
+    if (this.touchConsumed) {
+      event.preventDefault();
+      return false;
+    }
+
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - this.touchStartX;
+    const deltaY = touch.clientY - this.touchStartY;
+
+    // Decide the gesture's axis once, from the first move that clearly leans one way, and hold that decision
+    // for the rest of this physical touch so a diagonal drag cannot flip axis partway through.
+    if (!this.touchHorizontal && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 12) {
+      this.touchHorizontal = true;
+    }
+    if (this.touchHorizontal) return;
+
+    const distance = Math.abs(deltaY);
+    const elapsed = Math.max(1, performance.now() - this.touchStartAt);
+    const velocity = distance / elapsed;
+    const intentional = distance >= CampaignSlide.TOUCH_DISTANCE_PX || velocity >= CampaignSlide.TOUCH_VELOCITY_PX_MS;
+    if (!intentional) return;
+
+    // Swiping up moves content up, i.e. advances to the next face, matching a native vertical swiper; down
+    // goes back. This mirrors the wheel handler's deltaY-sign convention exactly.
+    const direction = deltaY < 0 ? 1 : -1;
+    const target = this.wheelTargetFace(direction);
+    if (target === null) {
+      // At a boundary with nowhere left to go inside the cube: release the gesture to the page immediately,
+      // exactly like the wheel handler does, instead of trapping the user against the edge face.
+      this.touchActive = false;
+      return;
+    }
+
+    event.preventDefault();
+    this.touchConsumed = true;
+    this.transitionToFace(target, CampaignSlide.TOUCH_TRANSITION_MS);
+  }
+
+  @HostListener('touchend')
+  @HostListener('touchcancel')
+  protected handleTouchEnd(): void {
+    this.touchActive = false;
+    this.touchHorizontal = false;
+    this.touchConsumed = false;
   }
 
   /** Lighting is based on each face normal's angle to the camera, not a separate animation state. */
