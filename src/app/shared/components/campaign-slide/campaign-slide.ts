@@ -173,9 +173,14 @@ export class CampaignSlide implements AfterViewInit, OnDestroy {
     const direction = deltaY < 0 ? 1 : -1;
     const target = this.wheelTargetFace(direction);
     if (target === null) {
-      // At a boundary with nowhere left to go inside the cube: release the gesture to the page immediately,
-      // exactly like the wheel handler does, instead of trapping the user against the edge face.
+      // At a boundary with nowhere left to go inside the cube: hand this decisive swipe to the page itself,
+      // scrolling one viewport in the same direction so the user continues straight into the next/previous
+      // section. Done as an explicit scroll rather than by lifting touch-action's native-pan block, because
+      // this element's `window:scroll` listener also drives the cube continuously (for non-swipe scrolling);
+      // letting a real native pan bleed through here would race that listener mid-gesture and skip faces.
       this.touchActive = false;
+      this.touchConsumed = true;
+      window.scrollBy({ top: direction * window.innerHeight, behavior: 'smooth' });
       return;
     }
 
