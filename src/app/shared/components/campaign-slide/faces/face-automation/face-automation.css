@@ -101,10 +101,13 @@
 }
 
 @media (max-width:639px) {
-  .af-node { width:78px; padding:7px 6px; font-size:10.5px; }
+  /* Sizing/composition (widths, padding, gaps) stays exactly as before; only the internal microcopy readable-
+     ness is bumped ~18% for phone screens, per the labels/legibility pass - node names, the core eyebrow/tags
+     and flow-chip labels are the copy this face relies on to read at a glance. */
+  .af-node { width:78px; padding:7px 6px; font-size:12.5px; }
   .af-ic { width:16px; height:16px; }
   .af-core { width:164px; height:116px; padding:11px 12px; gap:7px; }
-  .af-core-eyebrow { font-size:9.5px; }
-  .af-core-tags { font-size:8px; gap:5px; }
-  .af-flow span { height:21px; padding:0 10px; font-size:9.5px; }
+  .af-core-eyebrow { font-size:11px; }
+  .af-core-tags { font-size:9.5px; gap:5px; }
+  .af-flow span { height:21px; padding:0 10px; font-size:11px; }
 }

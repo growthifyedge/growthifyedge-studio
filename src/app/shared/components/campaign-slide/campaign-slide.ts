@@ -174,13 +174,19 @@ export class CampaignSlide implements AfterViewInit, OnDestroy {
     const target = this.wheelTargetFace(direction);
     if (target === null) {
       // At a boundary with nowhere left to go inside the cube: hand this decisive swipe to the page itself,
-      // scrolling one viewport in the same direction so the user continues straight into the next/previous
-      // section. Done as an explicit scroll rather than by lifting touch-action's native-pan block, because
-      // this element's `window:scroll` listener also drives the cube continuously (for non-swipe scrolling);
-      // letting a real native pan bleed through here would race that listener mid-gesture and skip faces.
+      // scrolling exactly far enough to clear the pinned scene (its own viewport-relative edge, not a fixed
+      // one-viewport guess — the scene's height varies with content) so the user lands straight into the
+      // next/previous section. Done as an explicit scroll rather than by lifting touch-action's native-pan
+      // block, because this element's `window:scroll` listener also drives the cube continuously (for
+      // non-swipe scrolling); letting a real native pan bleed through here would race that listener mid-
+      // gesture and skip faces.
       this.touchActive = false;
       this.touchConsumed = true;
-      window.scrollBy({ top: direction * window.innerHeight, behavior: 'smooth' });
+      if (this.scene) {
+        const rect = this.scene.nativeElement.getBoundingClientRect();
+        const jump = direction > 0 ? rect.bottom + 8 : rect.top - window.innerHeight - 8;
+        window.scrollBy({ top: jump, behavior: 'smooth' });
+      }
       return;
     }
 
@@ -246,10 +252,16 @@ export class CampaignSlide implements AfterViewInit, OnDestroy {
     this.cubeTweenFrame = requestAnimationFrame(tick);
   }
 
+  /**
+   * True while the scene is still stickily pinned (the sticky-active range, not literally "on screen").
+   * Compares against the stage's own height rather than window.innerHeight so this stays correct if the
+   * stage is ever sized to less than a full viewport (as mobile now is) — on desktop, where the stage is
+   * exactly 100vh, this is numerically identical to the previous window.innerHeight comparison.
+   */
   private isSceneActive(): boolean {
-    if (!this.scene) return false;
+    if (!this.scene || !this.stage) return false;
     const rect = this.scene.nativeElement.getBoundingClientRect();
-    return rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+    return rect.top <= 1 && rect.bottom >= this.stage.nativeElement.offsetHeight - 1;
   }
 
   private wheelTargetFace(direction: number): number | null {

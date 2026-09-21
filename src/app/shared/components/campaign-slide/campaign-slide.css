@@ -23,27 +23,27 @@
 .cube-cta-proxy-hidden { opacity:0; pointer-events:none; }
 @media (max-width:1023px) { .scroll-campaign-stage { --halo-size:calc(min(76vw,720px,calc(100vh - 140px)) * 1.15); touch-action:pan-x; }.campaign-cube-shell { --cube-size:min(76vw,720px,calc(100vh - 140px)); }.scroll-campaign-controls { left:3%; }.face-art { width:74%; } }
 @media (max-width:639px) {
-  /* The base 205vh comes from when the only way to move between faces was continuous scroll-scrubbing across
-     the full 0-180deg range, which needed a large excess of scroll distance (105vh) beyond one viewport to
-     scrub smoothly. Mobile now has a dedicated swipe engine for discrete face changes, so that excess is
-     mostly dead scroll: the section stays pinned, visually static, for a long stretch before the next section
-     can begin. .scroll-campaign-stage itself must stay 100vh (unchanged, matches desktop) because
-     isSceneActive() in the engine requires the scene to still span a full viewport height for gesture
-     detection to activate at all, and the settle-scroll-sync formula (scrollYForProgress) derives its travel
-     distance from this same scene-minus-stage excess - both are keyed off the same value, so shrinking it
-     shrinks the dead pinned-scroll zone while leaving gesture activation and settle-sync self-consistent at
-     any excess >= 0. 32px keeps a small excess (needed for position:sticky to have any pinning range at all)
-     while making the next section begin shortly after the pinned view instead of after 105vh of blank scroll. */
-  .scroll-campaign-scene { height:calc(100vh + 32px); }
-  .scroll-campaign-stage { --halo-size:calc(min(90vw,460px,calc(100vh - 130px)) * 1.15); min-height:0; }
-  /* The sticky public navbar (78px tall pre-lg) overlays the top of this section's own sticky stage, since
-     both pin to the viewport's top:0 independently; the base rule's top:calc(50% + 47px) centres the cube
-     against the stage's full height with no knowledge of that overlay, leaving a large gap. This keeps the
-     cube's own size/--cube-size untouched and only repositions it: 78px clears the navbar, +30px is the
-     intended breathing room, and the --cube-size/2 term re-centres correctly given the shell's own
-     translate(-50%,-50%). The height-dependent terms cancel algebraically, so the resulting gap is a
+  /* The mobile cube is width-capped (90vw, since it's square and phones are narrow), so on a typical tall
+     phone it only fills a fraction of a rigid 100vh stage - measured, that left ~300px of dead dark space
+     below the card+wordmark before the next section could begin. isSceneActive() no longer hard-requires a
+     full-viewport-tall stage (it now compares against the stage's own rendered height, see campaign-slide.ts),
+     so the stage itself can shrink to fit its content instead of always reserving 100vh. The formula below is
+     the exact content extent - navbar clearance (78px) + gap (30px) + the cube (--cube-size) + gap (30px) +
+     the wordmark's own rendered line-box height (font-size 14vw * line-height .75 = 10.5vw) - i.e. the
+     wordmark's bottom edge lands exactly on the stage's bottom edge, with zero slack baked in here.
+     .scroll-campaign-scene adds one small excess on top of that (36px, within the requested 24-48px "breathing
+     room" range) purely so position:sticky still has a non-zero pinning range; that excess is the only gap the
+     user sees between the campaign visual and the next section, matching the target directly. */
+  .scroll-campaign-stage { --halo-size:calc(min(90vw,460px,calc(100vh - 130px)) * 1.15); min-height:0; height:calc(120px + min(90vw,460px,calc(100vh - 130px)) + 10.5vw); }
+  .scroll-campaign-scene { height:calc(120px + min(90vw,460px,calc(100vh - 130px)) + 10.5vw + 36px); }
+  /* The sticky public navbar (60px tall below the sm breakpoint) overlays the top of this section's own
+     sticky stage, since both pin to the viewport's top:0 independently; the base rule's top:calc(50% + 47px)
+     centres the cube against the stage's full height with no knowledge of that overlay, leaving a large gap.
+     This keeps the cube's own size/--cube-size untouched and only repositions it: 60px clears the navbar,
+     +30px is the intended breathing room, and the --cube-size/2 term re-centres correctly given the shell's
+     own translate(-50%,-50%). The height-dependent terms cancel algebraically, so the resulting gap is a
      constant ~29px regardless of viewport height within this breakpoint. */
-  .campaign-cube-shell { --cube-size:min(90vw,460px,calc(100vh - 130px)); top:calc(78px + 30px + var(--cube-size) / 2); }
+  .campaign-cube-shell { --cube-size:min(90vw,460px,calc(100vh - 130px)); top:calc(60px + 30px + var(--cube-size) / 2); }
   /* The word's clamp(7rem,15vw,19rem) floor (112px) is wider than any phone viewport can hold for a
      13-character word, so at these widths it always renders at the 112px floor - about 746px wide - and gets
      cropped by the stage's necessary overflow:hidden. A vw-only mobile size lets it scale with the viewport
@@ -54,7 +54,29 @@
      away stage bottom. Anchoring to the card's own bottom edge instead - the identical
      navbar+gap+cubeSize/2+cubeSize/2 arithmetic as the shell's own top rule, so it always tracks the card
      exactly - closes that gap to a fixed, controlled distance regardless of viewport height. */
-  .scroll-campaign-wordmark { font-size:14vw; top:calc(78px + 30px + min(90vw,460px,calc(100vh - 130px)) + 30px); bottom:auto; }
-  .scroll-campaign-controls { left:12px; gap:8px; }.cube-control { width:34px; min-height:38px; border-radius:10px; font-size:15px; }.cube-control span { display:none; }.scroll-campaign-indicators { gap:8px; }.scroll-campaign-indicators > span { height:7px; width:7px; }.scroll-campaign-indicators .scroll-campaign-indicator-active { height:21px; }.face-art { height:calc(var(--cube-size) * .37); margin-top:calc(var(--cube-size) * .025); }.face-copy { padding:4px 20px 16px; }.face-copy > p:first-child { font-size:10px; }.face-copy h1 { margin-top:6px; font-size:clamp(1.15rem,5.6vw,1.5rem); line-height:1.08; }.face-description { margin-top:6px; font-size:12.5px; line-height:1.3; }.face-cta { min-height:36px; margin-top:8px; padding:6px 14px; font-size:12px; }.cube-cta-proxy { bottom:16px; }}
+  .scroll-campaign-wordmark { font-size:14vw; top:calc(60px + 30px + min(90vw,460px,calc(100vh - 130px)) + 30px); bottom:auto; }
+  /* Mobile has a dedicated swipe engine, so the desktop-style Up/Down button boxes are redundant chrome here;
+     only the slim progress indicator (already present for desktop too) is kept, recentred now that its
+     sibling buttons are gone. */
+  .scroll-campaign-controls { left:12px; gap:8px; }.cube-control { display:none; }.scroll-campaign-indicators { gap:8px; }.scroll-campaign-indicators > span { height:7px; width:7px; }.scroll-campaign-indicators .scroll-campaign-indicator-active { height:21px; }.face-art { width:84%; height:calc(var(--cube-size) * .42); margin-top:calc(var(--cube-size) * .02); }.face-copy { padding:4px 20px 16px; }.face-copy > p:first-child { font-size:10px; }.face-copy h1 { margin-top:6px; font-size:clamp(1.15rem,5.6vw,1.5rem); line-height:1.08; }.face-description { margin-top:6px; font-size:12.5px; line-height:1.3; }.face-cta { min-height:36px; margin-top:8px; padding:6px 14px; font-size:12px; white-space:nowrap; }.cube-cta-proxy { bottom:16px; }
+  /* Face 2 only: its lower-left approvals tray (face-apps' own composition) hangs a little further down than
+     the other two faces' artwork, measured to sit only ~16px above the "BUILD - MANAGE - SCALE" eyebrow before
+     this fix (the tray's own bottom-overflow trim in face-apps.css is the other half of this fix). Nudging
+     just this face's artwork up slightly (not its copy, and not Face 1/3, which already measured fine)
+     restores a clean gap without touching the shared .face-art rule above. */
+  .cube-face-2 .face-art { margin-top:calc(var(--cube-size) * .017); }
+  /* Mobile-only 3D emphasis: a tighter perspective (vs desktop's 1400px, tuned to desktop's much larger cube)
+     makes the SAME rotation read as noticeably deeper on the smaller mobile cube. The darkness/edge/brightness
+     rules below all amplify curves the engine already computes per-frame from cubeAngle (--face-darkness,
+     --face-surface via faceDarkness()/faceSurfaceIntensity() in campaign-slide.ts) - nothing here is new
+     state, just a stronger mobile-only visual response to the same values, so JS/desktop are untouched. At
+     rest (settled face, --face-surface:1) these all resolve to the same values as the base rule, preserving
+     the current settled appearance exactly; the amplification only shows up mid-rotation. */
+  .scroll-campaign-stage { perspective:700px; }
+  .cube-face::before { opacity:calc(var(--face-darkness,0) * 1.35); }
+  .cube-face::after { opacity:calc(.03 + var(--face-surface,0) * .12); }
+  .face-art { filter:brightness(calc(.16 + var(--face-surface,1) * .84)) saturate(calc(.1 + var(--face-surface,1) * .9)); }
+  .face-copy { filter:brightness(calc(.18 + var(--face-surface,1) * .82)); }
+}
 @media (prefers-reduced-motion:reduce) { .campaign-cube { transition:none; } }
 
